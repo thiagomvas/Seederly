@@ -35,8 +35,22 @@ public class FakeRequestFactory
     public JsonObject Generate(Dictionary<string, string> map)
     {
         var jsonObject = new JsonObject();
-
-        foreach (var (key, value) in map)
+        
+        // Separate nested objects into their own mappings
+        var nestedObjects = map
+            .Where(kvp => kvp.Key.Contains('.'))
+            .GroupBy(kvp => kvp.Key.Split('.')[0])
+            .ToDictionary(g => g.Key, g => g.ToDictionary(kvp => kvp.Key.Split('.')[1], kvp => kvp.Value));
+        // Add nested objects to the main JSON object
+        foreach (var (key, value) in nestedObjects)
+        {
+            jsonObject[key] = Generate(value);
+        }
+        
+        var flatMap = map
+            .Where(kvp => !kvp.Key.Contains('.'))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        foreach (var (key, value) in flatMap)
         {
             jsonObject[key] = GenerateValue(value);
         }

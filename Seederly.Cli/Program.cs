@@ -4,6 +4,8 @@ using Seederly.Core;
 
 var mappings = new Dictionary<string, string>
 {
+    { "Date", "date.past"},
+    { "Info", "lorem.sentence"},
     { "User.FirstName", "name.firstName" },
     { "User.LastName", "name.lastName" },
     { "User.Email", "internet.email" },
