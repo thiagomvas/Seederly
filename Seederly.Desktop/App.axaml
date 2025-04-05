@@ -31,8 +31,8 @@
     </Application.Resources>
 
     <Application.Styles>
-        <!-- Base Fluent Dark Theme -->
         <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
         <!-- TextBlock -->
         <Style Selector="TextBlock">

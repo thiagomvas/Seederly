@@ -13,12 +13,62 @@
         </Grid.ColumnDefinitions>
 
         <TreeView ItemsSource="{Binding Nodes}"
-                  Background="{DynamicResource SeederlyControlBackground}">
+                  Background="{DynamicResource SeederlyControlBackground}"
+                  SelectedItem="{Binding SelectedNode}">
             <TreeView.ItemTemplate>
                 <TreeDataTemplate ItemsSource="{Binding SubNodes}">
                     <TextBlock Text="{Binding Name}"/>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        
+        <!-- Main content area -->
+        <ScrollViewer Grid.Column="1" IsVisible="{Binding SelectedNode.IsLeaf}">
+            
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+        
+            <!-- URL bar and method selector -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <ComboBox Width="100" SelectedIndex="0" 
+                          >
+                    <!-- Bind to the HTTP method enum values -->
+                    <ComboBoxItem Content="GET" />
+                    <ComboBoxItem Content="POST" />
+                    <ComboBoxItem Content="PUT" />
+                    <ComboBoxItem Content="DELETE" />
+                </ComboBox>
+                <TextBox Width="500" Margin="10,0" Text="{Binding SelectedNode.Value.Url}"/>
+                <Button Content="Send" Width="80"/>
+            </StackPanel>
+        
+            <!-- Tabs: Headers and Body -->
+            <TabControl Grid.Row="1">
+                <!-- Headers Tab -->
+                <TabItem Header="Headers">
+                    <DataGrid Margin="0,10" AutoGenerateColumns="False" 
+                              GridLinesVisibility="All"
+                              IsReadOnly="False"
+                              ItemsSource="{Binding SelectedNode.Value.Headers}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}"/>
+                            <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+        
+                <!-- Body Tab -->
+                <TabItem Header="Body">
+                    <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="200" VerticalAlignment="Top"
+                             Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                </TabItem>
+            </TabControl>
+        </Grid>
+        </ScrollViewer>
+
     </Grid>
 </UserControl>
