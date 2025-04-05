@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Core", "Seederly.Core\Seederly.Core.csproj", "{AE33530E-29A6-4D40-B00D-BAC18F8D407F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Cli", "Seederly.Cli\Seederly.Cli.csproj", "{F3C63BF1-E5E9-4573-BB69-4276027C3578}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE33530E-29A6-4D40-B00D-BAC18F8D407F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE33530E-29A6-4D40-B00D-BAC18F8D407F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE33530E-29A6-4D40-B00D-BAC18F8D407F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE33530E-29A6-4D40-B00D-BAC18F8D407F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
