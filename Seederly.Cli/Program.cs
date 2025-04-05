@@ -10,6 +10,7 @@ var mappings = new Dictionary<string, string>
     { "User.LastName", "name.lastName" },
     { "User.Email", "internet.email" },
     { "User.Age", "random.number" },
+    { "Adresses[2]", "{\"Street\": \"address.streetAddress\", \"City\": \"address.city\", \"State\": \"address.state\", \"ZipCode\": \"address.zipCode\", \"Country\": \"address.country\"}" },
 };
 
 var generator = new FakeRequestFactory();

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Bogus;
@@ -47,8 +48,32 @@ public class FakeRequestFactory
             jsonObject[key] = Generate(value);
         }
         
+        var rangeMaps = map
+            .Where(kvp => kvp.Key.Contains('['))
+            .Select(kvp =>
+            {
+                var match = Regex.Match(kvp.Key, @"(.+)\[(\d+)\]");
+                return new Range(match.Groups[1].Value, 
+                    int.Parse(match.Groups[2].Value), 
+                    JsonSerializer.Deserialize<Dictionary<string, string>>(kvp.Value));
+            })
+            .ToList();
+        
+        // Add and generate range objects
+        foreach (var range in rangeMaps)
+        {
+            var array = new JsonArray();
+            for (var i = 0; i < range.Count; i++)
+            {
+                var item = Generate(range.Map);
+                array.Add(item);
+            }
+            jsonObject[range.Key] = array;
+        }
+        
+        
         var flatMap = map
-            .Where(kvp => !kvp.Key.Contains('.'))
+            .Where(kvp => !kvp.Key.Contains('.') && !kvp.Key.Contains('['))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         foreach (var (key, value) in flatMap)
         {
@@ -68,6 +93,6 @@ public class FakeRequestFactory
         return string.Empty;
     }
 
-
+    private record Range(string Key, int Count, Dictionary<string, string> Map);
 }
 
