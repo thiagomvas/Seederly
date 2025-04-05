@@ -7,7 +7,8 @@
         x:Class="Seederly.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Seederly.Desktop">
+        Title="Seederly.Desktop"
+        Background="#0D1B1E">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +16,14 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
+            <Button Content="Workspace" Command="{Binding NavigateToWorkspaceCommand}" Margin="0,0,10,0"/>
+            <Button Content="Settings" Command="{Binding NavigateToSettingsCommand}"/>
+        </StackPanel>
+        
+
+        <ContentControl Content="{Binding CurrentPage}"/>
+    </DockPanel>
 
 </Window>

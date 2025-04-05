@@ -1,6 +1,21 @@
-﻿namespace Seederly.Desktop.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+namespace Seederly.Desktop.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public string Greeting { get; } = "Welcome to Avalonia!";
+    [ObservableProperty]
+    private ViewModelBase currentPage;
+
+    public MainWindowViewModel()
+    {
+        CurrentPage = new WorkspaceViewModel();
+    }
+
+    [RelayCommand]
+    private void NavigateToWorkspace() => CurrentPage = new WorkspaceViewModel();
+
+    [RelayCommand]
+    private void NavigateToSettings() => CurrentPage = new SettingsViewModel();
 }
