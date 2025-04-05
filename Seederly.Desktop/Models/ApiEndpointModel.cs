@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Seederly.Core;
 using Seederly.Desktop.ViewModels;
@@ -21,10 +23,14 @@ public partial class ApiEndpointModel : ViewModelBase
     
     [ObservableProperty]
     private string? _body = string.Empty;
-    public ObservableCollection<HeaderEntry> Headers { get; set; }
+
+    public ObservableCollection<HeaderEntry> Headers { get; set; } = new();
     
     [ObservableProperty]
     private string? _contentType = "application/json";
+    
+    [ObservableProperty]
+    private ApiResponseModel? _lastResponse = new();
     
     public static ApiEndpointModel FromApiRequest(ApiRequest request)
     {
@@ -37,6 +43,25 @@ public partial class ApiEndpointModel : ViewModelBase
             Headers = new(request.Headers.Select(kvp => new HeaderEntry(kvp.Key, kvp.Value))),
             ContentType = request.ContentType
         };
+    }
+    
+    public ApiRequest ToApiRequest()
+    {
+        var request = new ApiRequest
+        {
+            Name = Name,
+            Method = HttpMethod.Parse(Method),
+            Url = Url,
+            Body = Body,
+            ContentType = ContentType
+        };
+        
+        foreach (var header in Headers)
+        {
+            request.Headers.Add(header.Key, header.Value);
+        }
+        
+        return request;
     }
 
     public partial class HeaderEntry : ViewModelBase

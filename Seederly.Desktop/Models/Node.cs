@@ -25,5 +25,6 @@ public class Node<T>
     {
         Name = name;
         Value = value;
+        SubNodes = new ObservableCollection<Node<T>>();
     }
 }
