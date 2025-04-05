@@ -1,20 +1,16 @@
-﻿using Seederly.Core;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using Seederly.Core;
 
-var executor = new ApiRequestExecutor(new());
-
-var request = new ApiRequest
+var mappings = new Dictionary<string, string>
 {
-    Name = "Get Users",
-    Method = HttpMethod.Get,
-    Url = "https://jsonplaceholder.typicode.com/users",
-    Headers =
-    {
-        { "Accept", "application/json" }
-    }
+    { "User.FirstName", "name.firstName" },
+    { "User.LastName", "name.lastName" },
+    { "User.Email", "internet.email" },
+    { "User.Age", "random.number" },
 };
 
-var response = await executor.ExecuteAsync(request);
-Console.WriteLine($"Status Code: {(int)response.StatusCode} {response.StatusCode}");
-Console.WriteLine($"Is Success: {response.IsSuccess}");
-Console.WriteLine($"Response Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {h.Value}"))}");
-Console.WriteLine($"Response Content: {response.Content}");
+var generator = new FakeRequestFactory();
+JsonObject fakeBody = generator.Generate(mappings);
+
+Console.WriteLine(fakeBody.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
