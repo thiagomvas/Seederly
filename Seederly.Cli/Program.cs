@@ -10,10 +10,7 @@ app.AddCommand("schemas", () =>
 {
     Console.WriteLine("Available schemas:");
     var fac = new FakeRequestFactory();
-    foreach (var generator in fac.Generators)
-    {
-        Console.WriteLine($"{generator.Key} (E.g.: {generator.Value()})");
-    }
+    Utils.Write(fac.Generators);
 });
 
 await app.RunAsync();

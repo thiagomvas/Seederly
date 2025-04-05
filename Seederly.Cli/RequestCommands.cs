@@ -15,8 +15,7 @@ public class RequestCommands
         foreach (var request in requests)
         {
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -27,8 +26,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Post;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -39,8 +37,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Put;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -51,8 +48,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Delete;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -63,8 +59,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Patch;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -75,8 +70,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Options;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -87,8 +81,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Head;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
@@ -99,8 +92,7 @@ public class RequestCommands
         {
             request.Method = HttpMethod.Trace;
             var response = await SendRequest(request);
-            Console.WriteLine($"Response: {response.StatusCode}");
-            Console.WriteLine($"Content: {response.Content}");
+            Utils.Write(response);
         }
     }
     
