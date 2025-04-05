@@ -97,7 +97,7 @@ public class FakeRequestFactory
         var nestedObjects = map
             .Where(kvp => kvp.Key.Contains('.'))
             .GroupBy(kvp => kvp.Key.Split('.')[0])
-            .ToDictionary(g => g.Key, g => g.ToDictionary(kvp => string.Join("", kvp.Key.Split('.').Skip(1)), kvp => kvp.Value));
+            .ToDictionary(g => g.Key, g => g.ToDictionary(kvp => string.Join('.', kvp.Key.Split('.').Skip(1)), kvp => kvp.Value));
         // Add nested objects to the main JSON object
         foreach (var (key, value) in nestedObjects)
         {
