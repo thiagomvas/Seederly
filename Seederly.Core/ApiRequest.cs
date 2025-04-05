@@ -7,5 +7,10 @@ public class ApiRequest
     public string Url { get; set; } = string.Empty;
     public string? Body { get; set; }
     public Dictionary<string, string> Headers { get; set; } = new();
-    public string? ContentType { get; set; }
+    public string? ContentType { get; set; } = "application/json";
+    public ApiRequest WithJwt(string jwt)
+    {
+        Headers["Authorization"] = $"Bearer {jwt}";
+        return this;
+    }
 }

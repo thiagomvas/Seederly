@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Seederly.Core\Seederly.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Cocona.Lite" Version="2.2.0" />
+    </ItemGroup>
+
 </Project>

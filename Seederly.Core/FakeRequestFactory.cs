@@ -8,11 +8,11 @@ namespace Seederly.Core;
 public class FakeRequestFactory
 {
     private readonly Faker _faker = new();
-    private readonly Dictionary<string, Func<string>> _generators;
+    public readonly Dictionary<string, Func<string>> Generators;
 
     public FakeRequestFactory()
     {
-        _generators = new()
+        Generators = new()
         {
             // Name
             ["name.firstName"] = () => _faker.Name.FirstName(),
@@ -176,7 +176,7 @@ public class FakeRequestFactory
 
     private string GenerateValue(string generatorKey)
     {
-        if (_generators.TryGetValue(generatorKey, out var generator))
+        if (Generators.TryGetValue(generatorKey, out var generator))
         {
             return generator();
         }
