@@ -27,7 +27,7 @@ public class FakeRequestFactory
             ["internet.domainName"] = () => _faker.Internet.DomainName(),
             ["internet.url"] = () => _faker.Internet.Url(),
             ["internet.ip"] = () => _faker.Internet.Ip(),
-            ["internet.password"] = () => _faker.Internet.Password(),
+            ["internet.password"] = () => _faker.Internet.PasswordCustom(),
 
             // Address
             ["address.streetAddress"] = () => _faker.Address.StreetAddress(),
