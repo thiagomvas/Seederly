@@ -25,6 +25,19 @@ public class ApiEndpoint
     /// </summary>
     public List<ApiEndpoint> Children { get; set; } = new();
     
+    /// <summary>
+    /// Gets or sets the amount of times that this endpoint should be called in one go.
+    /// </summary>
+    public int Amount { get; set; } = 1;
+    
+    /// <summary>
+    /// Gets or sets whether the body should be generated for every request.
+    /// </summary>
+    /// <remarks>
+    /// Requires <see cref="Schema"/> to be set.
+    /// </remarks>
+    public bool GenerateEveryRequest { get; set; } = false;
+    
     public ApiEndpoint()
     {
     }

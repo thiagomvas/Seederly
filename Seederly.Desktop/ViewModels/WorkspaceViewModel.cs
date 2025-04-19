@@ -168,12 +168,13 @@ public partial class WorkspaceViewModel : ViewModelBase
             
             var result = await _apiClient.ExecuteAsync(request);
 
-            stopwatch.Stop();
 
             SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
-            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)";
+            
+            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
             LastRequestCalled = SelectedNode.Name;
         }
+        stopwatch.Stop();
     }
 
 
@@ -219,6 +220,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             node.PropertyChanged += OnAnyPropertyChanged;
             if (model is not null)
                 model.PropertyChanged += OnAnyPropertyChanged;
+            node.Amount = endpoint.Amount;
+            node.GenerateEveryRequest = endpoint.GenerateEveryRequest;
 
             foreach (var child in endpoint.Children)
             {
@@ -254,7 +257,9 @@ public partial class WorkspaceViewModel : ViewModelBase
                 Name = node.Name,
                 Request = node.Value?.ToApiRequest() ?? new ApiRequest(),
                 Children = node.SubNodes.Select(ConvertNodeToEndpoint).ToList(),
-                Schema = node.Value?.Schema.ToDictionary(x => x.Key, x => x.Value) ?? new Dictionary<string, string>()
+                Schema = node.Value?.Schema.ToDictionary(x => x.Key, x => x.Value) ?? new Dictionary<string, string>(),
+                Amount = node.Amount,
+                GenerateEveryRequest = node.GenerateEveryRequest
             };
 
             return endpoint;
