@@ -13,33 +13,53 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel>
+            <Grid Margin="8" ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="API Explorer"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0" />
+                <Separator Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Margin="0,8,0,8" />
+            </Grid>
 
-            <TreeView ItemsSource="{Binding Nodes}"
-                      Background="{DynamicResource SeederlyControlBackground}"
-                      SelectedItem="{Binding SelectedNode}">
-                <TreeView.ItemTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Name}"
-                                       IsVisible="{Binding !IsEditing}"
-                                       Grid.Column="0"
-                                       DoubleTapped="NameTextBlock_OnDoubleTapped"
-                                       VerticalAlignment="Center" />
-                            <TextBox Text="{Binding Name}"
-                                     IsVisible="{Binding IsEditing}"
-                                     Grid.Column="0"
-                                     LostFocus="NameTextBox_LostFocus"
-                                     VerticalAlignment="Center" />
-                            <Button Content="+"
-                                    Background="Transparent"
-                                    Command="{Binding CreateNewChild}"
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center" />
-                        </Grid>
-                    </TreeDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-            <Button Content="Add Node" Command="{Binding AddNodeCommand}" Margin="10" />
+            <ScrollViewer>
+                <StackPanel>
+                    <TreeView ItemsSource="{Binding Nodes}"
+                              Background="{DynamicResource SeederlyControlBackground}"
+                              SelectedItem="{Binding SelectedNode}">
+                        <TreeView.ItemTemplate>
+                            <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Name}"
+                                               IsVisible="{Binding !IsEditing}"
+                                               Grid.Column="0"
+                                               DoubleTapped="NameTextBlock_OnDoubleTapped"
+                                               VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding Name}"
+                                             IsVisible="{Binding IsEditing}"
+                                             Grid.Column="0"
+                                             LostFocus="NameTextBox_LostFocus"
+                                             VerticalAlignment="Center" />
+                                    <Button Content="+"
+                                            Background="Transparent"
+                                            Command="{Binding CreateNewChild}"
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center" />
+                                </Grid>
+                            </TreeDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                    <Button Background="Transparent"
+                            Command="{Binding AddNodeCommand}"
+                            HorizontalAlignment="Stretch">
+                        <TextBlock Text="+"
+                                   HorizontalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
         <!-- Main content area -->
         <ScrollViewer Grid.Column="1" IsVisible="{Binding SelectedNode.IsLeaf}">
