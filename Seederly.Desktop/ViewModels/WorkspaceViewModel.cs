@@ -28,52 +28,20 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
+    public WorkspaceViewModel(string workspacePath) : base()
+    {
+        _workspacePath = workspacePath;
+        if (string.IsNullOrWhiteSpace(workspacePath))
+            return;
+        
+        var json = File.ReadAllText(workspacePath);
+        DeserializeWorkspace(json);
+        SelectedNode = Nodes.FirstOrDefault();
+    }
+
     public WorkspaceViewModel()
     {
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
-        var requests = new List<ApiRequest>()
-        {
-            new()
-            {
-                Name = "Get users",
-                Url = "https://httpbin.org/get",
-                Method = HttpMethod.Get,
-                Headers = { { "Authentication", "Bearer token" } },
-                Body = null
-            },
-            new()
-            {
-                Name = "Create user",
-                Url = "https://httpbin.org/post",
-                Method = HttpMethod.Post,
-                Headers = { { "Authorization", "Bearer token" } },
-                Body = "{\"name\":\"John Doe\",\"email\":\"john@example.com\"}"
-            },
-            new()
-            {
-                Name = "Update user",
-                Url = "https://httpbin.org/put",
-                Method = HttpMethod.Put,
-                Headers = { { "Authorization", "Bearer token" } },
-                Body = "{\"id\":123,\"email\":\"newemail@example.com\"}"
-            },
-            new()
-            {
-                Name = "Delete user",
-                Url = "https://httpbin.org/delete",
-                Method = HttpMethod.Delete,
-                Headers = { { "Authorization", "Bearer token" } },
-                Body = null
-            }
-        };
-
-
-        var children = new ObservableCollection<Node<ApiEndpointModel>>(requests.Select(r => new Node<ApiEndpointModel>(r.Name,
-            ApiEndpointModel.FromApiRequest(r))));
-        var parent = new Node<ApiEndpointModel>("Test Endpoints", children);
-        Nodes = new ObservableCollection<Node<ApiEndpointModel>> { parent };
-
-        SelectedNode = Nodes.FirstOrDefault();
     }
 
     [RelayCommand]
@@ -151,6 +119,36 @@ public partial class WorkspaceViewModel : ViewModelBase
         SelectedNode.SubNodes.Add(newNode);
         SelectedNode = newNode;
     }
+    public void DeserializeWorkspace(string json)
+    {
+        Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
+        {
+            var model = ApiEndpointModel.FromApiRequest(endpoint.Request);
+            var node = new Node<ApiEndpointModel>(endpoint.Name, model);
+
+            foreach (var child in endpoint.Children)
+            {
+                node.SubNodes.Add(ConvertEndpointToNode(child));
+            }
+
+            return node;
+        }
+
+        var workspace = JsonSerializer.Deserialize<Workspace>(json);
+
+        if (workspace is null)
+            return;
+
+        WorkspaceName = workspace.Name;
+        WorkspacePath = workspace.Path;
+        Nodes.Clear();
+
+        foreach (var endpoint in workspace.Endpoints)
+        {
+            Nodes.Add(ConvertEndpointToNode(endpoint));
+        }
+    }
+
 
     public string SerializeWorkspace()
     {

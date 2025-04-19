@@ -32,11 +32,8 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            // Open reading stream from the first file.
-            await using var stream = await files[0].OpenReadAsync();
-            using var streamReader = new StreamReader(stream);
-            // Reads all the content of file as a text.
-            var fileContent = await streamReader.ReadToEndAsync();
+            _viewModel.WorkspaceViewModel = new WorkspaceViewModel(files[0].Path.LocalPath);
+            _viewModel.CurrentPage = _viewModel.WorkspaceViewModel;
         }
     }
     
@@ -59,7 +56,7 @@ public partial class MainWindow : Window
             if (file is not null)
             {
                 // Open writing stream from the file.
-                _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath.ToString();
+                _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
                 await using var stream = await file.OpenWriteAsync();
                 using var streamWriter = new StreamWriter(stream);
                 await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
