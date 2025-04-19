@@ -199,9 +199,6 @@ public partial class WorkspaceViewModel : ViewModelBase
     [RelayCommand]
     private async Task ExecuteAllRequests()
     {
-        if (SelectedNode == null || !SelectedNode.IsLeaf)
-            return;
-
         int doneCount = 0;
         var statusCodeCounts = new Dictionary<HttpStatusCode, int>();
 
@@ -213,6 +210,7 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
+        LastRequestCalled = "All Requests - Running";
         await foreach (var task in Task.WhenEach(tasks))
         {
             doneCount++;
@@ -223,7 +221,6 @@ public partial class WorkspaceViewModel : ViewModelBase
             else
                 statusCodeCounts[result.StatusCode] = 1;
 
-            LastRequestCalled = "All Requests (RUNNING)";
             LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({doneCount}/{total}) ({stopwatch.ElapsedMilliseconds} ms)";
         }
 

@@ -19,7 +19,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SetViewModel(ViewModelBase vm)
+    public void SetViewModel(ViewModelBase vm)
     {
         if (vm == null)
             throw new ArgumentNullException(nameof(vm));
@@ -32,7 +32,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel());
+    private void NavigateToWorkspace() => SetViewModel(WorkspaceViewModel);
 
     [RelayCommand]
     private void NavigateToSettings() => CurrentPage = new SettingsViewModel();

@@ -65,7 +65,7 @@
             </ScrollViewer>
         </StackPanel>
         <!-- Main content area -->
-        <ScrollViewer Grid.Column="1" IsVisible="{Binding SelectedNode.IsLeaf}">
+        <ScrollViewer Grid.Column="1" IsVisible="{Binding HasContent}">
 
             <Grid Margin="10" RowDefinitions="Auto,*,Auto">
 

@@ -64,26 +64,11 @@
                 <MenuItem Header="E_xit"  Click="ExitButton_Clicked"/>
             </MenuItem>
 
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" />
-                <MenuItem Header="_Redo" />
-                <Separator />
-                <MenuItem Header="Cut" />
-                <MenuItem Header="Copy" />
-                <MenuItem Header="Paste" />
-                <MenuItem Header="Delete" />
-            </MenuItem>
-
             <MenuItem Header="_View">
-                <MenuItem Header="Toggle Sidebar" />
-                <MenuItem Header="Toggle Console" />
-                <MenuItem Header="Dark Mode" />
             </MenuItem>
 
             <MenuItem Header="_Tools">
                 <MenuItem Header="Send All Requests" Command="{Binding WorkspaceViewModel.ExecuteAllRequestsCommand}"/>
-                <MenuItem Header="Validate Requests" />
-                <MenuItem Header="Generate Dummy Data" />
             </MenuItem>
 
             <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />

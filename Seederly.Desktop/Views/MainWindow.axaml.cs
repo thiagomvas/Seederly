@@ -34,8 +34,8 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            _viewModel.WorkspaceViewModel = new WorkspaceViewModel(files[0].Path.LocalPath);
-            _viewModel.CurrentPage = _viewModel.WorkspaceViewModel;
+            var vm = new WorkspaceViewModel(files[0].Path.LocalPath);
+            _viewModel.SetViewModel(vm);
         }
     }
     
