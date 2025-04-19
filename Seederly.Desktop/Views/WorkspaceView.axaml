@@ -34,7 +34,7 @@
 
                 <!-- URL bar and method selector -->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <ComboBox Width="100" SelectedIndex="0">
+                    <ComboBox Width="100" SelectedIndex="{Binding SelectedNode.Value.Method}">
                         <!-- Bind to the HTTP method enum values -->
                         <ComboBoxItem Content="GET" />
                         <ComboBoxItem Content="POST" />
@@ -42,7 +42,7 @@
                         <ComboBoxItem Content="DELETE" />
                     </ComboBox>
                     <TextBox Width="500" Margin="10,0" Text="{Binding SelectedNode.Value.Url}" />
-                    <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}"/>
+                    <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
                 </StackPanel>
 
                 <!-- Tabs: Headers and Body -->
@@ -66,11 +66,58 @@
                                  VerticalAlignment="Top"
                                  Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
                     </TabItem>
+                    <TabItem Header="Schema">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <Button Content="Add Column" Command="{Binding AddSchemaColumnCommand}" Width="100"
+                                        Margin="0,0,0,10" />
+
+                                <DataGrid AutoGenerateColumns="False"
+                                          IsReadOnly="False"
+                                          ItemsSource="{Binding SelectedNode.Value.Schema}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Column Name" Binding="{Binding Key}" Width="*" />
+                                        <DataGridTemplateColumn Header="Data Type" Width="*">
+                                            <DataGridTemplateColumn.CellEditingTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox HorizontalAlignment="Stretch"
+                                                              ItemsSource="{Binding ((vm:WorkspaceViewModel)DataContext).AvailableDataTypes, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                              SelectedItem="{Binding Value, Mode=TwoWay}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Value}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Width="auto">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="Delete"
+                                                            Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveSchemaRowCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                            CommandParameter="{Binding}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Button Content="Generate Body" Command="{Binding GenerateBodyCommand}" Width="100"
+                                        Margin="0,0,0,10" />
+                                <TextBlock FontSize="24" Text="Body" />
+                                <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="500"
+                                         VerticalAlignment="Top"
+                                         IsReadOnly="True"
+                                         Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
 
                     <!-- Response Tab -->
                     <TabItem Header="Response">
                         <StackPanel>
-                            <TextBlock Text="{Binding SelectedNode.Value.LastResponse.StatusCode}"/>
+                            <TextBlock Text="{Binding SelectedNode.Value.LastResponse.StatusCode}" />
                             <DataGrid Margin="0,10" AutoGenerateColumns="False"
                                       GridLinesVisibility="All"
                                       IsReadOnly="False"
