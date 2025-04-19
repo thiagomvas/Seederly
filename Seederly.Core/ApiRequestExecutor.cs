@@ -43,7 +43,8 @@ public class ApiRequestExecutor
         return new ApiResponse
         {
             StatusCode = response.StatusCode,
-            Content = content
+            Content = content,
+            Headers = response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value))
         };
     }
     
