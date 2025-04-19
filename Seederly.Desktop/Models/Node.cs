@@ -9,7 +9,7 @@ public partial class Node<T> : ObservableObject
     public ObservableCollection<Node<T>> SubNodes { get; }
     [ObservableProperty]
     private string _name;
-    public bool IsLeaf => SubNodes.Count == 0;
+    public bool IsLeaf => SubNodes.Count == 0 && Value is not null;
     public T? Value { get; set; }
 
     [ObservableProperty]
