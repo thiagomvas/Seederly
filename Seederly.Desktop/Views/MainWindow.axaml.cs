@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -71,7 +72,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SaveFileAsButton_Clicked(object? sender, RoutedEventArgs e)
+    private async void SaveFileAsButton_Clicked(object? sender, RoutedEventArgs e)
     {
         // Get top level from the current control. Alternatively, you can use Window reference instead.
         var topLevel = TopLevel.GetTopLevel(this);
@@ -80,17 +81,20 @@ public partial class MainWindow : Window
             _viewModel = (MainWindowViewModel)DataContext!;
 
         // Start async operation to open the dialog.
-        var file = topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Workspace"
         });
 
         if (file is not null)
         {
-            _viewModel.WorkspaceViewModel.WorkspacePath = file.Result.Path.LocalPath;
-            using var stream = file.Result.OpenWriteAsync().Result;
+            _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
+            using var stream = file.OpenWriteAsync().Result;
             using var streamWriter = new StreamWriter(stream);
             streamWriter.WriteLine(_viewModel.WorkspaceViewModel.SerializeWorkspace());
         }
     }
+
+    private async void ReportBugButton_Clicked(object? sender, RoutedEventArgs e) => await TopLevel.GetTopLevel(this).Launcher
+        .LaunchUriAsync(new Uri("https://github.com/thiagomvas/Seederly/issues"));
 }

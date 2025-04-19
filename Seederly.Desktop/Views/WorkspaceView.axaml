@@ -12,8 +12,10 @@
             <ColumnDefinition Width="*" />   <!-- Main content -->
         </Grid.ColumnDefinitions>
 
-        <StackPanel>
-            <Grid Margin="8" ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+        <StackPanel Background="{DynamicResource SeederlyControlBackground}">
+            <Grid Margin="8" 
+                  ColumnDefinitions="Auto,*" 
+                  VerticalAlignment="Center">
                 <TextBlock Grid.Column="0"
                            Text="API Explorer"
                            FontSize="16"

@@ -57,17 +57,10 @@
 
             <MenuItem Header="_Help">
                 <MenuItem Header="Documentation" />
-                <MenuItem Header="Report a Bug" />
+                <MenuItem Header="Report a Bug" Click="ReportBugButton_Clicked"/>
                 <MenuItem Header="About Seederly" />
             </MenuItem>
         </Menu>
-
-        <!--
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
-            <Button Content="Workspace" Command="{Binding NavigateToWorkspaceCommand}" Margin="0,0,10,0"/>
-            <Button Content="Settings" Command="{Binding NavigateToSettingsCommand}"/>
-        </StackPanel>
-        -->
 
         <ContentControl Content="{Binding CurrentPage}"/>
     </DockPanel>
