@@ -81,7 +81,7 @@
             </MenuItem>
 
             <MenuItem Header="_Tools">
-                <MenuItem Header="Send All Requests" />
+                <MenuItem Header="Send All Requests" Command="{Binding WorkspaceViewModel.ExecuteAllRequestsCommand}"/>
                 <MenuItem Header="Validate Requests" />
                 <MenuItem Header="Generate Dummy Data" />
             </MenuItem>

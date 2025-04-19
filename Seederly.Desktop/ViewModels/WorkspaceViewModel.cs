@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -195,6 +196,47 @@ public partial class WorkspaceViewModel : ViewModelBase
         });
     }
 
+    [RelayCommand]
+    private async Task ExecuteAllRequests()
+    {
+        if (SelectedNode == null || !SelectedNode.IsLeaf)
+            return;
+
+        int doneCount = 0;
+        var statusCodeCounts = new Dictionary<HttpStatusCode, int>();
+
+        var tasks = Nodes
+            .Where(x => x.IsLeaf)
+            .Select(node => ExecuteRequest(node.Value!.ToApiRequest()))
+            .ToArray();
+        int total = tasks.Length;
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        await foreach (var task in Task.WhenEach(tasks))
+        {
+            doneCount++;
+            var result = await task;
+
+            if (statusCodeCounts.ContainsKey(result.StatusCode))
+                statusCodeCounts[result.StatusCode]++;
+            else
+                statusCodeCounts[result.StatusCode] = 1;
+
+            LastRequestCalled = "All Requests (RUNNING)";
+            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({doneCount}/{total}) ({stopwatch.ElapsedMilliseconds} ms)";
+        }
+
+        stopwatch.Stop();
+
+        string summary = string.Join(", ", statusCodeCounts
+            .OrderByDescending(kvp => kvp.Value)
+            .Select(kvp => $"{(int)kvp.Key} {kvp.Key} x{kvp.Value}"));
+
+        LastRequestCalled = "All Requests";
+        LastResponseStatus = $"{summary} ({stopwatch.ElapsedMilliseconds} ms)";
+    }
+
     public override void Dispose()
     {
         foreach (var node in Nodes)
@@ -233,5 +275,14 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         var json = SerializeWorkspace();
         File.WriteAllText(WorkspacePath, json);
+    }
+    
+    private async Task <ApiResponse> ExecuteRequest(ApiRequest request)
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var result = await _apiClient.ExecuteAsync(request);
+        stopwatch.Stop();
+
+        return result;
     }
 }
