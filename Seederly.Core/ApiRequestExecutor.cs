@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Seederly.Core;
@@ -22,8 +23,19 @@ public class ApiRequestExecutor
 
         foreach (var header in request.Headers)
         {
-            httpRequestMessage.Headers.Add(header.Key, header.Value);
+            if (header.Key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
+            {
+                if (httpRequestMessage.Content != null)
+                {
+                    httpRequestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue(header.Value);
+                }
+            }
+            else
+            {
+                httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
         }
+
 
         var response = await _httpClient.SendAsync(httpRequestMessage);
         var content = await response.Content.ReadAsStringAsync();
