@@ -1,14 +1,19 @@
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Seederly.Desktop.Models;
 
 
-public class Node<T>
+public partial class Node<T> : ObservableObject
 {
     public ObservableCollection<Node<T>> SubNodes { get; }
-    public string Name { get; }
+    [ObservableProperty]
+    private string _name;
     public bool IsLeaf => SubNodes.Count == 0;
     public T? Value { get; set; }
+
+    [ObservableProperty]
+    private bool _isEditing;
         
     public Node(string name)
     {
