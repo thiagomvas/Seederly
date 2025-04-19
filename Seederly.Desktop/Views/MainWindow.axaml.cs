@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -97,4 +98,6 @@ public partial class MainWindow : Window
 
     private async void ReportBugButton_Clicked(object? sender, RoutedEventArgs e) => await TopLevel.GetTopLevel(this).Launcher
         .LaunchUriAsync(new Uri("https://github.com/thiagomvas/Seederly/issues"));
+
+    private void ExitButton_Clicked(object? sender, RoutedEventArgs e) => Environment.Exit(0);
 }

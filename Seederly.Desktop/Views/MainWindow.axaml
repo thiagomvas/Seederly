@@ -56,15 +56,12 @@
         </Grid>
         <Menu DockPanel.Dock="Top" Background="{DynamicResource SeederlyAccentBackground}">
             <MenuItem Header="_File">
-                <MenuItem Header="_New Workspace" />
+                <MenuItem Header="_New Workspace" Command="{Binding NavigateToWorkspaceCommand}"/>
                 <MenuItem Header="_Open Workspace..." Click="OpenFileButton_Clicked"/>
                 <MenuItem Header="_Save Workspace" Click="SaveFileButton_Clicked"/>
                 <MenuItem Header="Save Workspace _As..." Click="SaveFileAsButton_Clicked" />
                 <Separator />
-                <MenuItem Header="_Import..." />
-                <MenuItem Header="_Export..." />
-                <Separator />
-                <MenuItem Header="E_xit" />
+                <MenuItem Header="E_xit"  Click="ExitButton_Clicked"/>
             </MenuItem>
 
             <MenuItem Header="_Edit">

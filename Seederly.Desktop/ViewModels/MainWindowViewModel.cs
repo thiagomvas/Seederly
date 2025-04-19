@@ -32,11 +32,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToWorkspace()
-    {
-        WorkspaceViewModel = new();
-        CurrentPage = WorkspaceViewModel;
-    }
+    private void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel());
 
     [RelayCommand]
     private void NavigateToSettings() => CurrentPage = new SettingsViewModel();
