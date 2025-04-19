@@ -33,7 +33,16 @@
                     <TreeView ItemsSource="{Binding Nodes}"
                               Background="{DynamicResource SeederlyControlBackground}"
                               SelectedItem="{Binding SelectedNode}">
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add Child" 
+                                          Command="{Binding AddChildToSelectedNodeCommand}"/>
+                                <MenuItem Header="Delete" 
+                                          Command="{Binding RemoveSelectedNodeCommand}" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
                         <TreeView.ItemTemplate>
+                            
                             <TreeDataTemplate ItemsSource="{Binding SubNodes}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Text="{Binding Name}"
@@ -46,11 +55,6 @@
                                              Grid.Column="0"
                                              LostFocus="NameTextBox_LostFocus"
                                              VerticalAlignment="Center" />
-                                    <Button Content="+"
-                                            Background="Transparent"
-                                            Command="{Binding CreateNewChild}"
-                                            Grid.Column="1"
-                                            VerticalAlignment="Center" />
                                 </Grid>
                             </TreeDataTemplate>
                         </TreeView.ItemTemplate>

@@ -55,6 +55,57 @@ public partial class WorkspaceViewModel : ViewModelBase
         }
         Nodes.CollectionChanged += OnCollectionChanged;
     }
+    
+    [RelayCommand]
+    private void AddChildToSelectedNode()
+    {
+        if (SelectedNode is null)
+            return;
+
+        var newNode = new Node<ApiEndpointModel>("New Node", new ApiEndpointModel());
+        
+        newNode.PropertyChanged += OnAnyPropertyChanged;
+        if(newNode.Value is not null)
+            newNode.Value.PropertyChanged += OnAnyPropertyChanged;
+        newNode.SubNodes.CollectionChanged += OnCollectionChanged;
+        SelectedNode.SubNodes.Add(newNode);
+        newNode.Parent = SelectedNode;
+        
+        SelectedNode = newNode;
+    }
+    
+    
+    [RelayCommand(CanExecute = nameof(CanRemoveSelectedNode))]
+    private void RemoveSelectedNode()
+    {
+        if (SelectedNode is null)
+            return;
+
+        var parent = SelectedNode.Parent;
+        if (parent is not null)
+        {
+            // Unsubscribe from events
+            SelectedNode.PropertyChanged -= OnAnyPropertyChanged;
+            if (SelectedNode.Value is not null)
+                SelectedNode.Value.PropertyChanged -= OnAnyPropertyChanged;
+            SelectedNode.SubNodes.CollectionChanged -= OnCollectionChanged;
+            
+            parent.SubNodes.Remove(SelectedNode);
+        }
+        else
+        {
+            SelectedNode.PropertyChanged -= OnAnyPropertyChanged;
+            if (SelectedNode.Value is not null)
+                SelectedNode.Value.PropertyChanged -= OnAnyPropertyChanged;
+            SelectedNode.SubNodes.CollectionChanged -= OnCollectionChanged;
+            
+            Nodes.Remove(SelectedNode);
+        }
+
+        SelectedNode = null;
+    }
+
+    private bool CanRemoveSelectedNode() => SelectedNode != null;
 
     [RelayCommand]
     private void RemoveSchemaRow(ApiEndpointModel.HeaderEntry schema)
@@ -133,8 +184,15 @@ public partial class WorkspaceViewModel : ViewModelBase
     private void AddNode()
     {
         var newNode = new Node<ApiEndpointModel>("New Node", new ApiEndpointModel());
-        Nodes.Add(newNode);
+        
+        newNode.PropertyChanged += OnAnyPropertyChanged;
+        if(newNode.Value is not null)
+            newNode.Value.PropertyChanged += OnAnyPropertyChanged;
+        newNode.SubNodes.CollectionChanged += OnCollectionChanged;
+        newNode.Parent = SelectedNode;
+        
         SelectedNode = newNode;
+        Nodes.Add(newNode);
     }
     public void DeserializeWorkspace(string json)
     {
@@ -143,10 +201,15 @@ public partial class WorkspaceViewModel : ViewModelBase
             var model = ApiEndpointModel.FromApiRequest(endpoint.Request);
             model.Schema = new ObservableCollection<ApiEndpointModel.HeaderEntry>(endpoint.Schema.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)));
             var node = new Node<ApiEndpointModel>(endpoint.Name, model);
+            node.SubNodes.CollectionChanged += OnCollectionChanged;
+            node.PropertyChanged += OnAnyPropertyChanged;
+            if (model is not null)
+                model.PropertyChanged += OnAnyPropertyChanged;
 
             foreach (var child in endpoint.Children)
             {
                 node.SubNodes.Add(ConvertEndpointToNode(child));
+                node.SubNodes.Last().Parent = node;
             }
 
             return node;
@@ -264,8 +327,15 @@ public partial class WorkspaceViewModel : ViewModelBase
                 node.PropertyChanged -= OnAnyPropertyChanged;
             }
         }
+
+        SaveWorkspace();
     }
     private void OnAnyPropertyChanged(object? sender, PropertyChangedEventArgs? e)
+    {
+        SaveWorkspace();
+    }
+
+    private void SaveWorkspace()
     {
         if (string.IsNullOrWhiteSpace(WorkspacePath))
             return;
@@ -273,7 +343,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         var json = SerializeWorkspace();
         File.WriteAllText(WorkspacePath, json);
     }
-    
+
     private async Task <ApiResponse> ExecuteRequest(ApiRequest request)
     {
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();

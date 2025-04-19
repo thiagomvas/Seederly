@@ -1,12 +1,14 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Seederly.Desktop.Models;
 
 
 public partial class Node<T> : ObservableObject
 {
-    public ObservableCollection<Node<T>> SubNodes { get; }
+    public ObservableCollection<Node<T>> SubNodes { get; } = new();
+    public Node<T>? Parent { get; set; }
     [ObservableProperty]
     private string _name;
     public bool IsLeaf => SubNodes.Count == 0 && Value is not null;
@@ -35,7 +37,7 @@ public partial class Node<T> : ObservableObject
     
     public void CreateNewChild()
     {
-        var newNode = new Node<T>("New Node");
+        var newNode = new Node<T>("New Node") {Parent = this};
         SubNodes.Add(newNode);
     }
 }
