@@ -17,7 +17,16 @@
                   SelectedItem="{Binding SelectedNode}">
             <TreeView.ItemTemplate>
                 <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-                    <TextBlock Text="{Binding Name}" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding Name}" 
+                                   Grid.Column="0" 
+                                   VerticalAlignment="Center" />
+                        <Button Content="+" 
+                                Background="Transparent" 
+                                Command="{Binding CreateNewChild}" 
+                                Grid.Column="1"
+                                VerticalAlignment="Center" />
+                    </Grid>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
@@ -25,12 +34,7 @@
         <!-- Main content area -->
         <ScrollViewer Grid.Column="1" IsVisible="{Binding SelectedNode.IsLeaf}">
 
-            <Grid Grid.Column="1" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <Grid Margin="10" RowDefinitions="Auto,*,Auto">
 
                 <!-- URL bar and method selector -->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">

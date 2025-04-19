@@ -64,8 +64,10 @@ public partial class WorkspaceViewModel : ViewModelBase
         };
 
 
-        Nodes = new ObservableCollection<Node<ApiEndpointModel>>(requests.Select(r => new Node<ApiEndpointModel>(r.Name,
+        var children = new ObservableCollection<Node<ApiEndpointModel>>(requests.Select(r => new Node<ApiEndpointModel>(r.Name,
             ApiEndpointModel.FromApiRequest(r))));
+        var parent = new Node<ApiEndpointModel>("Test Endpoints", children);
+        Nodes = new ObservableCollection<Node<ApiEndpointModel>> { parent };
 
         SelectedNode = Nodes.FirstOrDefault();
     }
@@ -133,5 +135,16 @@ public partial class WorkspaceViewModel : ViewModelBase
         var body = _fakeRequestFactory.Generate(map).ToJsonString(new() { WriteIndented = true });
 
         SelectedNode.Value.Body = body;
+    }
+    
+    [RelayCommand]
+    private void AddNode()
+    {
+        if (SelectedNode == null)
+            return;
+
+        var newNode = new Node<ApiEndpointModel>("New Endpoint", new ApiEndpointModel());
+        SelectedNode.SubNodes.Add(newNode);
+        SelectedNode = newNode;
     }
 }

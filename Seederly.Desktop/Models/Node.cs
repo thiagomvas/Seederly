@@ -27,4 +27,10 @@ public class Node<T>
         Value = value;
         SubNodes = new ObservableCollection<Node<T>>();
     }
+    
+    public void CreateNewChild()
+    {
+        var newNode = new Node<T>("New Node");
+        SubNodes.Add(newNode);
+    }
 }
