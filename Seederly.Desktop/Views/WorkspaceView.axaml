@@ -154,7 +154,7 @@
                     <!-- Response Tab -->
                     <TabItem Header="Response">
                         <StackPanel>
-                            <TextBlock Text="{Binding SelectedNode.Value.LastResponse.StatusCode}" />
+                            <TextBlock Text="{Binding LastResponseStatus}" />
                             <DataGrid Margin="0,10" AutoGenerateColumns="False"
                                       GridLinesVisibility="All"
                                       IsReadOnly="True"
@@ -164,7 +164,7 @@
                                     <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="200"
+                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0"
                                      VerticalAlignment="Top"
                                      IsReadOnly="True"
                                      Text="{Binding SelectedNode.Value.LastResponse.Content, FallbackValue=''}" />

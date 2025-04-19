@@ -7,7 +7,7 @@
         x:Class="Seederly.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Seederly.Desktop"
+        Title="Seederly - A Smarter Api Tester"
         Background="#0D1B1E">
 
     <Design.DataContext>
@@ -37,18 +37,20 @@
                 <TextBlock Text="Seederly" 
                            Padding="5 0"/>
                 <TextBlock Text="|"/>
-                <TextBlock Text="Workspace Name" 
-                           Padding="5 0"/>
-                <TextBlock Text="|"/>
-                <TextBlock Text="Status: Saved" 
-                           Padding="5 0"/>
+                <TextBlock Padding="5 0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Workspace: {0}">
+                            <Binding Path="WorkspaceViewModel.WorkspaceName"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </StackPanel>
             <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal"
                         Spacing="2">
-                <TextBlock Text="Request" 
+                <TextBlock Text="{Binding WorkspaceViewModel.LastRequestCalled}" 
                            Padding="5 0"/>
                 <TextBlock Text="|"/>
-                <TextBlock Text="Status Code - Status Message" 
+                <TextBlock Text="{Binding WorkspaceViewModel.LastResponseStatus}" 
                            Padding="5 0"/>
             </StackPanel>
         </Grid>

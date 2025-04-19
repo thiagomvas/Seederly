@@ -8,7 +8,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private ViewModelBase currentPage;
     
-    public WorkspaceViewModel WorkspaceViewModel ;
+    [ObservableProperty]
+    private WorkspaceViewModel _workspaceViewModel ;
 
     public MainWindowViewModel()
     {

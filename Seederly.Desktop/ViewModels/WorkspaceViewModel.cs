@@ -25,6 +25,8 @@ public partial class WorkspaceViewModel : ViewModelBase
     [ObservableProperty] private Node<ApiEndpointModel>? _selectedNode;
     [ObservableProperty] private string? _workspacePath;
     [ObservableProperty] private string _workspaceName = "New Workspace";
+    [ObservableProperty] private string _lastResponseStatus = string.Empty;
+    [ObservableProperty] private string _lastRequestCalled = string.Empty;
 
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
@@ -90,10 +92,18 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         var request = SelectedNode.Value.ToApiRequest();
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
         var result = await _apiClient.ExecuteAsync(request);
 
+        stopwatch.Stop();
+
         SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
+        LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)";
+        LastRequestCalled = SelectedNode.Name;
     }
+
 
     [RelayCommand]
     private void GenerateBody()
