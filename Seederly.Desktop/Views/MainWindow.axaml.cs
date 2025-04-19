@@ -70,4 +70,27 @@ public partial class MainWindow : Window
             await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
         }
     }
+
+    private void SaveFileAsButton_Clicked(object? sender, RoutedEventArgs e)
+    {
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        if (_viewModel is null)
+            _viewModel = (MainWindowViewModel)DataContext!;
+
+        // Start async operation to open the dialog.
+        var file = topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Workspace"
+        });
+
+        if (file is not null)
+        {
+            _viewModel.WorkspaceViewModel.WorkspacePath = file.Result.Path.LocalPath;
+            using var stream = file.Result.OpenWriteAsync().Result;
+            using var streamWriter = new StreamWriter(stream);
+            streamWriter.WriteLine(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+        }
+    }
 }
