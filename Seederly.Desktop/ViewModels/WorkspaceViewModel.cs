@@ -112,11 +112,8 @@ public partial class WorkspaceViewModel : ViewModelBase
     [RelayCommand]
     private void AddNode()
     {
-        if (SelectedNode == null)
-            return;
-
-        var newNode = new Node<ApiEndpointModel>("New Endpoint", new ApiEndpointModel());
-        SelectedNode.SubNodes.Add(newNode);
+        var newNode = new Node<ApiEndpointModel>("New Node", new ApiEndpointModel());
+        Nodes.Add(newNode);
         SelectedNode = newNode;
     }
     public void DeserializeWorkspace(string json)
@@ -124,6 +121,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
         {
             var model = ApiEndpointModel.FromApiRequest(endpoint.Request);
+            model.Schema = new ObservableCollection<ApiEndpointModel.HeaderEntry>(endpoint.Schema.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)));
             var node = new Node<ApiEndpointModel>(endpoint.Name, model);
 
             foreach (var child in endpoint.Children)
@@ -158,7 +156,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             {
                 Name = node.Name,
                 Request = node.Value?.ToApiRequest() ?? new ApiRequest(),
-                Children = node.SubNodes.Select(ConvertNodeToEndpoint).ToList()
+                Children = node.SubNodes.Select(ConvertNodeToEndpoint).ToList(),
+                Schema = node.Value?.Schema.ToDictionary(x => x.Key, x => x.Value) ?? new Dictionary<string, string>()
             };
 
             return endpoint;

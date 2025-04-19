@@ -12,32 +12,35 @@
             <ColumnDefinition Width="*" />   <!-- Main content -->
         </Grid.ColumnDefinitions>
 
-        <TreeView ItemsSource="{Binding Nodes}"
-                  Background="{DynamicResource SeederlyControlBackground}"
-                  SelectedItem="{Binding SelectedNode}">
-            <TreeView.ItemTemplate>
-                <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="{Binding Name}"
-                                   IsVisible="{Binding !IsEditing}"
-                                   Grid.Column="0" 
-                                   DoubleTapped="NameTextBlock_OnDoubleTapped"
-                                   VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Name}"
-                                 IsVisible="{Binding IsEditing}"
-                                 Grid.Column="0" 
-                                 LostFocus="NameTextBox_LostFocus"
-                                 VerticalAlignment="Center"/>
-                        <Button Content="+" 
-                                Background="Transparent" 
-                                Command="{Binding CreateNewChild}" 
-                                Grid.Column="1"
-                                VerticalAlignment="Center" />
-                    </Grid>
-                </TreeDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <StackPanel>
 
+            <TreeView ItemsSource="{Binding Nodes}"
+                      Background="{DynamicResource SeederlyControlBackground}"
+                      SelectedItem="{Binding SelectedNode}">
+                <TreeView.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Name}"
+                                       IsVisible="{Binding !IsEditing}"
+                                       Grid.Column="0"
+                                       DoubleTapped="NameTextBlock_OnDoubleTapped"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding Name}"
+                                     IsVisible="{Binding IsEditing}"
+                                     Grid.Column="0"
+                                     LostFocus="NameTextBox_LostFocus"
+                                     VerticalAlignment="Center" />
+                            <Button Content="+"
+                                    Background="Transparent"
+                                    Command="{Binding CreateNewChild}"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center" />
+                        </Grid>
+                    </TreeDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <Button Content="Add Node" Command="{Binding AddNodeCommand}" Margin="10" />
+        </StackPanel>
         <!-- Main content area -->
         <ScrollViewer Grid.Column="1" IsVisible="{Binding SelectedNode.IsLeaf}">
 

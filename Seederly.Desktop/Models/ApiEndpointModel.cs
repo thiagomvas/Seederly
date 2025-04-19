@@ -11,10 +11,6 @@ namespace Seederly.Desktop.Models;
 
 public partial class ApiEndpointModel : ViewModelBase
 {
-    
-    [ObservableProperty]
-    private string _name = string.Empty;
-    
     [ObservableProperty]
     private int _method;
     
@@ -37,7 +33,6 @@ public partial class ApiEndpointModel : ViewModelBase
     {
         return new ApiEndpointModel
         {
-            Name = request.Name,
             Method = FromMethod(request.Method),
             Url = request.Url,
             Body = request.Body,
@@ -74,7 +69,6 @@ public partial class ApiEndpointModel : ViewModelBase
     {
         var request = new ApiRequest
         {
-            Name = Name,
             Method = MapMethod(Method),
             Url = Url,
             Body = Body,
