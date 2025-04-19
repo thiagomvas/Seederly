@@ -2,7 +2,17 @@ using Bogus.DataSets;
 
 namespace Seederly.Core;
 
-public static class Extensions{
+public static class Extensions
+{
+    /// <summary>
+    /// Generates a random password that is 6 - 10 characters long, with at least one lowercase letter, uppercase letter, number and special character.
+    /// </summary>
+    /// <param name="internet">
+    /// The <see cref="Internet"/> instance to use for generating the password.
+    /// </param>
+    /// <returns>
+    /// A random password string.
+    /// </returns>
     public static string PasswordCustom(this Internet internet){
       
         var r = internet.Random;

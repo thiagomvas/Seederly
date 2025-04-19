@@ -3,6 +3,9 @@ using System.Text;
 
 namespace Seederly.Core;
 
+/// <summary>
+/// Client responsible for executing API requests.
+/// </summary>
 public class ApiRequestExecutor
 {
     private readonly HttpClient _httpClient;
@@ -12,6 +15,11 @@ public class ApiRequestExecutor
         _httpClient = httpClient;
     }
 
+    /// <summary>
+    /// Executes the given API request and returns the response.
+    /// </summary>
+    /// <param name="request">The API request to execute.</param>
+    /// <returns>A <see cref="ApiResponse"/> containing the returned data.</returns>
     public async Task<ApiResponse> ExecuteAsync(ApiRequest request)
     {
         var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url);
