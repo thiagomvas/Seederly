@@ -14,6 +14,9 @@ public partial class Node<T> : ObservableObject
     public bool IsLeaf => SubNodes.Count == 0 && Value is not null;
     public T? Value { get; set; }
 
+    [ObservableProperty] private int _amount = 1;
+    [ObservableProperty] private bool _generateEveryRequest = false;
+    
     [ObservableProperty]
     private bool _isEditing;
         

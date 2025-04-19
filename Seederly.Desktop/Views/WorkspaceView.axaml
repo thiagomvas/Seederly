@@ -83,6 +83,8 @@
                         <ComboBoxItem Content="DELETE" />
                     </ComboBox>
                     <TextBox Width="500" Margin="10,0" Text="{Binding SelectedNode.Value.Url}" />
+                    <TextBox Width="60" Margin="10,0" Text="{Binding SelectedNode.Amount}" />
+                    <CheckBox Content="Generate Every Request" IsChecked="{Binding SelectedNode.GenerateEveryRequest}" Margin="10,0" />
                     <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
                 </StackPanel>
 

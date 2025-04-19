@@ -37,25 +37,26 @@ public partial class WorkspaceViewModel : ViewModelBase
         _workspacePath = workspacePath;
         if (string.IsNullOrWhiteSpace(workspacePath))
             return;
-        
+
         var json = File.ReadAllText(workspacePath);
         DeserializeWorkspace(json);
-        SelectedNode = Nodes.FirstOrDefault(); 
+        SelectedNode = Nodes.FirstOrDefault();
     }
 
     public WorkspaceViewModel()
     {
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
-        
+
         foreach (var node in Nodes)
         {
             node.PropertyChanged += OnAnyPropertyChanged;
-            if(node.Value is not null)
+            if (node.Value is not null)
                 node.Value.PropertyChanged += OnAnyPropertyChanged;
         }
+
         Nodes.CollectionChanged += OnCollectionChanged;
     }
-    
+
     [RelayCommand]
     private void AddChildToSelectedNode()
     {
@@ -63,18 +64,18 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         var newNode = new Node<ApiEndpointModel>("New Node", new ApiEndpointModel());
-        
+
         newNode.PropertyChanged += OnAnyPropertyChanged;
-        if(newNode.Value is not null)
+        if (newNode.Value is not null)
             newNode.Value.PropertyChanged += OnAnyPropertyChanged;
         newNode.SubNodes.CollectionChanged += OnCollectionChanged;
         SelectedNode.SubNodes.Add(newNode);
         newNode.Parent = SelectedNode;
-        
+
         SelectedNode = newNode;
     }
-    
-    
+
+
     [RelayCommand(CanExecute = nameof(CanRemoveSelectedNode))]
     private void RemoveSelectedNode()
     {
@@ -89,7 +90,7 @@ public partial class WorkspaceViewModel : ViewModelBase
             if (SelectedNode.Value is not null)
                 SelectedNode.Value.PropertyChanged -= OnAnyPropertyChanged;
             SelectedNode.SubNodes.CollectionChanged -= OnCollectionChanged;
-            
+
             parent.SubNodes.Remove(SelectedNode);
         }
         else
@@ -98,7 +99,7 @@ public partial class WorkspaceViewModel : ViewModelBase
             if (SelectedNode.Value is not null)
                 SelectedNode.Value.PropertyChanged -= OnAnyPropertyChanged;
             SelectedNode.SubNodes.CollectionChanged -= OnCollectionChanged;
-            
+
             Nodes.Remove(SelectedNode);
         }
 
@@ -154,14 +155,25 @@ public partial class WorkspaceViewModel : ViewModelBase
         var request = SelectedNode.Value.ToApiRequest();
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        for (int i = 0; i < SelectedNode.Amount; i++)
+        {
+            if (SelectedNode.GenerateEveryRequest)
+            {
+                Dictionary<string, string> schema = SelectedNode.Value.Schema
+                    .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value))
+                    .ToDictionary(x => x.Key, x => x.Value);
+                var body = _fakeRequestFactory.Generate(schema).ToJsonString(new() { WriteIndented = true });
+                request.Body = body;
+            }
+            
+            var result = await _apiClient.ExecuteAsync(request);
 
-        var result = await _apiClient.ExecuteAsync(request);
+            stopwatch.Stop();
 
-        stopwatch.Stop();
-
-        SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
-        LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)";
-        LastRequestCalled = SelectedNode.Name;
+            SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
+            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)";
+            LastRequestCalled = SelectedNode.Name;
+        }
     }
 
 
@@ -179,27 +191,29 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         SelectedNode.Value.Body = body;
     }
-    
+
     [RelayCommand]
     private void AddNode()
     {
         var newNode = new Node<ApiEndpointModel>("New Node", new ApiEndpointModel());
-        
+
         newNode.PropertyChanged += OnAnyPropertyChanged;
-        if(newNode.Value is not null)
+        if (newNode.Value is not null)
             newNode.Value.PropertyChanged += OnAnyPropertyChanged;
         newNode.SubNodes.CollectionChanged += OnCollectionChanged;
         newNode.Parent = SelectedNode;
-        
+
         SelectedNode = newNode;
         Nodes.Add(newNode);
     }
+
     public void DeserializeWorkspace(string json)
     {
         Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
         {
             var model = ApiEndpointModel.FromApiRequest(endpoint.Request);
-            model.Schema = new ObservableCollection<ApiEndpointModel.HeaderEntry>(endpoint.Schema.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)));
+            model.Schema = new ObservableCollection<ApiEndpointModel.HeaderEntry>(
+                endpoint.Schema.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)));
             var node = new Node<ApiEndpointModel>(endpoint.Name, model);
             node.SubNodes.CollectionChanged += OnCollectionChanged;
             node.PropertyChanged += OnAnyPropertyChanged;
@@ -251,7 +265,7 @@ public partial class WorkspaceViewModel : ViewModelBase
             Path = WorkspacePath,
             Endpoints = Nodes.Select(ConvertNodeToEndpoint).ToList()
         };
-        
+
 
         return JsonSerializer.Serialize(workspace, new JsonSerializerOptions
         {
@@ -284,7 +298,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             else
                 statusCodeCounts[result.StatusCode] = 1;
 
-            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({doneCount}/{total}) ({stopwatch.ElapsedMilliseconds} ms)";
+            LastResponseStatus =
+                $"{(int)result.StatusCode} - {result.StatusCode} ({doneCount}/{total}) ({stopwatch.ElapsedMilliseconds} ms)";
         }
 
         stopwatch.Stop();
@@ -305,9 +320,10 @@ public partial class WorkspaceViewModel : ViewModelBase
             if (node.Value is not null)
                 node.Value.PropertyChanged -= OnAnyPropertyChanged;
         }
-        
+
         Nodes.CollectionChanged -= OnCollectionChanged;
     }
+
     private void OnCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -315,7 +331,7 @@ public partial class WorkspaceViewModel : ViewModelBase
             foreach (Node<ApiEndpointModel> node in e.NewItems)
             {
                 node.PropertyChanged += OnAnyPropertyChanged;
-                if(node.Value is not null)
+                if (node.Value is not null)
                     node.Value.PropertyChanged += OnAnyPropertyChanged;
             }
         }
@@ -330,6 +346,7 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         SaveWorkspace();
     }
+
     private void OnAnyPropertyChanged(object? sender, PropertyChangedEventArgs? e)
     {
         SaveWorkspace();
@@ -344,11 +361,9 @@ public partial class WorkspaceViewModel : ViewModelBase
         File.WriteAllText(WorkspacePath, json);
     }
 
-    private async Task <ApiResponse> ExecuteRequest(ApiRequest request)
+    private async Task<ApiResponse> ExecuteRequest(ApiRequest request)
     {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var result = await _apiClient.ExecuteAsync(request);
-        stopwatch.Stop();
 
         return result;
     }
