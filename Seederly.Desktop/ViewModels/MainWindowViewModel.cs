@@ -7,14 +7,21 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty]
     private ViewModelBase currentPage;
+    
+    public WorkspaceViewModel WorkspaceViewModel ;
 
     public MainWindowViewModel()
     {
-        CurrentPage = new WorkspaceViewModel();
+        WorkspaceViewModel = new();
+        NavigateToWorkspace();
     }
 
     [RelayCommand]
-    private void NavigateToWorkspace() => CurrentPage = new WorkspaceViewModel();
+    private void NavigateToWorkspace()
+    {
+        WorkspaceViewModel = new();
+        CurrentPage = WorkspaceViewModel;
+    }
 
     [RelayCommand]
     private void NavigateToSettings() => CurrentPage = new SettingsViewModel();

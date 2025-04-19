@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -21,6 +23,8 @@ public partial class WorkspaceViewModel : ViewModelBase
     public ObservableCollection<string> AvailableDataTypes { get; } = new();
 
     [ObservableProperty] private Node<ApiEndpointModel>? _selectedNode;
+    [ObservableProperty] private string? _workspacePath;
+    [ObservableProperty] private string _workspaceName = "New Workspace";
 
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
@@ -147,4 +151,33 @@ public partial class WorkspaceViewModel : ViewModelBase
         SelectedNode.SubNodes.Add(newNode);
         SelectedNode = newNode;
     }
+
+    public string SerializeWorkspace()
+    {
+        ApiEndpoint ConvertNodeToEndpoint(Node<ApiEndpointModel> node)
+        {
+            var endpoint = new ApiEndpoint
+            {
+                Name = node.Name,
+                Request = node.Value?.ToApiRequest() ?? new ApiRequest(),
+                Children = node.SubNodes.Select(ConvertNodeToEndpoint).ToList()
+            };
+
+            return endpoint;
+        }
+
+        var workspace = new Workspace(WorkspaceName)
+        {
+            Path = WorkspacePath,
+            Endpoints = Nodes.Select(ConvertNodeToEndpoint).ToList()
+        };
+        
+
+        return JsonSerializer.Serialize(workspace, new JsonSerializerOptions
+        {
+            WriteIndented = true // Optional, for readability
+        });
+    }
+
+
 }

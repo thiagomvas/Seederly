@@ -17,11 +17,57 @@
     </Design.DataContext>
 
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Workspace" />
+                <MenuItem Header="_Open Workspace..." Click="OpenFileButton_Clicked"/>
+                <MenuItem Header="_Save Workspace" Click="SaveFileButton_Clicked"/>
+                <MenuItem Header="Save Workspace _As..." />
+                <Separator />
+                <MenuItem Header="_Import..." />
+                <MenuItem Header="_Export..." />
+                <Separator />
+                <MenuItem Header="E_xit" />
+            </MenuItem>
+
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" />
+                <MenuItem Header="_Redo" />
+                <Separator />
+                <MenuItem Header="Cut" />
+                <MenuItem Header="Copy" />
+                <MenuItem Header="Paste" />
+                <MenuItem Header="Delete" />
+            </MenuItem>
+
+            <MenuItem Header="_View">
+                <MenuItem Header="Toggle Sidebar" />
+                <MenuItem Header="Toggle Console" />
+                <MenuItem Header="Dark Mode" />
+            </MenuItem>
+
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Send All Requests" />
+                <MenuItem Header="Validate Requests" />
+                <MenuItem Header="Generate Dummy Data" />
+            </MenuItem>
+
+            <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
+            <MenuItem Header="_Settings" Command="{Binding NavigateToSettingsCommand}" />
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="Documentation" />
+                <MenuItem Header="Report a Bug" />
+                <MenuItem Header="About Seederly" />
+            </MenuItem>
+        </Menu>
+
+        <!--
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="10">
             <Button Content="Workspace" Command="{Binding NavigateToWorkspaceCommand}" Margin="0,0,10,0"/>
             <Button Content="Settings" Command="{Binding NavigateToSettingsCommand}"/>
         </StackPanel>
-        
+        -->
 
         <ContentControl Content="{Binding CurrentPage}"/>
     </DockPanel>
