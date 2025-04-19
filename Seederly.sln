@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Core", "Seederly.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Cli", "Seederly.Cli\Seederly.Cli.csproj", "{F3C63BF1-E5E9-4573-BB69-4276027C3578}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Desktop", "Seederly.Desktop\Seederly.Desktop.csproj", "{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3C63BF1-E5E9-4573-BB69-4276027C3578}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

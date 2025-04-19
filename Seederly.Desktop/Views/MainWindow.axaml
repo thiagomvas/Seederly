@@ -1,0 +1,88 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Seederly.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Seederly.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Seederly - A Smarter Api Tester"
+        Background="#0D1B1E">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom"
+              Background="{DynamicResource SeederlyControlBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+            </Grid.RowDefinitions>
+            <Border Grid.ColumnSpan="3" Grid.Row="0" Background="{DynamicResource SeederlyPrimaryColor}"/>
+            
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        Spacing="2">
+                <TextBlock Text="Seederly" 
+                           Padding="5 0"/>
+                <TextBlock Text="|"/>
+                <TextBlock Padding="5 0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Workspace: {0}">
+                            <Binding Path="WorkspaceViewModel.WorkspaceName"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal"
+                        Spacing="2">
+                <TextBlock Text="{Binding WorkspaceViewModel.LastRequestCalled}" 
+                           Padding="5 0"/>
+                <TextBlock Text="|"/>
+                <TextBlock Text="{Binding WorkspaceViewModel.LastResponseStatus}" 
+                           Padding="5 0"/>
+            </StackPanel>
+        </Grid>
+        <Menu DockPanel.Dock="Top" Background="{DynamicResource SeederlyAccentBackground}">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Workspace" Command="{Binding NavigateToWorkspaceCommand}"/>
+                <MenuItem Header="_Open Workspace..." Click="OpenFileButton_Clicked"/>
+                <MenuItem Header="_Save Workspace" Click="SaveFileButton_Clicked"/>
+                <MenuItem Header="Save Workspace _As..." Click="SaveFileAsButton_Clicked" />
+                <Separator />
+                <MenuItem Header="E_xit"  Click="ExitButton_Clicked"/>
+            </MenuItem>
+
+            <MenuItem Header="_View">
+            </MenuItem>
+
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Send All Requests" Command="{Binding WorkspaceViewModel.ExecuteAllRequestsCommand}"/>
+            </MenuItem>
+
+            <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
+            <MenuItem Header="_Settings" Command="{Binding NavigateToSettingsCommand}" />
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="Documentation" />
+                <MenuItem Header="Report a Bug" Click="ReportBugButton_Clicked"/>
+                <MenuItem Header="About Seederly" />
+            </MenuItem>
+        </Menu>
+
+        <ContentControl Content="{Binding CurrentPage}"/>
+        
+    </DockPanel>
+
+</Window>

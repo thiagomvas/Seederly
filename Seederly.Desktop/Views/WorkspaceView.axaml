@@ -1,0 +1,185 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Seederly.Desktop.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Seederly.Desktop.Views.WorkspaceView"
+             x:DataType="vm:WorkspaceViewModel">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" /> <!-- Sidebar -->
+            <ColumnDefinition Width="*" />   <!-- Main content -->
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Background="{DynamicResource SeederlyControlBackground}">
+            <TextBox Text="{Binding WorkspaceName}" Watermark="Workspace Name"/>
+            <Grid Margin="8" 
+                  ColumnDefinitions="Auto,*" 
+                  VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="API Explorer"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0" />
+                <Separator Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Margin="0,8,0,8" />
+            </Grid>
+
+            <ScrollViewer>
+                <StackPanel>
+                    <TreeView ItemsSource="{Binding Nodes}"
+                              Background="{DynamicResource SeederlyControlBackground}"
+                              SelectedItem="{Binding SelectedNode}">
+                        <TreeView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add Child" 
+                                          Command="{Binding AddChildToSelectedNodeCommand}"/>
+                                <MenuItem Header="Delete" 
+                                          Command="{Binding RemoveSelectedNodeCommand}" />
+                            </ContextMenu>
+                        </TreeView.ContextMenu>
+                        <TreeView.ItemTemplate>
+                            
+                            <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Name}"
+                                               IsVisible="{Binding !IsEditing}"
+                                               Grid.Column="0"
+                                               DoubleTapped="NameTextBlock_OnDoubleTapped"
+                                               VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding Name}"
+                                             IsVisible="{Binding IsEditing}"
+                                             Grid.Column="0"
+                                             LostFocus="NameTextBox_LostFocus"
+                                             VerticalAlignment="Center" />
+                                </Grid>
+                            </TreeDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                    <Button Background="Transparent"
+                            Command="{Binding AddNodeCommand}"
+                            HorizontalAlignment="Stretch">
+                        <TextBlock Text="+"
+                                   HorizontalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+        <!-- Main content area -->
+        <ScrollViewer Grid.Column="1" IsVisible="{Binding HasContent}">
+
+            <Grid Margin="10" RowDefinitions="Auto,*,Auto">
+
+                <!-- URL bar and method selector -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <ComboBox Width="100" SelectedIndex="{Binding SelectedNode.Value.Method}">
+                        <!-- Bind to the HTTP method enum values -->
+                        <ComboBoxItem Content="GET" />
+                        <ComboBoxItem Content="POST" />
+                        <ComboBoxItem Content="PUT" />
+                        <ComboBoxItem Content="DELETE" />
+                    </ComboBox>
+                    <TextBox Width="500" Margin="10,0" Text="{Binding SelectedNode.Value.Url}" />
+                    <TextBox Width="60" Margin="10,0" Text="{Binding SelectedNode.Amount}" />
+                    <CheckBox Content="Generate Every Request" IsChecked="{Binding SelectedNode.GenerateEveryRequest}" Margin="10,0" />
+                    <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
+                </StackPanel>
+
+                <!-- Tabs: Headers and Body -->
+                <TabControl Grid.Row="1">
+                    <!-- Headers Tab -->
+                    <TabItem Header="Headers">
+                        <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                                  GridLinesVisibility="All"
+                                  IsReadOnly="False"
+                                  ItemsSource="{Binding SelectedNode.Value.Headers}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+
+                    <!-- Body Tab -->
+                    <TabItem Header="Body">
+                        <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="200"
+                                 VerticalAlignment="Top"
+                                 Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                    </TabItem>
+                    <!-- Schema Tab -->
+                    <TabItem Header="Schema">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <Button Content="Add Column" Command="{Binding AddSchemaColumnCommand}" Width="100"
+                                        Margin="0,0,0,10" />
+
+                                <DataGrid AutoGenerateColumns="False"
+                                          IsReadOnly="False"
+                                          ItemsSource="{Binding SelectedNode.Value.Schema}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Column Name" Binding="{Binding Key}" Width="*" />
+                                        <DataGridTemplateColumn Header="Data Type" Width="*">
+                                            <DataGridTemplateColumn.CellEditingTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox HorizontalAlignment="Stretch"
+                                                              ItemsSource="{Binding ((vm:WorkspaceViewModel)DataContext).AvailableDataTypes, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                              SelectedItem="{Binding Value, Mode=TwoWay}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellEditingTemplate>
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Value}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Width="auto">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="Delete"
+                                                            Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveSchemaRowCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                            CommandParameter="{Binding}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Button Content="Generate Body" Command="{Binding GenerateBodyCommand}" Width="100"
+                                        Margin="0,0,0,10" />
+                                <TextBlock FontSize="24" Text="Body" />
+                                <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="500"
+                                         VerticalAlignment="Top"
+                                         IsReadOnly="False"
+                                         Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- Response Tab -->
+                    <TabItem Header="Response">
+                        <StackPanel>
+                            <TextBlock Text="{Binding LastResponseStatus}" />
+                            <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                                      GridLinesVisibility="All"
+                                      IsReadOnly="True"
+                                      ItemsSource="{Binding SelectedNode.Value.LastResponse.Headers}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                                    <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0"
+                                     VerticalAlignment="Top"
+                                     IsReadOnly="True"
+                                     Text="{Binding SelectedNode.Value.LastResponse.Content, FallbackValue=''}" />
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

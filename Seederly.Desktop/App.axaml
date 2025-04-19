@@ -1,0 +1,106 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Seederly.Desktop.App"
+             xmlns:local="using:Seederly.Desktop"
+             RequestedThemeVariant="Default">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="SeederlyPrimaryColor">#4CAF50</Color>
+            <Color x:Key="SeederlyPrimaryHover">#66BB6A</Color>
+            <Color x:Key="SeederlyPrimaryPressed">#388E3C</Color>
+
+            <Color x:Key="SeederlySecondaryColor">#37474F</Color>
+            <Color x:Key="SeederlySecondaryHover">#455A64</Color>
+            <Color x:Key="SeederlySecondaryPressed">#263238</Color>
+
+            <Color x:Key="SeederlyDangerColor">#EF5350</Color>
+            <Color x:Key="SeederlyDangerHover">#E57373</Color>
+            <Color x:Key="SeederlyDangerPressed">#C62828</Color>
+
+            <Color x:Key="SeederlyBackground">#0D1B1E</Color>
+            <Color x:Key="SeederlyAccentBackground">#1F2D2E</Color>
+            <Color x:Key="SeederlyForeground">#E0F2F1</Color>
+            <Color x:Key="SeederlyControlBackground">#1F2D2E</Color>
+            <Color x:Key="SeederlyBorder">#2E3C3D</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+        <!-- TextBlock -->
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="FontFamily" Value="Inter" />
+        </Style>
+
+        <!-- TextBox -->
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{DynamicResource SeederlyControlBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SeederlyBorder}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6" />
+        </Style>
+
+        <!-- Base Button Style -->
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontFamily" Value="Inter" />
+        </Style>
+
+        <!-- Primary Button -->
+        <Style Selector="Button.seederly-primary">
+            <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.seederly-primary:PointerOver">
+            <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryHover}" />
+        </Style>
+        <Style Selector="Button.seederly-primary:Pressed">
+            <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryPressed}" />
+        </Style>
+
+        <!-- Secondary Button -->
+        <Style Selector="Button.seederly-secondary">
+            <Setter Property="Background" Value="{DynamicResource SeederlySecondaryColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.seederly-secondary:PointerOver">
+            <Setter Property="Background" Value="{DynamicResource SeederlySecondaryHover}" />
+        </Style>
+        <Style Selector="Button.seederly-secondary:Pressed">
+            <Setter Property="Background" Value="{DynamicResource SeederlySecondaryPressed}" />
+        </Style>
+
+        <!-- Danger Button -->
+        <Style Selector="Button.seederly-danger">
+            <Setter Property="Background" Value="{DynamicResource SeederlyDangerColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyBackground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.seederly-danger:PointerOver">
+            <Setter Property="Background" Value="{DynamicResource SeederlyDangerHover}" />
+        </Style>
+        <Style Selector="Button.seederly-danger:Pressed">
+            <Setter Property="Background" Value="{DynamicResource SeederlyDangerPressed}" />
+        </Style>
+
+        <!-- Window -->
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{DynamicResource SeederlyBackground}" />
+            <Setter Property="FontFamily" Value="Inter" />
+        </Style>
+    </Application.Styles>
+</Application>

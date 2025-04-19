@@ -5,6 +5,9 @@ using Bogus;
 
 namespace Seederly.Core;
 
+/// <summary>
+/// A factory class for generating fake API requests.
+/// </summary>
 public class FakeRequestFactory
 {
     private readonly Faker _faker = new();
@@ -88,12 +91,20 @@ public class FakeRequestFactory
         };
     }
 
-    public ApiRequest GenerateRequest(string name, string url, HttpMethod method,
+    /// <summary>
+    /// Generates a fake API request based on the provided URL, HTTP method, and mapping.
+    /// </summary>
+    /// <param name="url">The request URL</param>
+    /// <param name="method">The HTTP Method</param>
+    /// <param name="map">The mapping used to generate a body.</param>
+    /// <returns>
+    /// A <see cref="ApiRequest"/> object containing the generated request.
+    /// </returns>
+    public ApiRequest GenerateRequest(string url, HttpMethod method,
         Dictionary<string, string> map)
     {
         var request = new ApiRequest
         {
-            Name = name,
             Url = url,
             Method = method,
             Body = Generate(map).ToJsonString(new JsonSerializerOptions { WriteIndented = true }),
@@ -102,6 +113,14 @@ public class FakeRequestFactory
 
         return request;
     }
+    
+    /// <summary>
+    /// Generates a JSON object based on the provided mapping.
+    /// </summary>
+    /// <param name="map">The mapping used to generate the object</param>
+    /// <returns>
+    /// A <see cref="JsonObject"/> containing the generated JSON object.
+    /// </returns>
     public JsonObject Generate(Dictionary<string, string> map)
     {
         var jsonObject = new JsonObject();
