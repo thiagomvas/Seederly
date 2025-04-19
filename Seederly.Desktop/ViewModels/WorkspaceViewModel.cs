@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -30,7 +31,7 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
-    public WorkspaceViewModel(string workspacePath) : base()
+    public WorkspaceViewModel(string workspacePath) : this()
     {
         _workspacePath = workspacePath;
         if (string.IsNullOrWhiteSpace(workspacePath))
@@ -38,13 +39,20 @@ public partial class WorkspaceViewModel : ViewModelBase
         
         var json = File.ReadAllText(workspacePath);
         DeserializeWorkspace(json);
-        SelectedNode = Nodes.FirstOrDefault();
-        AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
+        SelectedNode = Nodes.FirstOrDefault(); 
     }
 
     public WorkspaceViewModel()
     {
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
+        
+        foreach (var node in Nodes)
+        {
+            node.PropertyChanged += OnAnyPropertyChanged;
+            if(node.Value is not null)
+                node.Value.PropertyChanged += OnAnyPropertyChanged;
+        }
+        Nodes.CollectionChanged += OnCollectionChanged;
     }
 
     [RelayCommand]
@@ -187,5 +195,43 @@ public partial class WorkspaceViewModel : ViewModelBase
         });
     }
 
+    public override void Dispose()
+    {
+        foreach (var node in Nodes)
+        {
+            node.PropertyChanged -= OnAnyPropertyChanged;
+            if (node.Value is not null)
+                node.Value.PropertyChanged -= OnAnyPropertyChanged;
+        }
+        
+        Nodes.CollectionChanged -= OnCollectionChanged;
+    }
+    private void OnCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (Node<ApiEndpointModel> node in e.NewItems)
+            {
+                node.PropertyChanged += OnAnyPropertyChanged;
+                if(node.Value is not null)
+                    node.Value.PropertyChanged += OnAnyPropertyChanged;
+            }
+        }
 
+        if (e.OldItems != null)
+        {
+            foreach (Node<ApiEndpointModel> node in e.OldItems)
+            {
+                node.PropertyChanged -= OnAnyPropertyChanged;
+            }
+        }
+    }
+    private void OnAnyPropertyChanged(object? sender, PropertyChangedEventArgs? e)
+    {
+        if (string.IsNullOrWhiteSpace(WorkspacePath))
+            return;
+
+        var json = SerializeWorkspace();
+        File.WriteAllText(WorkspacePath, json);
+    }
 }

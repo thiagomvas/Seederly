@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Seederly.Desktop.ViewModels;
@@ -15,6 +16,19 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         WorkspaceViewModel = new();
         NavigateToWorkspace();
+    }
+
+    [RelayCommand]
+    private void SetViewModel(ViewModelBase vm)
+    {
+        if (vm == null)
+            throw new ArgumentNullException(nameof(vm));
+        CurrentPage.Dispose();
+        
+        if(vm is WorkspaceViewModel workspaceViewModel)
+            WorkspaceViewModel = workspaceViewModel;
+
+        CurrentPage = vm;
     }
 
     [RelayCommand]

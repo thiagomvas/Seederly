@@ -9,7 +9,7 @@ using Seederly.Desktop.ViewModels;
 
 namespace Seederly.Desktop.Models;
 
-public partial class ApiEndpointModel : ViewModelBase
+public partial class ApiEndpointModel : ObservableObject
 {
     [ObservableProperty]
     private int _method;

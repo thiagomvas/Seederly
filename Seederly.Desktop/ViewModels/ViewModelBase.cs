@@ -2,6 +2,7 @@
 
 namespace Seederly.Desktop.ViewModels;
 
-public class ViewModelBase : ObservableObject
+public abstract class ViewModelBase : ObservableObject
 {
+    public virtual void Dispose() { }
 }
