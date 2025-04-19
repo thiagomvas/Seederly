@@ -37,6 +37,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         var json = File.ReadAllText(workspacePath);
         DeserializeWorkspace(json);
         SelectedNode = Nodes.FirstOrDefault();
+        AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
     }
 
     public WorkspaceViewModel()
