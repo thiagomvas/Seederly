@@ -13,6 +13,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
+            <TextBox Text="{Binding WorkspaceName}" Watermark="Workspace Name"/>
             <Grid Margin="8" 
                   ColumnDefinitions="Auto,*" 
                   VerticalAlignment="Center">

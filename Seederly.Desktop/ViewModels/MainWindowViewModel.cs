@@ -7,7 +7,7 @@ namespace Seederly.Desktop.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private ViewModelBase currentPage;
+    private ViewModelBase? currentPage;
     
     [ObservableProperty]
     private WorkspaceViewModel _workspaceViewModel ;
@@ -23,7 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (vm == null)
             throw new ArgumentNullException(nameof(vm));
-        CurrentPage.Dispose();
+        CurrentPage?.Dispose();
         
         if(vm is WorkspaceViewModel workspaceViewModel)
             WorkspaceViewModel = workspaceViewModel;
