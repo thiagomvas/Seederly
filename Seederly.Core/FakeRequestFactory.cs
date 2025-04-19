@@ -88,12 +88,11 @@ public class FakeRequestFactory
         };
     }
 
-    public ApiRequest GenerateRequest(string name, string url, HttpMethod method,
+    public ApiRequest GenerateRequest(string url, HttpMethod method,
         Dictionary<string, string> map)
     {
         var request = new ApiRequest
         {
-            Name = name,
             Url = url,
             Method = method,
             Body = Generate(map).ToJsonString(new JsonSerializerOptions { WriteIndented = true }),
