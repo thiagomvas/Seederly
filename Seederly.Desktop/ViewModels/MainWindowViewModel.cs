@@ -1,6 +1,8 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Seederly.Core;
+using Seederly.Core.Automation;
 
 namespace Seederly.Desktop.ViewModels;
 
@@ -15,10 +17,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private WorkflowViewModel _workflowViewModel;
 
+    public Workspace? LoadedWorkspace { get; set; } = new Workspace("New Workspace");
+
     public MainWindowViewModel()
     {
         WorkspaceViewModel = new();
-        WorkflowViewModel = new();
         NavigateToWorkspace();
     }
 
@@ -42,7 +45,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void NavigateToWorkspace() => SetViewModel(WorkspaceViewModel);
     
     [RelayCommand]
-    private void NavigateToWorkflow() => SetViewModel(WorkflowViewModel);
+    private void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(LoadedWorkspace));
 
     [RelayCommand]
     private void NavigateToSettings() => CurrentPage = new SettingsViewModel();

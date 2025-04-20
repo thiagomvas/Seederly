@@ -1,9 +1,12 @@
 using System;
 using System.IO;
+using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Seederly.Core;
+using Seederly.Core.Automation;
 using Seederly.Desktop.ViewModels;
 
 namespace Seederly.Desktop.Views;
@@ -36,6 +39,7 @@ public partial class MainWindow : Window
         {
             var vm = new WorkspaceViewModel(files[0].Path.LocalPath);
             _viewModel.SetViewModel(vm);
+            _viewModel.LoadedWorkspace = JsonSerializer.Deserialize<Workspace>(File.ReadAllText(files[0].Path.LocalPath));
         }
     }
     
@@ -59,17 +63,15 @@ public partial class MainWindow : Window
             {
                 // Open writing stream from the file.
                 _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-                await using var stream = await file.OpenWriteAsync();
-                using var streamWriter = new StreamWriter(stream);
-                await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+                _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
+                if(!string.IsNullOrWhiteSpace(_viewModel.LoadedWorkspace.Path))
+                    File.WriteAllText(_viewModel.LoadedWorkspace.Path, JsonSerializer.Serialize(_viewModel.LoadedWorkspace));
             }
         }
         else
         {
-            // Open writing stream from the file.
-            await using var stream = File.OpenWrite(_viewModel.WorkspaceViewModel.WorkspacePath);
-            using var streamWriter = new StreamWriter(stream);
-            await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+            if(!string.IsNullOrWhiteSpace(_viewModel.LoadedWorkspace.Path))
+                File.WriteAllText(_viewModel.LoadedWorkspace.Path, JsonSerializer.Serialize(_viewModel.LoadedWorkspace));
         }
     }
 

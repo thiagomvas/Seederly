@@ -9,6 +9,14 @@
     <Grid ColumnDefinitions="200,*">
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
             <TextBlock Text="Workflows" FontSize="18"/>
+            <ListBox ItemsSource="{Binding Workflows}" SelectedItem="{Binding SelectedWorkflow}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Content="Add Workflow" Command="{Binding AddWorkflowCommand}"/>
         </StackPanel>
         
         <StackPanel Grid.Column="1">

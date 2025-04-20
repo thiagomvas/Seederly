@@ -1,3 +1,5 @@
+using Seederly.Core.Automation;
+
 namespace Seederly.Core;
 
 /// <summary>
@@ -19,6 +21,8 @@ public class Workspace
     /// Gets or sets the API endpoints in the workspace.
     /// </summary>
     public List<ApiEndpoint> Endpoints { get; set; } = new();
+    
+    public List<Workflow> Workflows { get; set; } = new();
     
     public Workspace(string name)
     {
