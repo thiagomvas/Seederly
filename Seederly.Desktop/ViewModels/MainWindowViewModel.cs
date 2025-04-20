@@ -11,10 +11,14 @@ public partial class MainWindowViewModel : ViewModelBase
     
     [ObservableProperty]
     private WorkspaceViewModel _workspaceViewModel ;
+    
+    [ObservableProperty]
+    private WorkflowViewModel _workflowViewModel;
 
     public MainWindowViewModel()
     {
         WorkspaceViewModel = new();
+        WorkflowViewModel = new();
         NavigateToWorkspace();
     }
 
@@ -27,12 +31,18 @@ public partial class MainWindowViewModel : ViewModelBase
         
         if(vm is WorkspaceViewModel workspaceViewModel)
             WorkspaceViewModel = workspaceViewModel;
+        
+        if (vm is WorkflowViewModel workflowViewModel)
+            WorkflowViewModel = workflowViewModel;
 
         CurrentPage = vm;
     }
 
     [RelayCommand]
     private void NavigateToWorkspace() => SetViewModel(WorkspaceViewModel);
+    
+    [RelayCommand]
+    private void NavigateToWorkflow() => SetViewModel(WorkflowViewModel);
 
     [RelayCommand]
     private void NavigateToSettings() => CurrentPage = new SettingsViewModel();

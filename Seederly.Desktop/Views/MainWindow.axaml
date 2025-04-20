@@ -72,6 +72,7 @@
             </MenuItem>
 
             <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
+            <MenuItem Header="_Workflow" Command="{Binding NavigateToWorkflowCommand}" />
             <MenuItem Header="_Settings" Command="{Binding NavigateToSettingsCommand}" />
 
             <MenuItem Header="_Help">

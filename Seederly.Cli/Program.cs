@@ -26,7 +26,7 @@ var endpoint2 = new ApiEndpoint()
     Request = new()
     {
         Url = "https://httpbin.org/post",
-        Method = HttpMethod.Post,
+        Method = HttpMethod.Put,
         Body = @"{
   ""data"": {
     ""token"": ""SECRET TOKEN""
