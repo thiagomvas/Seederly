@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using NotSupportedException = System.NotSupportedException;
 
 namespace Seederly.Core.Automation;
 
@@ -63,11 +64,14 @@ public class WorkflowExecutor
                 }
                 switch (injection.Target)
                 {
-                    case VariableTarget.Header:
+                    case InjectionVariableTarget.Header:
                         clonedRequest.Headers[injection.Key] = variableValue;
                         break;
-                    case VariableTarget.Body:
+                    case InjectionVariableTarget.Body:
                         if(!InjectIntoBody(clonedRequest, injection, variableValue, step, result)) return result;
+                        break;
+                    case InjectionVariableTarget.Query:
+                        clonedRequest.QueryParameters[injection.Key] = variableValue;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException($"Unknown target '{injection.Target}' for variable injection.");
@@ -80,12 +84,14 @@ public class WorkflowExecutor
             {
                 switch (extraction.Source)
                 {
-                    case VariableTarget.Response:
+                    case ExtractionVariableTarget.Response:
                         if(!ExtractFromResponse(response, extraction, step, result)) return result;
                         break;
-                    case VariableTarget.Header:
+                    case ExtractionVariableTarget.Header:
+                        if (!ExtractFromHeader(response, extraction, step, result)) return result;
+                        break;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                 }
             }
             
@@ -101,6 +107,28 @@ public class WorkflowExecutor
         }
 
         return result;
+    }
+
+    private bool ExtractFromHeader(ApiResponse response, VariableExtractionRule extraction, WorkflowStep step,
+        WorkflowResult result)
+    {
+        if (response.Headers.TryGetValue(extraction.JsonPath, out var headerValue))
+        {
+            _variableContext[extraction.VariableName] = headerValue;
+        }
+        else
+        {
+            var failedStep = new WorkflowStepResult
+            {
+                Name = step.Name,
+                Status = WorkflowStepStatus.ExtractionFailure,
+                ErrorMessage = $"Failed to extract variable '{extraction.VariableName}' from response header."
+            };
+            result.Steps.Add(failedStep);
+            return false;
+        }
+
+        return true;
     }
 
     private static bool InjectIntoBody(ApiRequest clonedRequest, VariableInjectionRule injection, string variableValue,
