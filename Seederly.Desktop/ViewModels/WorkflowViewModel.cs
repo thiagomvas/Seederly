@@ -33,7 +33,9 @@ public partial class WorkflowViewModel : ViewModelBase
         
         foreach (var workflow in workspace.Workflows)
         {
-            Workflows.Add(WorkflowModel.FromWorkflow(workflow));
+            var model = WorkflowModel.FromWorkflow(workflow);
+            Workflows.Add(model);
+            model.PropertyChanged += OnAnyPropertyChanged;
         }
         
         Workflows.CollectionChanged += OnCollectionChanged;

@@ -6,8 +6,10 @@ namespace Seederly.Desktop.Models;
 
 public partial class WorkflowModel : ObservableObject
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    [ObservableProperty] private string _name;
+    [ObservableProperty] private string _description;
+
+    [ObservableProperty] private bool _isEditing;
     public ObservableCollection<WorkflowStepModel> Steps { get; set; } = new();
 
     public static WorkflowModel FromWorkflow(Workflow workflow)
