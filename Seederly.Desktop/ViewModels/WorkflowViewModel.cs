@@ -144,7 +144,7 @@ public partial class WorkflowViewModel : ViewModelBase
         // Save the workspace to the file
         if (!string.IsNullOrWhiteSpace(_workspace.Path))
         {
-            File.WriteAllText(_workspace.Path, JsonSerializer.Serialize(_workspace));
+            File.WriteAllText(_workspace.Path, JsonSerializer.Serialize(_workspace, new JsonSerializerOptions() { WriteIndented = true }));
         }
         
     }

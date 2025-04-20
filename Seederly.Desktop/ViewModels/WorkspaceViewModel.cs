@@ -30,19 +30,30 @@ public partial class WorkspaceViewModel : ViewModelBase
     [ObservableProperty] private string _lastResponseStatus = string.Empty;
     [ObservableProperty] private string _lastRequestCalled = string.Empty;
 
+    private readonly Workspace _workspace;
+
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
-    public WorkspaceViewModel(string workspacePath) : this()
+    public WorkspaceViewModel(Workspace workspace)
     {
-        _workspacePath = workspacePath;
-        if (string.IsNullOrWhiteSpace(workspacePath))
-            return;
+        _workspacePath = workspace.Path;
+        _workspaceName = workspace.Name;
+        _workspace = workspace;
 
-        var json = File.ReadAllText(workspacePath);
-        DeserializeWorkspace(json);
+        FromWorkspace(workspace);
         SelectedNode = Nodes.FirstOrDefault();
-    }
+        
+        AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
 
+        foreach (var node in Nodes)
+        {
+            node.PropertyChanged += OnAnyPropertyChanged;
+            if (node.Value is not null)
+                node.Value.PropertyChanged += OnAnyPropertyChanged;
+        }
+
+        Nodes.CollectionChanged += OnCollectionChanged;
+    }
     public WorkspaceViewModel()
     {
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
@@ -208,7 +219,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         Nodes.Add(newNode);
     }
 
-    public void DeserializeWorkspace(string json)
+    public void FromWorkspace(Workspace workspace)
     {
         Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
         {
@@ -232,8 +243,6 @@ public partial class WorkspaceViewModel : ViewModelBase
             return node;
         }
 
-        var workspace = JsonSerializer.Deserialize<Workspace>(json);
-
         if (workspace is null)
             return;
 
@@ -246,8 +255,6 @@ public partial class WorkspaceViewModel : ViewModelBase
             Nodes.Add(ConvertEndpointToNode(endpoint));
         }
     }
-
-
     public string SerializeWorkspace()
     {
         ApiEndpoint ConvertNodeToEndpoint(Node<ApiEndpointModel> node)
@@ -264,17 +271,17 @@ public partial class WorkspaceViewModel : ViewModelBase
 
             return endpoint;
         }
-
-        var workspace = new Workspace(WorkspaceName)
+        
+        _workspace.Endpoints.Clear();
+        
+        foreach (var node in Nodes)
         {
-            Path = WorkspacePath,
-            Endpoints = Nodes.Select(ConvertNodeToEndpoint).ToList()
-        };
+            _workspace.Endpoints.Add(ConvertNodeToEndpoint(node));
+        }
 
-
-        return JsonSerializer.Serialize(workspace, new JsonSerializerOptions
+        return JsonSerializer.Serialize(_workspace, new JsonSerializerOptions
         {
-            WriteIndented = true // Optional, for readability
+            WriteIndented = true 
         });
     }
 

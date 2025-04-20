@@ -42,11 +42,11 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToWorkspace() => SetViewModel(WorkspaceViewModel);
+    public void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel(LoadedWorkspace));
     
     [RelayCommand]
-    private void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(LoadedWorkspace));
+    public void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(LoadedWorkspace));
 
     [RelayCommand]
-    private void NavigateToSettings() => CurrentPage = new SettingsViewModel();
+    public void NavigateToSettings() => CurrentPage = new SettingsViewModel();
 }

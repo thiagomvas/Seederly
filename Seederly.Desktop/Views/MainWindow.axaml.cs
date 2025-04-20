@@ -37,9 +37,8 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            var vm = new WorkspaceViewModel(files[0].Path.LocalPath);
-            _viewModel.SetViewModel(vm);
             _viewModel.LoadedWorkspace = JsonSerializer.Deserialize<Workspace>(File.ReadAllText(files[0].Path.LocalPath));
+            _viewModel.NavigateToWorkspace();
         }
     }
     
