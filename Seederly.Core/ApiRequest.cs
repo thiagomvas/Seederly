@@ -48,4 +48,16 @@ public class ApiRequest
         Headers["Authorization"] = $"Bearer {jwt}";
         return this;
     }
+    public ApiRequest Clone()
+    {
+        return new ApiRequest
+        {
+            Method = Method,
+            Url = Url,
+            Body = Body,
+            Headers = new Dictionary<string, string>(Headers, StringComparer.OrdinalIgnoreCase),
+            ContentType = ContentType,
+            LastResponse = LastResponse
+        };
+    }
 }
