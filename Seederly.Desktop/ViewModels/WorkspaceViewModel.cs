@@ -364,7 +364,12 @@ public partial class WorkspaceViewModel : ViewModelBase
         SaveWorkspace();
     }
 
-    private void SaveWorkspace() => Utils.SaveWorkspace(_workspace);
+    private void SaveWorkspace()
+    {
+        SerializeWorkspace();
+
+        Utils.SaveWorkspace(_workspace);
+    }
 
     private async Task<ApiResponse> ExecuteRequest(ApiRequest request)
     {

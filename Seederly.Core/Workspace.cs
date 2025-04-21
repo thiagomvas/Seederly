@@ -1,4 +1,5 @@
 using Seederly.Core.Automation;
+using Seederly.Core.Converters;
 
 namespace Seederly.Core;
 
@@ -27,5 +28,32 @@ public class Workspace
     public Workspace(string name)
     {
         Name = name;
+    }
+    
+    public string SerializeToJson()
+    {
+        return System.Text.Json.JsonSerializer.Serialize(this, new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new InjectionVariableTargetEnumConverter(),
+                new ExtractionVariableTargetEnumConverter()
+            }
+        });
+    }
+    
+    public static Workspace DeserializeFromJson(string json)
+    {
+        return System.Text.Json.JsonSerializer.Deserialize<Workspace>(json, new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new InjectionVariableTargetEnumConverter(),
+                new ExtractionVariableTargetEnumConverter()
+            }
+        }) ?? new Workspace("Default");
     }
 }

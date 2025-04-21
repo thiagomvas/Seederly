@@ -17,12 +17,7 @@ public class Utils
         
         var filePath = workspace.Path;
         Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? string.Empty);
-        var json = JsonSerializer.Serialize(workspace, new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            AllowTrailingCommas = true,
-        });
+        var json = workspace.SerializeToJson();
         File.WriteAllText(filePath, json);
     }
 }

@@ -37,7 +37,7 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            _viewModel.LoadedWorkspace = JsonSerializer.Deserialize<Workspace>(File.ReadAllText(files[0].Path.LocalPath));
+            _viewModel.LoadedWorkspace = Workspace.DeserializeFromJson(File.ReadAllText(files[0].Path.LocalPath));
             _viewModel.NavigateToWorkspace();
         }
     }
@@ -89,9 +89,8 @@ public partial class MainWindow : Window
         if (file is not null)
         {
             _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-            using var stream = file.OpenWriteAsync().Result;
-            using var streamWriter = new StreamWriter(stream);
-            streamWriter.WriteLine(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+            _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
+            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
         }
     }
 

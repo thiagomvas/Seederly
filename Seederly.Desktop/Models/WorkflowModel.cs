@@ -8,6 +8,7 @@ public partial class WorkflowModel : ObservableObject
 {
     [ObservableProperty] private string _name;
     [ObservableProperty] private string _description;
+    [ObservableProperty] private WorkflowStepModel _selectedStep;
 
     [ObservableProperty] private bool _isEditing;
     public ObservableCollection<WorkflowStepModel> Steps { get; set; } = new();
@@ -27,6 +28,15 @@ public partial class WorkflowModel : ObservableObject
         }
 
         return model;
+    }
+    
+    public void AddNewStep()
+    {
+        var newStep = new WorkflowStepModel
+        {
+            Name = "New step"
+        };
         
+        Steps.Add(newStep);
     }
 }

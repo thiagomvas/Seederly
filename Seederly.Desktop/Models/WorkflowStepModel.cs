@@ -1,16 +1,27 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Seederly.Core.Automation;
 
 namespace Seederly.Desktop.Models;
 
-public class WorkflowStepModel : ObservableObject
+public partial class WorkflowStepModel : ObservableObject
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string EndpointName { get; set; } = string.Empty;
-    public List<VariableExtractionRuleModel> Extract { get; set; } = new();
-    public List<VariableInjectionRuleModel> Inject { get; set; } = new();
+    [ObservableProperty] private string _name;
+    [ObservableProperty] private string _description;
+    [ObservableProperty] private string _endpointName;
+    [ObservableProperty] private bool _isEditing;
+    
+    [ObservableProperty] private string _method = "";
+    [ObservableProperty] private string _url = "";
+
+    public string FormattedUrl => $"Endpoint: {Method} {Url}";
+    partial void OnMethodChanged(string value) => OnPropertyChanged(nameof(FormattedUrl));
+    partial void OnUrlChanged(string value) => OnPropertyChanged(nameof(FormattedUrl));
+
+    public ObservableCollection<VariableExtractionRuleModel> Extract { get; set; } = new();
+    public ObservableCollection<VariableInjectionRuleModel> Inject { get; set; } = new();
 
     public static WorkflowStepModel FromWorkflowStep(WorkflowStep step)
     {
@@ -19,8 +30,8 @@ public class WorkflowStepModel : ObservableObject
             Name = step.Name,
             Description = step.Description,
             EndpointName = step.EndpointName,
-            Extract = new List<VariableExtractionRuleModel>(),
-            Inject = new List<VariableInjectionRuleModel>()
+            Extract = new ObservableCollection<VariableExtractionRuleModel>(),
+            Inject = new ObservableCollection<VariableInjectionRuleModel>()
         };
 
         foreach (var extract in step.Extract)
@@ -44,5 +55,29 @@ public class WorkflowStepModel : ObservableObject
         }
 
         return model;
+    }
+    
+    [RelayCommand]
+    private void ToggleEdit() => IsEditing = !IsEditing;
+    
+    [RelayCommand]
+    private void AddExtractRule()
+    {
+        var newRule = new VariableExtractionRuleModel
+        {
+            VariableName = "New variable",
+            JsonPath = "$.data",
+            Parent = this,
+        };
+        
+        Extract.Add(newRule);
+    }
+    [RelayCommand]
+    private void RemoveExtractRule(VariableExtractionRuleModel rule)
+    {
+        if (rule != null)
+        {
+            Extract.Remove(rule);
+        }
     }
 }
