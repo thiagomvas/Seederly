@@ -364,14 +364,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         SaveWorkspace();
     }
 
-    private void SaveWorkspace()
-    {
-        if (string.IsNullOrWhiteSpace(WorkspacePath))
-            return;
-
-        var json = SerializeWorkspace();
-        File.WriteAllText(WorkspacePath, json);
-    }
+    private void SaveWorkspace() => Utils.SaveWorkspace(_workspace);
 
     private async Task<ApiResponse> ExecuteRequest(ApiRequest request)
     {

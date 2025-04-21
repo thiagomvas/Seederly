@@ -63,14 +63,12 @@ public partial class MainWindow : Window
                 // Open writing stream from the file.
                 _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
                 _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
-                if(!string.IsNullOrWhiteSpace(_viewModel.LoadedWorkspace.Path))
-                    File.WriteAllText(_viewModel.LoadedWorkspace.Path, JsonSerializer.Serialize(_viewModel.LoadedWorkspace));
+                Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
             }
         }
         else
         {
-            if(!string.IsNullOrWhiteSpace(_viewModel.LoadedWorkspace.Path))
-                File.WriteAllText(_viewModel.LoadedWorkspace.Path, JsonSerializer.Serialize(_viewModel.LoadedWorkspace));
+            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
         }
     }
 
