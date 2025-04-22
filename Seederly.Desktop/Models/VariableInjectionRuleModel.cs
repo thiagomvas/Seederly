@@ -3,11 +3,13 @@ using Seederly.Core.Automation;
 
 namespace Seederly.Desktop.Models;
 
-public class VariableInjectionRuleModel : ObservableObject
+public partial class VariableInjectionRuleModel : ObservableObject
 {
-    
-    public InjectionVariableTarget Target { get; set; } = InjectionVariableTarget.Body; 
-    public string Key { get; set; } = "";
-    public string Path { get; set; } = ""; 
+    [ObservableProperty] private string _key = "";
+    [ObservableProperty] private string _path = "";
+    [ObservableProperty] private InjectionVariableTarget _target = InjectionVariableTarget.Body;
+    [ObservableProperty] private string _targetString = "";
+    [ObservableProperty] private int _selectedIndex;
+    public WorkflowStepModel? Parent { get; set; }
     
 }

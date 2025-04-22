@@ -68,6 +68,8 @@ public partial class WorkflowViewModel : ViewModelBase
                 step.Inject.CollectionChanged += OnCollectionChanged;
                 foreach (var inject in step.Inject)
                 {
+                    inject.Parent = step;
+                    inject.TargetString = inject.Target.ToString();
                     inject.PropertyChanged += OnAnyPropertyChanged;
                 }
                 
@@ -307,7 +309,7 @@ public partial class WorkflowViewModel : ViewModelBase
                     {
                         Key = variable.Key,
                         Path = variable.Path,
-                        Target = variable.Target
+                        Target = (InjectionVariableTarget)variable.SelectedIndex
                     });
                 }
 

@@ -50,7 +50,8 @@ public partial class WorkflowStepModel : ObservableObject
             {
                 Target = inject.Target,
                 Key = inject.Key,
-                Path = inject.Path
+                Path = inject.Path,
+                SelectedIndex = (int)inject.Target,
             });
         }
 
@@ -80,6 +81,30 @@ public partial class WorkflowStepModel : ObservableObject
         if (rule != null)
         {
             Extract.Remove(rule);
+        }
+    }
+    
+    [RelayCommand]
+    private void AddInjectRule()
+    {
+        var newRule = new VariableInjectionRuleModel
+        {
+            TargetString = InjectionVariableTarget.Body.ToString(),
+            Key = "New key",
+            Path = "$.data",
+            Parent = this,
+            Target = InjectionVariableTarget.Body,
+            SelectedIndex = 0
+        };
+        
+        Inject.Add(newRule);
+    }
+    [RelayCommand]
+    private void RemoveInjectRule(VariableInjectionRuleModel rule)
+    {
+        if (rule != null)
+        {
+            Inject.Remove(rule);
         }
     }
 }

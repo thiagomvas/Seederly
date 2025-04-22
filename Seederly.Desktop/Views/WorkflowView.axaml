@@ -42,9 +42,8 @@
 
         <ScrollViewer Grid.Column="1" Padding="10">
             <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
-                <ListBox ItemsSource="{Binding SelectedWorkflow.Steps}"
-                         SelectedItem="{Binding SelectedWorkflow.SelectedStep}">
-                    <ListBox.ItemTemplate>
+                <ItemsControl ItemsSource="{Binding SelectedWorkflow.Steps}">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="{DynamicResource SeederlyControlBackground}" Padding="10"
                                     CornerRadius="8">
@@ -87,18 +86,77 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Button Content="Add Extraction Rule" Command="{Binding AddExtractRuleCommand}" />
+                                        
+                                        <TextBlock Text="Injections" FontSize="18" FontWeight="Bold" />
+                                        <DataGrid ItemsSource="{Binding Inject}"
+                                                  AutoGenerateColumns="False"
+                                                  GridLinesVisibility="All"
+                                                  IsReadOnly="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Variable Name" Width="*"
+                                                                    Binding="{Binding Key}" />
+                                                <DataGridTextColumn Header="Path" Width="*"
+                                                                    Binding="{Binding Path}" />
+                                                <DataGridTemplateColumn Header="Target" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox HorizontalAlignment="Stretch"
+                                                                      SelectedIndex="{Binding SelectedIndex}">
+                                                                <ComboBoxItem Content="Body" />
+                                                                <ComboBoxItem Content="Query" />
+                                                                <ComboBoxItem Content="Header" />
+                                                                <ComboBoxItem Content="Endpoint" />
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="Remove"
+                                                                    Command="{Binding Parent.RemoveInjectRuleCommand}"
+                                                                    CommandParameter="{Binding}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <Button Content="Add Injection Rule" Command="{Binding AddInjectRuleCommand}" />
                                     </StackPanel>
                                     <StackPanel IsVisible="{Binding !IsEditing}">
                                         <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
                                         <TextBlock Text="{Binding FormattedUrl}" />
-                                        <TextBlock Text="Extract: token → $auth_token" />
+                                        <ItemsControl ItemsSource="{Binding Extract}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <Run Text="Extract: "/>
+                                                        <Run Text="{Binding JsonPath}" />
+                                                        <Run Text=" → " />
+                                                        <Run Text="{Binding VariableName}" />
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl ItemsSource="{Binding Inject}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <Run Text="Inject: "/>
+                                                        <Run Text="{Binding Key}" />
+                                                        <Run Text=" → " />
+                                                        <Run Text="{Binding Path}" />
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                     </StackPanel>
                                     <Button Content="Toggle Edit" Command="{Binding ToggleEditCommand}" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <Button Command="{Binding AddNewStepCommand}" Content="Add step" />
             </StackPanel>
         </ScrollViewer>
