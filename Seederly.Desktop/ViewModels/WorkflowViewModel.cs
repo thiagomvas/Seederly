@@ -22,11 +22,11 @@ public partial class WorkflowViewModel : ViewModelBase
     [ObservableProperty] private WorkflowModel? _selectedWorkflow;
     public bool SelectedAny => SelectedWorkflow is not null;
 
-    public ObservableCollection<ExtractionVariableTarget> ExtractionVariableTargets =>
-        new(Enum.GetValues<ExtractionVariableTarget>());
+    public ObservableCollection<string> ExtractionVariableTargetStrings =>
+        new(Enum.GetValues<ExtractionVariableTarget>().Select(e => e.ToString()));
 
-    public ObservableCollection<InjectionVariableTarget> InjectionVariableTargets =>
-        new(Enum.GetValues<InjectionVariableTarget>());
+    public ObservableCollection<string> InjectionVariableTargetStrings =>
+        new(Enum.GetValues<InjectionVariableTarget>().Select(e => e.ToString()));
     
 
     private readonly WorkflowExecutor _executor;
@@ -59,8 +59,9 @@ public partial class WorkflowViewModel : ViewModelBase
                 step.Extract.CollectionChanged += OnCollectionChanged;
                 foreach (var extract in step.Extract)
                 {
+                    extract.Target = extract.Source.ToString();
                     extract.Parent = step;
-                    extract.PropertyChanged += OnAnyPropertyChanged;
+                    extract.PropertyChanged += OnAnyPropertyChanged; 
                 }
                 
                 step.Inject.CollectionChanged += OnCollectionChanged;
@@ -137,6 +138,7 @@ public partial class WorkflowViewModel : ViewModelBase
             Source = ExtractionVariableTarget.Response,
             JsonPath = "",
             Parent = SelectedWorkflow.SelectedStep,
+            SelectedIndex = 0
         };
 
         SelectedWorkflow.SelectedStep.Extract.Add(newExtract);
@@ -293,7 +295,7 @@ public partial class WorkflowViewModel : ViewModelBase
                     step.Extract.Add(new VariableExtractionRule()
                     {
                         VariableName = variable.VariableName,
-                        Source = variable.Source,
+                        Source = (ExtractionVariableTarget)variable.SelectedIndex,
                         JsonPath = variable.JsonPath
                     });
                 }

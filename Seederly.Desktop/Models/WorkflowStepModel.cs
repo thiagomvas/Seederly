@@ -40,7 +40,7 @@ public partial class WorkflowStepModel : ObservableObject
             {
                 VariableName = extract.VariableName,
                 JsonPath = extract.JsonPath,
-                Source = extract.Source
+                SelectedIndex = (int)extract.Source
             });
         }
 
@@ -68,6 +68,8 @@ public partial class WorkflowStepModel : ObservableObject
             VariableName = "New variable",
             JsonPath = "$.data",
             Parent = this,
+            SelectedIndex = 0,
+            Source = ExtractionVariableTarget.Response,
         };
         
         Extract.Add(newRule);

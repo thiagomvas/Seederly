@@ -3,10 +3,12 @@ using Seederly.Core.Automation;
 
 namespace Seederly.Desktop.Models;
 
-public class VariableExtractionRuleModel : ObservableObject
+public partial class VariableExtractionRuleModel : ObservableObject
 {
-    public string VariableName { get; set; } = "";
-    public string JsonPath { get; set; } = ""; 
-    public ExtractionVariableTarget Source { get; set; } = ExtractionVariableTarget.Response;
+    [ObservableProperty] private string _variableName;
+    [ObservableProperty] private string _jsonPath;
+    [ObservableProperty] private ExtractionVariableTarget _source;
+    [ObservableProperty] private string _target;
+    [ObservableProperty] private int _selectedIndex;
     public WorkflowStepModel Parent { get; set; } 
 }

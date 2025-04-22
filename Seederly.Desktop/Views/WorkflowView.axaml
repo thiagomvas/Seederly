@@ -54,19 +54,24 @@
                                         <AutoCompleteBox Text="{Binding EndpointName}"
                                                          ItemsSource="{Binding ((vm:WorkflowViewModel)DataContext).AvailableEndpointNames, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                          Watermark="Endpoint Name" />
-                                        <TextBlock Text="Extractions" FontSize="18" FontWeight="Bold"/>
+                                        <TextBlock Text="Extractions" FontSize="18" FontWeight="Bold" />
                                         <DataGrid ItemsSource="{Binding Extract}"
                                                   AutoGenerateColumns="False"
                                                   GridLinesVisibility="All"
                                                   IsReadOnly="False">
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Variable Name" Width="*" Binding="{Binding VariableName}" />
-                                                <DataGridTextColumn Header="Path" Width="*" Binding="{Binding JsonPath}" />
+                                                <DataGridTextColumn Header="Variable Name" Width="*"
+                                                                    Binding="{Binding VariableName}" />
+                                                <DataGridTextColumn Header="Path" Width="*"
+                                                                    Binding="{Binding JsonPath}" />
                                                 <DataGridTemplateColumn Header="Source" Width="*">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <ComboBox ItemsSource="{Binding  ((vm:WorkflowViewModel)DataContext).ExtractionVariableTargets, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                      SelectedItem="{Binding Source}" />
+                                                            <ComboBox HorizontalAlignment="Stretch"
+                                                                      SelectedIndex="{Binding SelectedIndex}">
+                                                                <ComboBoxItem Content="Response" />
+                                                                <ComboBoxItem Content="Header" />
+                                                            </ComboBox>
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
@@ -81,7 +86,7 @@
                                                 </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Button Content="Add Extraction Rule" Command="{Binding ((vm:WorkflowViewModel)DataContext).AddNewExtractCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                        <Button Content="Add Extraction Rule" Command="{Binding AddExtractRuleCommand}" />
                                     </StackPanel>
                                     <StackPanel IsVisible="{Binding !IsEditing}">
                                         <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
