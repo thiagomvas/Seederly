@@ -19,8 +19,9 @@ public partial class WorkflowViewModel : ViewModelBase
     public ObservableCollection<WorkflowModel> Workflows { get; } = new();
     public ObservableCollection<string> AvailableEndpointNames => new(_workspace.Endpoints.Select(e => e.Name));
 
+    [NotifyPropertyChangedFor(nameof(SelectedAny))]
     [ObservableProperty] private WorkflowModel? _selectedWorkflow;
-    public bool SelectedAny => SelectedWorkflow is not null;
+    public bool SelectedAny => SelectedWorkflow != null;
 
     public ObservableCollection<string> ExtractionVariableTargetStrings =>
         new(Enum.GetValues<ExtractionVariableTarget>().Select(e => e.ToString()));

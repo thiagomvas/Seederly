@@ -41,7 +41,7 @@
 
 
         <ScrollViewer Grid.Column="1" Padding="10">
-            <StackPanel Spacing="10" IsVisible="True">
+            <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
                 <ListBox ItemsSource="{Binding SelectedWorkflow.Steps}"
                          SelectedItem="{Binding SelectedWorkflow.SelectedStep}">
                     <ListBox.ItemTemplate>
@@ -100,22 +100,6 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <Button Command="{Binding AddNewStepCommand}" Content="Add step" />
-
-                <Border Background="{DynamicResource SeederlyControlBackground}" Padding="10" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock Text="Step 2: Get Profile" FontSize="16" FontWeight="Bold" />
-                        <TextBlock Text="Endpoint: GET /user/profile" />
-                        <TextBlock Text="Auth: Bearer $auth_token" />
-                        <TextBlock Text="Extract: id → $user_id" />
-                    </StackPanel>
-                </Border>
-
-                <Border Background="{DynamicResource SeederlyControlBackground}" Padding="10" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock Text="Step 3: Fetch Posts" FontSize="16" FontWeight="Bold" />
-                        <TextBlock Text="Endpoint: GET /user/$user_id/posts" />
-                    </StackPanel>
-                </Border>
             </StackPanel>
         </ScrollViewer>
     </Grid>
