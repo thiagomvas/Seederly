@@ -8,6 +8,12 @@ namespace Seederly.Desktop.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    public static MainWindowViewModel? Instance { get; private set; }
+    
+    [ObservableProperty] private string _workspaceName = "New Workspace";
+    [ObservableProperty] private string _lastOperation = "No operations performed yet.";
+    [ObservableProperty] private string _status = "Ready";
+
     [ObservableProperty]
     private ViewModelBase? currentPage;
     
@@ -23,6 +29,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         WorkspaceViewModel = new();
         NavigateToWorkspace();
+        Instance = this;
     }
 
     [RelayCommand]

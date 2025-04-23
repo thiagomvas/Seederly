@@ -13,7 +13,6 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
-            <TextBox Text="{Binding WorkspaceName}" Watermark="Workspace Name"/>
             <Grid Margin="8" 
                   ColumnDefinitions="Auto,*" 
                   VerticalAlignment="Center">
@@ -174,7 +173,7 @@
                     <!-- Response Tab -->
                     <TabItem Header="Response">
                         <StackPanel>
-                            <TextBlock Text="{Binding LastResponseStatus}" />
+                            <TextBlock Text="{Binding LastStatus}" />
                             <DataGrid Margin="0,10" AutoGenerateColumns="False"
                                       GridLinesVisibility="All"
                                       IsReadOnly="True"
