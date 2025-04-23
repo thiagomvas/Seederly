@@ -28,6 +28,8 @@ public class WorkflowExecutor
     {
         var result = new WorkflowResult
         {
+            WorkflowName = workflow.Name,
+            WorkflowDescription = workflow.Description,
             Steps = new List<WorkflowStepResult>()
         };
         
@@ -118,6 +120,11 @@ public class WorkflowExecutor
             result.Steps.Add(stepResult);
         }
 
+        if(!result.IsSuccessful)
+        {
+            result.ErrorMessage = $"Workflow execution failed: '{result.Steps.Last().ErrorMessage}'.";
+        }
+        
         return result;
     }
 
