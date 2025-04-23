@@ -348,6 +348,19 @@ public partial class WorkflowViewModel : ViewModelBase
             return;
 
         var workflow = SelectedWorkflow.ToWorkflow();
+
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.LastOperation = $"Workflow: {workflow.Name}";
+            MainWindowViewModel.Instance.Status = "Executing workflow...";
+        }
+        
         var result = await _executor.ExecuteAsync(workflow);
+        
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.Status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
+            MainWindowViewModel.Instance.LastOperation = $"Workflow: {workflow.Name}";
+        }
     }
 }
