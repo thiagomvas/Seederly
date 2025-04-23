@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
@@ -338,5 +339,15 @@ public partial class WorkflowViewModel : ViewModelBase
         }
 
         Utils.SaveWorkspace(_workspace);
+    }
+    
+    [RelayCommand]
+    private async Task ExecuteWorkflow()
+    {
+        if (SelectedWorkflow == null)
+            return;
+
+        var workflow = SelectedWorkflow.ToWorkflow();
+        var result = await _executor.ExecuteAsync(workflow);
     }
 }

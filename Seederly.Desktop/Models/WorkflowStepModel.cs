@@ -107,4 +107,38 @@ public partial class WorkflowStepModel : ObservableObject
             Inject.Remove(rule);
         }
     }
+
+    public WorkflowStep ToWorkflowStep()
+    {
+        var step = new WorkflowStep
+        {
+            Name = Name,
+            Description = Description,
+            EndpointName = EndpointName,
+            Extract = new List<VariableExtractionRule>(),
+            Inject = new List<VariableInjectionRule>()
+        };
+
+        foreach (var extract in Extract)
+        {
+            step.Extract.Add(new VariableExtractionRule
+            {
+                VariableName = extract.VariableName,
+                JsonPath = extract.JsonPath,
+                Source = (ExtractionVariableTarget)extract.SelectedIndex
+            });
+        }
+
+        foreach (var inject in Inject)
+        {
+            step.Inject.Add(new VariableInjectionRule
+            {
+                Target = inject.Target,
+                Key = inject.Key,
+                Path = inject.Path,
+            });
+        }
+
+        return step;
+    }
 }

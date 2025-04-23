@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Seederly.Core.Automation;
@@ -28,6 +29,23 @@ public partial class WorkflowModel : ObservableObject
         }
 
         return model;
+    }
+    
+    public Workflow ToWorkflow()
+    {
+        var workflow = new Workflow
+        {
+            Name = Name,
+            Description = Description,
+            Steps = new List<WorkflowStep>()
+        };
+
+        foreach (var step in Steps)
+        {
+            workflow.Steps.Add(step.ToWorkflowStep());
+        }
+
+        return workflow;
     }
     
     public void AddNewStep()
