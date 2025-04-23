@@ -122,6 +122,8 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Button Content="Add Injection Rule" Command="{Binding AddInjectRuleCommand}" />
+                                        <Button Content="Remove Step" Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                                CommandParameter="{Binding}"/>
                                     </StackPanel>
                                     <StackPanel IsVisible="{Binding !IsEditing}">
                                         <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />

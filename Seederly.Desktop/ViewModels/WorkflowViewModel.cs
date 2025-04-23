@@ -76,9 +76,8 @@ public partial class WorkflowViewModel : ViewModelBase
                 step.PropertyChanged += OnStepPropertyChanged;
                 step.PropertyChanged += OnAnyPropertyChanged;
             }
+            model.Steps.CollectionChanged += OnCollectionChanged;
         }
-
-        Workflows.CollectionChanged += OnCollectionChanged;
     }
 
     [RelayCommand]
@@ -127,6 +126,18 @@ public partial class WorkflowViewModel : ViewModelBase
         }
         newStep.PropertyChanged += OnStepPropertyChanged;
         newStep.PropertyChanged += OnAnyPropertyChanged;
+    }
+    
+    [RelayCommand]
+    private void RemoveStep(WorkflowStepModel step)
+    {
+        if (SelectedWorkflow == null)
+            return;
+
+        if (step == null)
+            return;
+
+        SelectedWorkflow.Steps.Remove(step);
     }
     
     [RelayCommand]
