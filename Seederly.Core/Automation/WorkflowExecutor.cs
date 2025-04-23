@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using NotSupportedException = System.NotSupportedException;
@@ -29,8 +30,10 @@ public class WorkflowExecutor
         {
             Steps = new List<WorkflowStepResult>()
         };
+        
         foreach (var step in workflow.Steps)
         {
+            var stopwatch = Stopwatch.StartNew();
             var request = _endpointMap[step.EndpointName];
             if (request is null)
             {
@@ -102,6 +105,15 @@ public class WorkflowExecutor
                 Status = response.IsSuccess ? WorkflowStepStatus.Success : WorkflowStepStatus.ApiFailure,
                 Response = response,
             };
+            
+            if (!response.IsSuccess)
+            {
+                stepResult.ErrorMessage = $"API request failed with status code {response.StatusCode}.";
+            }
+            else
+            {
+                stepResult.ElapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            }
             
             result.Steps.Add(stepResult);
         }
