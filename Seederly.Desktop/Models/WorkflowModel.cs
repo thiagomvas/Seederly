@@ -10,6 +10,7 @@ public partial class WorkflowModel : ObservableObject
     [ObservableProperty] private string _name;
     [ObservableProperty] private string _description;
     [ObservableProperty] private WorkflowStepModel _selectedStep;
+    [ObservableProperty] private string _lastStatus;
 
     [ObservableProperty] private bool _isEditing;
     public ObservableCollection<WorkflowStepModel> Steps { get; set; } = new();

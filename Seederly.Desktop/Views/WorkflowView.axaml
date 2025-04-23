@@ -43,6 +43,7 @@
         <ScrollViewer Grid.Column="1" Padding="10">
             <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
                 <Button Content="Execute" Command="{Binding ExecuteWorkflowCommand}"/>
+                <TextBlock Text="{Binding SelectedWorkflow.LastStatus}" />
                 <ItemsControl ItemsSource="{Binding SelectedWorkflow.Steps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

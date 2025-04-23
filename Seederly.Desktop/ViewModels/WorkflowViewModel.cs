@@ -357,6 +357,9 @@ public partial class WorkflowViewModel : ViewModelBase
         
         var result = await _executor.ExecuteAsync(workflow);
         
+        SelectedWorkflow.LastStatus = result.IsSuccessful
+            ? "Success" : "{result.ErrorMessage}";
+        
         if (MainWindowViewModel.Instance is not null)
         {
             MainWindowViewModel.Instance.Status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
