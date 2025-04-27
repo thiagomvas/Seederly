@@ -5,6 +5,9 @@ using NotSupportedException = System.NotSupportedException;
 
 namespace Seederly.Core.Automation;
 
+/// <summary>
+/// Service responsible for executing workflows.
+/// </summary>
 public class WorkflowExecutor
 {
     private readonly ApiRequestExecutor _apiRequestExecutor;
@@ -24,6 +27,11 @@ public class WorkflowExecutor
         }
     }
     
+    /// <summary>
+    /// Executes the given workflow.
+    /// </summary>
+    /// <param name="workflow">The workflow to execute.</param>
+    /// <returns>A <see cref="WorkflowResult"/> containing info about the execution.</returns>
     public async Task<WorkflowResult> ExecuteAsync(Workflow workflow)
     {
         var result = new WorkflowResult
