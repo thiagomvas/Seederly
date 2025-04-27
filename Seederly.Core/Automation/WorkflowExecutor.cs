@@ -78,6 +78,9 @@ public class WorkflowExecutor
                     case InjectionVariableTarget.Query:
                         clonedRequest.QueryParameters[injection.Key] = variableValue;
                         break;
+                    case InjectionVariableTarget.Endpoint:
+                        clonedRequest.Url = clonedRequest.Url.Replace(injection.Key, variableValue);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException($"Unknown target '{injection.Target}' for variable injection.");
                 }
