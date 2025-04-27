@@ -26,23 +26,36 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     [ObservableProperty] private Node<ApiEndpointModel>? _selectedNode;
     [ObservableProperty] private string? _workspacePath;
-    [ObservableProperty] private string _workspaceName = "New Workspace";
-    [ObservableProperty] private string _lastResponseStatus = string.Empty;
-    [ObservableProperty] private string _lastRequestCalled = string.Empty;
+    [ObservableProperty] private string _lastStatus;
+
+    private readonly Workspace _workspace;
 
     public bool HasContent => SelectedNode != null && SelectedNode.IsLeaf;
 
-    public WorkspaceViewModel(string workspacePath) : this()
+    public WorkspaceViewModel(Workspace workspace)
     {
-        _workspacePath = workspacePath;
-        if (string.IsNullOrWhiteSpace(workspacePath))
-            return;
+        _workspacePath = workspace.Path;
+        _workspace = workspace;
 
-        var json = File.ReadAllText(workspacePath);
-        DeserializeWorkspace(json);
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.WorkspaceName = workspace.Name;
+        }
+
+        FromWorkspace(workspace);
         SelectedNode = Nodes.FirstOrDefault();
-    }
+        
+        AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
 
+        foreach (var node in Nodes)
+        {
+            node.PropertyChanged += OnAnyPropertyChanged;
+            if (node.Value is not null)
+                node.Value.PropertyChanged += OnAnyPropertyChanged;
+        }
+
+        Nodes.CollectionChanged += OnCollectionChanged;
+    }
     public WorkspaceViewModel()
     {
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
@@ -170,9 +183,13 @@ public partial class WorkspaceViewModel : ViewModelBase
 
 
             SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
-            
-            LastResponseStatus = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
-            LastRequestCalled = SelectedNode.Name;
+
+            if (MainWindowViewModel.Instance is not null)
+            {
+                
+                MainWindowViewModel.Instance.Status = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
+                MainWindowViewModel.Instance.LastOperation = SelectedNode.Name;   
+            }
         }
         stopwatch.Stop();
     }
@@ -208,7 +225,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         Nodes.Add(newNode);
     }
 
-    public void DeserializeWorkspace(string json)
+    public void FromWorkspace(Workspace workspace)
     {
         Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
         {
@@ -232,12 +249,11 @@ public partial class WorkspaceViewModel : ViewModelBase
             return node;
         }
 
-        var workspace = JsonSerializer.Deserialize<Workspace>(json);
-
         if (workspace is null)
             return;
 
-        WorkspaceName = workspace.Name;
+        if(MainWindowViewModel.Instance is not null)
+            MainWindowViewModel.Instance.WorkspaceName = workspace.Name;
         WorkspacePath = workspace.Path;
         Nodes.Clear();
 
@@ -246,8 +262,6 @@ public partial class WorkspaceViewModel : ViewModelBase
             Nodes.Add(ConvertEndpointToNode(endpoint));
         }
     }
-
-
     public string SerializeWorkspace()
     {
         ApiEndpoint ConvertNodeToEndpoint(Node<ApiEndpointModel> node)
@@ -264,17 +278,17 @@ public partial class WorkspaceViewModel : ViewModelBase
 
             return endpoint;
         }
-
-        var workspace = new Workspace(WorkspaceName)
+        
+        _workspace.Endpoints.Clear();
+        
+        foreach (var node in Nodes)
         {
-            Path = WorkspacePath,
-            Endpoints = Nodes.Select(ConvertNodeToEndpoint).ToList()
-        };
+            _workspace.Endpoints.Add(ConvertNodeToEndpoint(node));
+        }
 
-
-        return JsonSerializer.Serialize(workspace, new JsonSerializerOptions
+        return JsonSerializer.Serialize(_workspace, new JsonSerializerOptions
         {
-            WriteIndented = true // Optional, for readability
+            WriteIndented = true 
         });
     }
 
@@ -292,7 +306,11 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-        LastRequestCalled = "All Requests - Running";
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.LastOperation = "All Requests";
+            MainWindowViewModel.Instance.Status = "Running all requests...";
+        }
         await foreach (var task in Task.WhenEach(tasks))
         {
             doneCount++;
@@ -303,7 +321,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             else
                 statusCodeCounts[result.StatusCode] = 1;
 
-            LastResponseStatus =
+            if (MainWindowViewModel.Instance is not null)
+                MainWindowViewModel.Instance.Status =
                 $"{(int)result.StatusCode} - {result.StatusCode} ({doneCount}/{total}) ({stopwatch.ElapsedMilliseconds} ms)";
         }
 
@@ -313,8 +332,11 @@ public partial class WorkspaceViewModel : ViewModelBase
             .OrderByDescending(kvp => kvp.Value)
             .Select(kvp => $"{(int)kvp.Key} {kvp.Key} x{kvp.Value}"));
 
-        LastRequestCalled = "All Requests";
-        LastResponseStatus = $"{summary} ({stopwatch.ElapsedMilliseconds} ms)";
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.Status = $"{summary} ({stopwatch.ElapsedMilliseconds} ms)";
+            MainWindowViewModel.Instance.LastOperation = "All Requests";
+        }
     }
 
     public override void Dispose()
@@ -359,16 +381,15 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     private void SaveWorkspace()
     {
-        if (string.IsNullOrWhiteSpace(WorkspacePath))
-            return;
+        SerializeWorkspace();
 
-        var json = SerializeWorkspace();
-        File.WriteAllText(WorkspacePath, json);
+        Utils.SaveWorkspace(_workspace);
     }
 
     private async Task<ApiResponse> ExecuteRequest(ApiRequest request)
     {
         var result = await _apiClient.ExecuteAsync(request);
+        _lastStatus = $"{(int)result.StatusCode} - {result.StatusCode}";
 
         return result;
     }

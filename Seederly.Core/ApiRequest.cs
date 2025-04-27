@@ -28,6 +28,8 @@ public class ApiRequest
     /// </remarks>
     public Dictionary<string, string> Headers { get; set; } = new();
     
+    public Dictionary<string, string> QueryParameters { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    
     /// <summary>
     /// Gets or sets the content type for the request.
     /// </summary>
@@ -47,5 +49,26 @@ public class ApiRequest
     {
         Headers["Authorization"] = $"Bearer {jwt}";
         return this;
+    }
+    public ApiRequest Clone()
+    {
+        return new ApiRequest
+        {
+            Method = Method,
+            Url = Url,
+            Body = Body,
+            Headers = new Dictionary<string, string>(Headers, StringComparer.OrdinalIgnoreCase),
+            ContentType = ContentType,
+            LastResponse = LastResponse,
+            QueryParameters = new Dictionary<string, string>(QueryParameters, StringComparer.OrdinalIgnoreCase)
+        };
+    }
+    
+    public string BuildRoute()
+    {
+        var uriBuilder = new UriBuilder(Url);
+        var query = string.Join("&", QueryParameters.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+        uriBuilder.Query = query;
+        return uriBuilder.ToString();
     }
 }

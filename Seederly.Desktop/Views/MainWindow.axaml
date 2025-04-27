@@ -40,17 +40,17 @@
                 <TextBlock Padding="5 0">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Workspace: {0}">
-                            <Binding Path="WorkspaceViewModel.WorkspaceName"/>
+                            <Binding Path="WorkspaceName"/>
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
             <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal"
                         Spacing="2">
-                <TextBlock Text="{Binding WorkspaceViewModel.LastRequestCalled}" 
+                <TextBlock Text="{Binding LastOperation}" 
                            Padding="5 0"/>
                 <TextBlock Text="|"/>
-                <TextBlock Text="{Binding WorkspaceViewModel.LastResponseStatus}" 
+                <TextBlock Text="{Binding Status}" 
                            Padding="5 0"/>
             </StackPanel>
         </Grid>
@@ -72,6 +72,7 @@
             </MenuItem>
 
             <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
+            <MenuItem Header="_Workflow" Command="{Binding NavigateToWorkflowCommand}" />
             <MenuItem Header="_Settings" Command="{Binding NavigateToSettingsCommand}" />
 
             <MenuItem Header="_Help">

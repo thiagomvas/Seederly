@@ -1,9 +1,12 @@
 using System;
 using System.IO;
+using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Seederly.Core;
+using Seederly.Core.Automation;
 using Seederly.Desktop.ViewModels;
 
 namespace Seederly.Desktop.Views;
@@ -34,8 +37,8 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            var vm = new WorkspaceViewModel(files[0].Path.LocalPath);
-            _viewModel.SetViewModel(vm);
+            _viewModel.LoadedWorkspace = Workspace.DeserializeFromJson(File.ReadAllText(files[0].Path.LocalPath));
+            _viewModel.NavigateToWorkspace();
         }
     }
     
@@ -59,17 +62,13 @@ public partial class MainWindow : Window
             {
                 // Open writing stream from the file.
                 _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-                await using var stream = await file.OpenWriteAsync();
-                using var streamWriter = new StreamWriter(stream);
-                await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+                _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
+                Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
             }
         }
         else
         {
-            // Open writing stream from the file.
-            await using var stream = File.OpenWrite(_viewModel.WorkspaceViewModel.WorkspacePath);
-            using var streamWriter = new StreamWriter(stream);
-            await streamWriter.WriteLineAsync(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
         }
     }
 
@@ -90,9 +89,8 @@ public partial class MainWindow : Window
         if (file is not null)
         {
             _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-            using var stream = file.OpenWriteAsync().Result;
-            using var streamWriter = new StreamWriter(stream);
-            streamWriter.WriteLine(_viewModel.WorkspaceViewModel.SerializeWorkspace());
+            _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
+            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
         }
     }
 

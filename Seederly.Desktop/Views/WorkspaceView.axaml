@@ -13,7 +13,6 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
-            <TextBox Text="{Binding WorkspaceName}" Watermark="Workspace Name"/>
             <Grid Margin="8" 
                   ColumnDefinitions="Auto,*" 
                   VerticalAlignment="Center">
@@ -92,15 +91,28 @@
                 <TabControl Grid.Row="1">
                     <!-- Headers Tab -->
                     <TabItem Header="Headers">
+                        <StackPanel>
                         <DataGrid Margin="0,10" AutoGenerateColumns="False"
                                   GridLinesVisibility="All"
                                   IsReadOnly="False"
                                   ItemsSource="{Binding SelectedNode.Value.Headers}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
-                                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Remove"
+                                                    Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
                             </DataGrid.Columns>
                         </DataGrid>
+                            <Button Content="Add Header"  Command="{Binding AddHeaderCommand}"/>
+                            </StackPanel>
                     </TabItem>
 
                     <!-- Body Tab -->
@@ -161,7 +173,7 @@
                     <!-- Response Tab -->
                     <TabItem Header="Response">
                         <StackPanel>
-                            <TextBlock Text="{Binding LastResponseStatus}" />
+                            <TextBlock Text="{Binding LastStatus}" />
                             <DataGrid Margin="0,10" AutoGenerateColumns="False"
                                       GridLinesVisibility="All"
                                       IsReadOnly="True"

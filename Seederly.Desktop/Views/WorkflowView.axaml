@@ -1,0 +1,187 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Seederly.Desktop.ViewModels"
+             xmlns:models="clr-namespace:Seederly.Desktop.Models"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Seederly.Desktop.Views.WorkflowView"
+             x:DataType="vm:WorkflowViewModel">
+    <Grid ColumnDefinitions="200,*">
+        <StackPanel Background="{DynamicResource SeederlyControlBackground}">
+            <TextBlock Text="Workflows" FontSize="18" />
+            <ListBox ItemsSource="{Binding Workflows}" SelectedItem="{Binding SelectedWorkflow}">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Delete"
+                                  Command="{Binding RemoveWorkflowCommand}"
+                                  CommandParameter="{Binding SelectedWorkflow} " />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Name}"
+                                       IsVisible="{Binding !IsEditing}"
+                                       Grid.Column="0"
+                                       DoubleTapped="NameTextBlock_OnDoubleTapped"
+                                       VerticalAlignment="Center" />
+                            <TextBox Text="{Binding Name}"
+                                     IsVisible="{Binding IsEditing}"
+                                     Grid.Column="0"
+                                     LostFocus="NameTextBox_LostFocus"
+                                     VerticalAlignment="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Content="Add Workflow" Command="{Binding AddWorkflowCommand}" />
+        </StackPanel>
+
+
+        <ScrollViewer Grid.Column="1" Padding="10">
+            <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Button Content="{avalonia:MaterialIconTextExt Kind=Play, Text=Execute}" Command="{Binding ExecuteWorkflowCommand}" Padding="10,5"/>
+                    <TextBlock Text="{Binding SelectedWorkflow.LastStatus}" 
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               Foreground="Gray" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding SelectedWorkflow.Steps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource SeederlyControlBackground}" 
+                                    Padding="10"
+                                    CornerRadius="8"
+                                    Margin="10 0 10 10">
+                                <StackPanel>
+                                    <StackPanel IsVisible="{Binding IsEditing}">
+                                        <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto">
+                                            <TextBlock Text="Name" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                            <TextBox Grid.Column="1" Text="{Binding Name}" Watermark="Name" VerticalAlignment="Center" />
+
+                                            <Button Grid.Column="2" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" VerticalAlignment="Center" />
+
+                                            <TextBlock Grid.Row="1" Text="Endpoint Name" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                            <AutoCompleteBox Grid.Column="1" Grid.Row="1" Text="{Binding EndpointName}"
+                                                             ItemsSource="{Binding ((vm:WorkflowViewModel)DataContext).AvailableEndpointNames, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                             Watermark="Endpoint Name" VerticalAlignment="Center" />
+                                        </Grid>
+
+                                        <TextBlock Text="Extractions" FontSize="18" FontWeight="Bold" />
+                                        <DataGrid ItemsSource="{Binding Extract}"
+                                                  AutoGenerateColumns="False"
+                                                  GridLinesVisibility="All"
+                                                  IsReadOnly="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Variable Name" Width="*"
+                                                                    Binding="{Binding VariableName}" />
+                                                <DataGridTextColumn Header="Path" Width="*"
+                                                                    Binding="{Binding JsonPath}" />
+                                                <DataGridTemplateColumn Header="Source" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox HorizontalAlignment="Stretch"
+                                                                      SelectedIndex="{Binding SelectedIndex}">
+                                                                <ComboBoxItem Content="Response" />
+                                                                <ComboBoxItem Content="Header" />
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                                    Command="{Binding Parent.RemoveExtractRuleCommand}"
+                                                                    CommandParameter="{Binding}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Extraction Rule}" Command="{Binding AddExtractRuleCommand}" />
+                                        <Separator Margin="0 10"/>
+                                        <TextBlock Text="Injections" FontSize="18" FontWeight="Bold" />
+                                        <DataGrid ItemsSource="{Binding Inject}"
+                                                  AutoGenerateColumns="False"
+                                                  GridLinesVisibility="All"
+                                                  IsReadOnly="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Variable Name" Width="*"
+                                                                    Binding="{Binding Key}" />
+                                                <DataGridTextColumn Header="Path" Width="*"
+                                                                    Binding="{Binding Path}" />
+                                                <DataGridTemplateColumn Header="Target" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox HorizontalAlignment="Stretch"
+                                                                      SelectedIndex="{Binding SelectedIndex}">
+                                                                <ComboBoxItem Content="Body" />
+                                                                <ComboBoxItem Content="Query" />
+                                                                <ComboBoxItem Content="Header" />
+                                                                <ComboBoxItem Content="Endpoint" />
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTemplateColumn>
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                                    Command="{Binding Parent.RemoveInjectRuleCommand}"
+                                                                    CommandParameter="{Binding}" />
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Injection Rule}" Command="{Binding AddInjectRuleCommand}" />
+                                        <Separator Margin="0 10"/>
+                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Remove Step}" Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                    <StackPanel IsVisible="{Binding !IsEditing}">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
+                                            <Button Grid.Column="1" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" />
+                                        </Grid>
+                                        <TextBlock Text="{Binding FormattedUrl}" />
+                                        <ItemsControl ItemsSource="{Binding Extract}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <Run Text="Extract: "/>
+                                                        <Run Text="{Binding JsonPath}" />
+                                                        <Run Text=" → " />
+                                                        <Run Text="{Binding VariableName}" />
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <ItemsControl ItemsSource="{Binding Inject}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                        <Run Text="Inject: "/>
+                                                        <Run Text="{Binding Key}" />
+                                                        <Run Text=" → " />
+                                                        <Run Text="{Binding Path}" />
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Command="{Binding AddNewStepCommand}" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Step}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
