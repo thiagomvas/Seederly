@@ -98,6 +98,7 @@
                                   ItemsSource="{Binding SelectedNode.Value.Headers}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
 
                                 <DataGridTemplateColumn>
                                     <DataGridTemplateColumn.CellTemplate>
