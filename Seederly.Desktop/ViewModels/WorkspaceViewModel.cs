@@ -187,14 +187,13 @@ public partial class WorkspaceViewModel : ViewModelBase
 
             if (MainWindowViewModel.Instance is not null)
             {
-                
-                MainWindowViewModel.Instance.Status = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
+                var status = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
+                MainWindowViewModel.Instance.Status = status;
                 MainWindowViewModel.Instance.LastOperation = SelectedNode.Name;   
+                LoggerService.Instance.Log($"{SelectedNode.Name} - {status}");
             }
         }
         stopwatch.Stop();
-        
-        LoggerService.Instance.Log($"[{DateTime.Now}] {SelectedNode.Name} - {SelectedNode.Value.LastResponse.StatusCode} - {SelectedNode.Value.LastResponse.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)");
     }
 
 
