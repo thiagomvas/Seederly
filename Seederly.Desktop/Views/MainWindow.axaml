@@ -82,7 +82,24 @@
             </MenuItem>
         </Menu>
 
-        <ContentControl Content="{Binding CurrentPage}"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5" /> <!-- splitter -->
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ContentControl Grid.Row="0" Content="{Binding CurrentPage}" />
+
+            <GridSplitter Grid.Row="1"
+                          Height="5"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource SeederlyControlBackground}"
+                          ShowsPreview="True"/>
+
+            <TextBox Grid.Row="2" Text="{Binding LoggerService.LogText}" IsReadOnly="True"/>
+        </Grid>
+
         
     </DockPanel>
 
