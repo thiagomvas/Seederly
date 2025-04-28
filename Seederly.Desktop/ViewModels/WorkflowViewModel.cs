@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
 using Seederly.Core.Automation;
 using Seederly.Desktop.Models;
+using Seederly.Desktop.Services;
 
 namespace Seederly.Desktop.ViewModels;
 
@@ -362,8 +363,19 @@ public partial class WorkflowViewModel : ViewModelBase
         
         if (MainWindowViewModel.Instance is not null)
         {
-            MainWindowViewModel.Instance.Status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
+            string status;
+            if (result.IsSuccessful)
+            {
+                status = $"Success ({result.TotalElapsedMilliseconds}ms)";
+            }
+            else
+            { 
+                status = $"Failed ({result.ErrorMessage})";
+            }
+            //var status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
+            MainWindowViewModel.Instance.Status = status;
             MainWindowViewModel.Instance.LastOperation = $"Workflow: {workflow.Name}";
+            LoggerService.Instance.Log($"Executed workflow '{workflow.Name}': {status}");   
         }
     }
 }
