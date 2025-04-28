@@ -13,8 +13,8 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
-            <Grid Margin="8" 
-                  ColumnDefinitions="Auto,*" 
+            <Grid Margin="8"
+                  ColumnDefinitions="Auto,*"
                   VerticalAlignment="Center">
                 <TextBlock Grid.Column="0"
                            Text="API Explorer"
@@ -34,14 +34,14 @@
                               SelectedItem="{Binding SelectedNode}">
                         <TreeView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Add Child" 
-                                          Command="{Binding AddChildToSelectedNodeCommand}"/>
-                                <MenuItem Header="Delete" 
+                                <MenuItem Header="Add Child"
+                                          Command="{Binding AddChildToSelectedNodeCommand}" />
+                                <MenuItem Header="Delete"
                                           Command="{Binding RemoveSelectedNodeCommand}" />
                             </ContextMenu>
                         </TreeView.ContextMenu>
                         <TreeView.ItemTemplate>
-                            
+
                             <TreeDataTemplate ItemsSource="{Binding SubNodes}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Text="{Binding Name}"
@@ -83,44 +83,43 @@
                     </ComboBox>
                     <TextBox Width="500" Margin="10,0" Text="{Binding SelectedNode.Value.Url}" />
                     <TextBox Width="60" Margin="10,0" Text="{Binding SelectedNode.Amount}" />
-                    <CheckBox Content="Generate Every Request" IsChecked="{Binding SelectedNode.GenerateEveryRequest}" Margin="10,0" />
+                    <CheckBox Content="Generate Every Request" IsChecked="{Binding SelectedNode.GenerateEveryRequest}"
+                              Margin="10,0" />
                     <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
                 </StackPanel>
 
-                <!-- Tabs: Headers and Body -->
                 <TabControl Grid.Row="1">
-                    <!-- Headers Tab -->
-                    <TabItem Header="Headers">
+                    <!-- Request Tab -->
+                    <TabItem Header="Request">
                         <StackPanel>
-                        <DataGrid Margin="0,10" AutoGenerateColumns="False"
-                                  GridLinesVisibility="All"
-                                  IsReadOnly="False"
-                                  ItemsSource="{Binding SelectedNode.Value.Headers}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
-                                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+                            <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                                      GridLinesVisibility="All"
+                                      IsReadOnly="False"
+                                      ItemsSource="{Binding SelectedNode.Value.Headers}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                                    <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
 
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Remove"
-                                                    Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Remove"
+                                                        Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
 
-                            </DataGrid.Columns>
-                        </DataGrid>
-                            <Button Content="Add Header"  Command="{Binding AddHeaderCommand}"/>
-                            </StackPanel>
-                    </TabItem>
-
-                    <!-- Body Tab -->
-                    <TabItem Header="Body">
-                        <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="200"
-                                 VerticalAlignment="Top"
-                                 Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button Content="Add Header" Command="{Binding AddHeaderCommand}" />
+                            <TextBox AcceptsReturn="True" 
+                                     TextWrapping="Wrap" 
+                                     Margin="0"
+                                     AcceptsTab="True"
+                                     VerticalAlignment="Top"
+                                     Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+                        </StackPanel>
                     </TabItem>
                     <!-- Schema Tab -->
                     <TabItem Header="Schema">
