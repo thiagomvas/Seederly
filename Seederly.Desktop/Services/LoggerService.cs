@@ -29,7 +29,7 @@ public partial class LoggerService : ObservableObject
     #endregion
     
     public ObservableCollection<LogEntry> LogEntries { get; } = new();
-    public string LogText { get; private set; }
+    [ObservableProperty] private string _logText = string.Empty;
     public void Log(string message)
     {
         var logEntry = new LogEntry

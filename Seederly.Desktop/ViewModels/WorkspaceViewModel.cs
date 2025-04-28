@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
 using Seederly.Desktop.Models;
+using Seederly.Desktop.Services;
 
 namespace Seederly.Desktop.ViewModels;
 
@@ -192,6 +193,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             }
         }
         stopwatch.Stop();
+        
+        LoggerService.Instance.Log($"[{DateTime.Now}] {SelectedNode.Name} - {SelectedNode.Value.LastResponse.StatusCode} - {SelectedNode.Value.LastResponse.StatusCode} ({stopwatch.ElapsedMilliseconds} ms)");
     }
 
 
