@@ -86,7 +86,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="5" /> <!-- splitter -->
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="200" />
             </Grid.RowDefinitions>
 
             <ContentControl Grid.Row="0" Content="{Binding CurrentPage}" />
