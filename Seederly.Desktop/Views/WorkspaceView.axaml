@@ -8,8 +8,9 @@
              x:DataType="vm:WorkspaceViewModel">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" /> <!-- Sidebar -->
-            <ColumnDefinition Width="*" />   <!-- Main content -->
+            <ColumnDefinition Width="200" MinWidth="100" /> <!-- Sidebar -->
+            <ColumnDefinition Width="5" />                   <!-- Splitter -->
+            <ColumnDefinition Width="*" />                   <!-- Main content -->
         </Grid.ColumnDefinitions>
 
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
@@ -67,8 +68,13 @@
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>
+        <GridSplitter Grid.Column="1" 
+                      Width="5" 
+                      Background="{DynamicResource SeederlyControlBackground}" 
+                      ShowsPreview="True" 
+                      HorizontalAlignment="Stretch" />
         <!-- Main content area -->
-        <ScrollViewer Grid.Column="1" IsVisible="{Binding HasContent}">
+        <ScrollViewer Grid.Column="2" IsVisible="{Binding HasContent}">
 
             <Grid Margin="10" RowDefinitions="Auto,*,Auto">
 

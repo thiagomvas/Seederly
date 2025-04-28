@@ -8,7 +8,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Seederly.Desktop.Views.WorkflowView"
              x:DataType="vm:WorkflowViewModel">
-    <Grid ColumnDefinitions="200,*">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" MinWidth="100" /> <!-- Sidebar -->
+            <ColumnDefinition Width="5" />                   <!-- Splitter -->
+            <ColumnDefinition Width="*" />                   <!-- Main content -->
+        </Grid.ColumnDefinitions>
         <StackPanel Background="{DynamicResource SeederlyControlBackground}">
             <TextBlock Text="Workflows" FontSize="18" />
             <ListBox ItemsSource="{Binding Workflows}" SelectedItem="{Binding SelectedWorkflow}">
@@ -40,8 +45,13 @@
             <Button Content="Add Workflow" Command="{Binding AddWorkflowCommand}" />
         </StackPanel>
 
+        <GridSplitter Grid.Column="1" 
+                      Width="5" 
+                      Background="{DynamicResource SeederlyControlBackground}" 
+                      ShowsPreview="True" 
+                      HorizontalAlignment="Stretch" />
 
-        <ScrollViewer Grid.Column="1" Padding="10">
+        <ScrollViewer Grid.Column="2" Padding="10">
             <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     <Button Content="{avalonia:MaterialIconTextExt Kind=Play, Text=Execute}" Command="{Binding ExecuteWorkflowCommand}" Padding="10,5"/>
