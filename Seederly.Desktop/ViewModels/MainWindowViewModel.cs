@@ -3,12 +3,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
 using Seederly.Core.Automation;
+using Seederly.Desktop.Services;
 
 namespace Seederly.Desktop.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     public static MainWindowViewModel? Instance { get; private set; }
+    
+    public LoggerService LoggerService { get; } = LoggerService.Instance;
     
     [ObservableProperty] private string _workspaceName = "New Workspace";
     [ObservableProperty] private string _lastOperation = "No operations performed yet.";

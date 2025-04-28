@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Seederly.Desktop.Models;
 
 namespace Seederly.Desktop.Services;
 
-public class LoggerService
+public partial class LoggerService : ObservableObject
 {
     #region Singleton
 
@@ -14,12 +16,20 @@ public class LoggerService
     private LoggerService()
     {
         // Private constructor to prevent instantiation
+        LogEntries.CollectionChanged += (sender, args) =>
+        {
+            if (args.NewItems == null) return;
+            foreach (LogEntry logEntry in args.NewItems)
+            {
+                LogText += $"{logEntry.Timestamp}: {logEntry.Message}\n";
+            }
+        };
+        Log("Logger Service initialized.");
     }
     #endregion
     
-    private readonly List<LogEntry> _logEntries = new();
-    public IReadOnlyList<LogEntry> LogEntries => _logEntries.AsReadOnly();
-    
+    public ObservableCollection<LogEntry> LogEntries { get; } = new();
+    public string LogText { get; private set; }
     public void Log(string message)
     {
         var logEntry = new LogEntry
@@ -28,6 +38,6 @@ public class LoggerService
             Timestamp = DateTime.Now
         };
         
-        _logEntries.Add(logEntry);
+        LogEntries.Add(logEntry);
     }
 }
