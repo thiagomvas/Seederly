@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Seederly.Core;
 using Seederly.Desktop.Models;
 
 namespace Seederly.Desktop.Services;
@@ -40,4 +41,56 @@ public partial class LoggerService : ObservableObject
         
         LogEntries.Add(logEntry);
     }
+    
+    public void Log(ApiRequest request)
+    {
+        var lines = new List<string>
+        {
+            "----- API Request -----",
+            $"Method: {request.Method}",
+            $"URL: {request.BuildRoute()}"
+        };
+
+        if (request.Headers.Count > 0)
+        {
+            lines.Add("Headers:");
+            foreach (var header in request.Headers)
+            {
+                lines.Add($"  {header.Key}: {header.Value}");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(request.Body))
+        {
+            lines.Add("Body:");
+            lines.Add(request.Body);
+        }
+
+        lines.Add("------------------------");
+
+        Log(string.Join(Environment.NewLine, lines));
+    }
+
+
+    public void Log(ApiResponse response)
+    {
+        var lines = new List<string>
+        {
+            "----- API Response -----",
+            $"Status Code: {(int)response.StatusCode} ({response.StatusCode})",
+            "Headers:"
+        };
+
+        foreach (var header in response.Headers)
+        {
+            lines.Add($"  {header.Key}: {header.Value}");
+        }
+
+        lines.Add("Content:");
+        lines.Add(response.Content);
+        lines.Add("-------------------------");
+
+        Log(string.Join(Environment.NewLine, lines));
+    }
+
 }

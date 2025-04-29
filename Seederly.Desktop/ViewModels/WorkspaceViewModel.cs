@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
@@ -167,6 +168,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         var request = SelectedNode.Value.ToApiRequest();
+        
+        LoggerService.Instance.Log(request);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < SelectedNode.Amount; i++)
@@ -191,6 +194,7 @@ public partial class WorkspaceViewModel : ViewModelBase
                 MainWindowViewModel.Instance.Status = status;
                 MainWindowViewModel.Instance.LastOperation = SelectedNode.Name;   
                 LoggerService.Instance.Log($"{SelectedNode.Name} - {status}");
+                LoggerService.Instance.Log(result);
             }
         }
         stopwatch.Stop();
