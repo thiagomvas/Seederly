@@ -54,7 +54,7 @@ public class WorkflowExecutor
                     ErrorMessage = $"Endpoint '{step.EndpointName}' not found."
                 };
                 result.Steps.Add(failedStep);
-                return result;
+                break;
             }
             
             // Clone the request to avoid modifying the original
@@ -73,7 +73,7 @@ public class WorkflowExecutor
                         ErrorMessage = $"Variable '{injection.Key}' not found."
                     };
                     result.Steps.Add(failedStep);
-                    return result;
+                    break;
                 }
                 switch (injection.Target)
                 {
@@ -95,21 +95,39 @@ public class WorkflowExecutor
             }
             
             var response = await _apiRequestExecutor.ExecuteAsync(clonedRequest);
+            bool extractionSuccess = true;
+
             // Extract variables
             foreach (var extraction in step.Extract)
             {
+                extractionSuccess = true;
                 switch (extraction.Source)
                 {
                     case ExtractionVariableTarget.Response:
-                        if(!ExtractFromResponse(response, extraction, step, result)) return result;
+                        extractionSuccess = ExtractFromResponse(response, extraction, step, result);
                         break;
                     case ExtractionVariableTarget.Header:
-                        if (!ExtractFromHeader(response, extraction, step, result)) return result;
+                        extractionSuccess = ExtractFromHeader(response, extraction, step, result);
                         break;
                     default:
                         throw new NotSupportedException();
                 }
+                
+                if (!extractionSuccess)
+                {
+                    var failedStep = new WorkflowStepResult
+                    {
+                        Name = step.Name,
+                        Status = WorkflowStepStatus.ExtractionFailure,
+                        ErrorMessage = $"Failed to extract variable '{extraction.Source}' from response."
+                    };
+                    result.Steps.Add(failedStep);
+                    break;
+                }
             }
+
+            if (!extractionSuccess) break;
+            
             
             // Add step result
             var stepResult = new WorkflowStepResult
@@ -129,11 +147,14 @@ public class WorkflowExecutor
             }
             
             result.Steps.Add(stepResult);
+            
+            if(stepResult.Status != WorkflowStepStatus.Success)
+                break;
         }
 
         if(!result.IsSuccessful)
         {
-            result.ErrorMessage = $"Workflow execution failed: '{result.Steps.Last().ErrorMessage}'.";
+            result.ErrorMessage = result.Steps.Last()?.ErrorMessage ?? "N/A";
         }
         
         return result;
@@ -205,6 +226,9 @@ public class WorkflowExecutor
         JsonObject? responseJson = null;
         if (response != null)
         {
+            if (response.Content.StartsWith("<"))
+                return false; // TODO: XML parsing since it is not supported
+                
             responseJson = JsonSerializer.Deserialize<JsonObject>(response.Content);
         }
         if (responseJson != null)
