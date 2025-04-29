@@ -115,10 +115,18 @@
                 <ItemsControl ItemsSource="{Binding LoggerService.LogEntries}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <SelectableTextBlock Text="{Binding Timestamp}" Margin="0,0,10,0" />
-                                <SelectableTextBlock Text="{Binding Message}" />
-                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <SelectableTextBlock Grid.Column="0" Foreground="{Binding Color}" Text="{Binding Level}" Margin="0,0,10,0" />
+                                <SelectableTextBlock Grid.Column="1" Foreground="{Binding Color}" Text="{Binding Timestamp}" Margin="0,0,10,0" />
+                                <SelectableTextBlock Grid.Column="2" Foreground="{Binding Color}" Text="{Binding Message}" />
+                            </Grid>
+
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
