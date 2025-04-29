@@ -375,7 +375,6 @@ public partial class WorkflowViewModel : ViewModelBase
             //var status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
             MainWindowViewModel.Instance.Status = status;
             MainWindowViewModel.Instance.LastOperation = $"Workflow: {workflow.Name}";
-            LoggerService.Instance.Log($"Executed workflow '{workflow.Name}': {status}");   
         }
     }
 }

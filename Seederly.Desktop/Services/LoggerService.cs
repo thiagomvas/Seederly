@@ -125,4 +125,8 @@ public partial class LoggerService : ObservableObject, ILogger
         Log(message, LogLevel.Debug);
     }
 
+    public void LogCritical(string message)
+    {
+        Log(message, LogLevel.Critical);
+    }
 }

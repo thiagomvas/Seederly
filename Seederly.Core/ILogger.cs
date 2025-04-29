@@ -6,4 +6,5 @@ public interface ILogger
     void LogError(string message);
     void LogWarning(string message);
     void LogDebug(string message);
+    void LogCritical(string message);
 }
