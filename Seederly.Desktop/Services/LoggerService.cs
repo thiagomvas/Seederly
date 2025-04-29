@@ -31,12 +31,13 @@ public partial class LoggerService : ObservableObject
     
     public ObservableCollection<LogEntry> LogEntries { get; } = new();
     [ObservableProperty] private string _logText = string.Empty;
-    public void Log(string message)
+    public void Log(string message, LogLevel level = LogLevel.Info)
     {
         var logEntry = new LogEntry
         {
             Message = message,
-            Timestamp = DateTime.Now
+            Timestamp = DateTime.Now,
+            Level = level
         };
         
         LogEntries.Add(logEntry);
@@ -46,39 +47,38 @@ public partial class LoggerService : ObservableObject
     {
         var lines = new List<string>
         {
-            "----- API Request -----",
-            $"Method: {request.Method}",
-            $"URL: {request.BuildRoute()}"
+            $"[Request] {request.Method} {request.BuildRoute()}",
+            $"Headers ({request.Headers.Count}):"
         };
 
-        if (request.Headers.Count > 0)
+        foreach (var header in request.Headers)
         {
-            lines.Add("Headers:");
-            foreach (var header in request.Headers)
-            {
-                lines.Add($"  {header.Key}: {header.Value}");
-            }
+            lines.Add($"  {header.Key}: {header.Value}");
         }
 
-        if (!string.IsNullOrEmpty(request.Body))
+        if (!string.IsNullOrWhiteSpace(request.Body))
         {
             lines.Add("Body:");
-            lines.Add(request.Body);
+            lines.Add(IndentJsonIfPossible(request.Body));
         }
 
-        lines.Add("------------------------");
-
-        Log(string.Join(Environment.NewLine, lines));
+        var message = string.Join(Environment.NewLine, lines);
+        LogEntries.Add(new LogEntry
+        {
+            Message = message,
+            Timestamp = DateTime.Now,
+            Level = LogLevel.Debug
+        });
     }
+
 
 
     public void Log(ApiResponse response)
     {
         var lines = new List<string>
         {
-            "----- API Response -----",
-            $"Status Code: {(int)response.StatusCode} ({response.StatusCode})",
-            "Headers:"
+            $"[Response] {(int)response.StatusCode} {response.StatusCode}",
+            $"Headers ({response.Headers.Count}):"
         };
 
         foreach (var header in response.Headers)
@@ -87,10 +87,33 @@ public partial class LoggerService : ObservableObject
         }
 
         lines.Add("Content:");
-        lines.Add(response.Content);
-        lines.Add("-------------------------");
+        lines.Add(IndentJsonIfPossible(response.Content));
 
-        Log(string.Join(Environment.NewLine, lines));
+        var message = string.Join(Environment.NewLine, lines);
+        LogEntries.Add(new LogEntry
+        {
+            Message = message,
+            Timestamp = DateTime.Now,
+            Level = LogLevel.Debug
+        });
     }
+
+    
+    private string IndentJsonIfPossible(string json)
+    {
+        try
+        {
+            var parsed = System.Text.Json.JsonDocument.Parse(json);
+            return System.Text.Json.JsonSerializer.Serialize(parsed, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+        }
+        catch
+        {
+            return json; // Fallback to raw if not valid JSON
+        }
+    }
+
 
 }
