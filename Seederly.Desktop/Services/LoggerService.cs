@@ -7,7 +7,7 @@ using Seederly.Desktop.Models;
 
 namespace Seederly.Desktop.Services;
 
-public partial class LoggerService : ObservableObject
+public partial class LoggerService : ObservableObject, ILogger
 {
     #region Singleton
 
@@ -104,5 +104,25 @@ public partial class LoggerService : ObservableObject
         }
     }
 
+
+    public void LogInformation(string message)
+    {
+        Log(message, LogLevel.Info);
+    }
+
+    public void LogError(string message)
+    {
+        Log(message, LogLevel.Error);
+    }
+
+    public void LogWarning(string message)
+    {
+        Log(message, LogLevel.Warning);
+    }
+
+    public void LogDebug(string message)
+    {
+        Log(message, LogLevel.Debug);
+    }
 
 }

@@ -20,7 +20,7 @@ namespace Seederly.Desktop.ViewModels;
 
 public partial class WorkspaceViewModel : ViewModelBase
 {
-    private readonly ApiRequestExecutor _apiClient = new(new HttpClient());
+    private readonly ApiRequestExecutor _apiClient = new(new HttpClient(), LoggerService.Instance);
     private readonly FakeRequestFactory _fakeRequestFactory = new();
     public ObservableCollection<Node<ApiEndpointModel>> Nodes { get; } = new();
 

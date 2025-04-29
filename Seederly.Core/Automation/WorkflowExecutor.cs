@@ -13,13 +13,15 @@ public class WorkflowExecutor
     private readonly ApiRequestExecutor _apiRequestExecutor;
     private readonly VariableContext _variableContext;
     private readonly Workspace _workspace;
+    private readonly ILogger? _logger;
     private Dictionary<string, ApiRequest> _endpointMap = new(StringComparer.OrdinalIgnoreCase);
     
-    public WorkflowExecutor(ApiRequestExecutor apiRequestExecutor, VariableContext variableContext, Workspace workspace)
+    public WorkflowExecutor(ApiRequestExecutor apiRequestExecutor, VariableContext variableContext, Workspace workspace, ILogger? logger = null)
     {
         _apiRequestExecutor = apiRequestExecutor;
         _variableContext = variableContext;
         _workspace = workspace;
+        _logger = logger;
         
         foreach (var endpoint in workspace.Endpoints)
         {

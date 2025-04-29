@@ -9,9 +9,11 @@ namespace Seederly.Core;
 public class ApiRequestExecutor
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger? _logger;
 
-    public ApiRequestExecutor(HttpClient httpClient)
+    public ApiRequestExecutor(HttpClient httpClient, ILogger? logger = null)
     {
+        _logger = logger;
         _httpClient = httpClient;
     }
 
@@ -47,6 +49,8 @@ public class ApiRequestExecutor
 
         var response = await _httpClient.SendAsync(httpRequestMessage);
         var content = await response.Content.ReadAsStringAsync();
+        
+        _logger?.LogInformation($"[Response] {response.StatusCode} {request.Method} {request.Url}");
 
         return new ApiResponse
         {
