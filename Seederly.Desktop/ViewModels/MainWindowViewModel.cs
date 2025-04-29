@@ -16,6 +16,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _workspaceName = "New Workspace";
     [ObservableProperty] private string _lastOperation = "No operations performed yet.";
     [ObservableProperty] private string _status = "Ready";
+    [ObservableProperty] private bool _showLogs = false;
 
     [ObservableProperty]
     private ViewModelBase? currentPage;
@@ -59,4 +60,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [RelayCommand]
     public void NavigateToSettings() => CurrentPage = new SettingsViewModel();
+    
+    [RelayCommand] 
+    private void ToggleLogs() => ShowLogs = !ShowLogs;
 }

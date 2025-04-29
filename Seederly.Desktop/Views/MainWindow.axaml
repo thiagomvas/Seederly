@@ -3,6 +3,7 @@
         xmlns:vm="using:Seederly.Desktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Seederly.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -35,9 +36,12 @@
             <StackPanel Grid.Row="2" Orientation="Horizontal"
                         Spacing="2">
                 <TextBlock Text="Seederly" 
-                           Padding="5 0"/>
-                <TextBlock Text="|"/>
-                <TextBlock Padding="5 0">
+                           Padding="5 0"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="|"
+                           VerticalAlignment="Center"/>
+                <TextBlock Padding="5 0"
+                           VerticalAlignment="Center">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="Workspace: {0}">
                             <Binding Path="WorkspaceName"/>
@@ -48,10 +52,19 @@
             <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal"
                         Spacing="2">
                 <TextBlock Text="{Binding LastOperation}" 
-                           Padding="5 0"/>
-                <TextBlock Text="|"/>
+                           Padding="5 0"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="|"
+                           VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Status}" 
-                           Padding="5 0"/>
+                           Padding="5 0"
+                           VerticalAlignment="Center"/>
+                <Button Content="{avalonia:MaterialIconExt Kind=Console }" 
+                        Command="{Binding ToggleLogsCommand}"
+                        Background="Transparent" 
+                        VerticalAlignment="Stretch"
+                        Padding="5" 
+                        Margin="5 0"/>
             </StackPanel>
         </Grid>
         <Menu DockPanel.Dock="Top" Background="{DynamicResource SeederlyAccentBackground}">
@@ -82,7 +95,8 @@
             </MenuItem>
         </Menu>
 
-        <Grid>
+        <ContentControl IsVisible="{Binding !ShowLogs}" Content="{Binding CurrentPage}" />
+        <Grid IsVisible="{Binding ShowLogs}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="5" /> <!-- splitter -->
@@ -91,7 +105,7 @@
 
             <ContentControl Grid.Row="0" Content="{Binding CurrentPage}" />
 
-            <GridSplitter Grid.Row="1"
+            <GridSplitter Grid.Row="1" 
                           Height="5"
                           HorizontalAlignment="Stretch"
                           Background="{DynamicResource SeederlyControlBackground}"
