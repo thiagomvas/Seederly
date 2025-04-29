@@ -108,29 +108,52 @@
             <GridSplitter Grid.Row="1"
                           Height="5"
                           HorizontalAlignment="Stretch"
-                          Background="{DynamicResource SeederlyControlBackground}"
+                          Background="{DynamicResource SeederlyPrimaryColor}"
                           ShowsPreview="True" />
 
-            <ScrollViewer Grid.Row="2">
-                <ItemsControl ItemsSource="{Binding LoggerService.LogEntries}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+            <Border Grid.Row="2" 
+                    Padding="5"
+                    Background="{DynamicResource SeederlyControlBackground}">
 
-                                <SelectableTextBlock Grid.Column="0" Foreground="{Binding Color}" Text="{Binding Level}" Margin="0,0,10,0" />
-                                <SelectableTextBlock Grid.Column="1" Foreground="{Binding Color}" Text="{Binding Timestamp}" Margin="0,0,10,0" />
-                                <SelectableTextBlock Grid.Column="2" Foreground="{Binding Color}" Text="{Binding Message}" />
-                            </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" /> <!-- Top bar -->
+                        <RowDefinition Height="*" />    <!-- Log entries -->
+                    </Grid.RowDefinitions>
 
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                    <!-- Top Bar -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Button Content="{avalonia:MaterialIconTextExt Kind=Clear, Text=Clear Logs}" 
+                                Background="Transparent"
+                                Command="{Binding ClearLogsCommand}" 
+                                Margin="0,0,10,0" />
+                    </StackPanel>
+
+                    <!-- Log List -->
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl ItemsSource="{Binding LoggerService.LogEntries}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <SelectableTextBlock Grid.Column="0" Foreground="{Binding Color}"
+                                                             Text="{Binding Level}" Margin="0,0,10,0" />
+                                        <SelectableTextBlock Grid.Column="1" Foreground="{Binding Color}"
+                                                             Text="{Binding Timestamp}" Margin="0,0,10,0" />
+                                        <SelectableTextBlock Grid.Column="2" Foreground="{Binding Color}"
+                                                             Text="{Binding Message}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
         </Grid>
 
 

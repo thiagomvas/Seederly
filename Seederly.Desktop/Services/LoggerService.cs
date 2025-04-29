@@ -16,21 +16,10 @@ public partial class LoggerService : ObservableObject
     
     private LoggerService()
     {
-        // Private constructor to prevent instantiation
-        LogEntries.CollectionChanged += (sender, args) =>
-        {
-            if (args.NewItems == null) return;
-            foreach (LogEntry logEntry in args.NewItems)
-            {
-                LogText += $"{logEntry.Timestamp}: {logEntry.Message}\n";
-            }
-        };
-        Log("Logger Service initialized.");
     }
     #endregion
     
     public ObservableCollection<LogEntry> LogEntries { get; } = new();
-    [ObservableProperty] private string _logText = string.Empty;
     public void Log(string message, LogLevel level = LogLevel.Info)
     {
         var logEntry = new LogEntry
