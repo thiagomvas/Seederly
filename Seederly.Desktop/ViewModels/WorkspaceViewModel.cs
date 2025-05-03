@@ -309,6 +309,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             .Select(node => ExecuteRequest(node.Value!.ToApiRequest()))
             .ToArray();
         int total = tasks.Length;
+        
+        LoggerService.Instance.LogInformation("Running all requests.");
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -343,6 +345,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             MainWindowViewModel.Instance.Status = $"{summary} ({stopwatch.ElapsedMilliseconds} ms)";
             MainWindowViewModel.Instance.LastOperation = "All Requests";
         }
+        
+        LoggerService.Instance.LogInformation($"All requests completed in {stopwatch.ElapsedMilliseconds} ms");
     }
 
     public override void Dispose()
