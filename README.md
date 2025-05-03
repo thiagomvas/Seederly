@@ -1,20 +1,20 @@
 # Seederly - A smarter API tester
 
-Seederly is a modern API tester, but smarter. 
-It lets you create, test, and send HTTP requests while automatically generating realistic, structured, 
-and schema-based fake data, with none of that AI bloat, powered by Bogus, built with speed and developer experience in mind.
+Seederly is a fast, modern API testing tool designed with simplicity, power, and developer experience in mind. Unlike bloated tools, Seederly focuses on providing you with everything you need to test APIs and generate realistic test data, all without unnecessary complexity.
 
 ## Features
-- 🧪 Send HTTP requests (GET, POST, PUT, etc.)
-- 🧬 Schema-based data generation using [Bogus](https://github.com/bchavez/Bogus)
-- 🧠 Intelligent faker with nested object and array support
-- 📝 JSON body templating using short and intuitive keys (`name.firstName`, `address.city`, etc.)
+- **Send HTTP Requests:** Easily test your APIs with GET, POST, PUT, DELETE, and other HTTP methods.
+- **Schema-Based Data Generation:** Generate structured, realistic data based on your defined schemas using  [Bogus](https://github.com/bchavez/Bogus)
+- **Workflow Runner:** Build and execute workflows to call multiple API endpoints in a chain. Supports value extraction and injection between requests, making it easy to chain requests with dynamic data.
 
-## Roadmap
-- [ ] GUI (Avalonia-based)
-- [ ] JSON schema visual editor
-- [ ] Exportable and shareable workspaces
-- [ ] API Test runner
+## Installation
+Coming soon — Seederly will soon be available for download via multiple package managers. For now, you can build it from source using the .NET SDK.
 
 ## Contributing
-PRs and issues are always welcome! This is an early project, so contributions can help shape it's directions.
+Seederly is an open-source project, and we welcome contributions! Whether you're submitting bug fixes, adding new features, or improving the documentation, your help is appreciated. To contribute:
+
+1. Fork the repo
+2. Create a feature branch
+3. Open a pull request
+
+Feel free to open an issue if you have suggestions, bugs, or feature requests.
