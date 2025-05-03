@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -98,4 +99,7 @@ public partial class MainWindow : Window
         .LaunchUriAsync(new Uri("https://github.com/thiagomvas/Seederly/issues"));
 
     private void ExitButton_Clicked(object? sender, RoutedEventArgs e) => Environment.Exit(0);
+
+    private async void SendAllRequests_Clicked(object? sender, RoutedEventArgs e) =>
+        await _viewModel?.WorkspaceViewModel?.ExecuteAllRequests();
 }

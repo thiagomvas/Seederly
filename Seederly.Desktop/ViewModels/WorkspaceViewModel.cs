@@ -299,7 +299,7 @@ public partial class WorkspaceViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task ExecuteAllRequests()
+    public async Task ExecuteAllRequests()
     {
         int doneCount = 0;
         var statusCodeCounts = new Dictionary<HttpStatusCode, int>();

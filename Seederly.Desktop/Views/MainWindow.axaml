@@ -69,10 +69,13 @@
         </Grid>
         <Menu DockPanel.Dock="Top" Background="{DynamicResource SeederlyAccentBackground}">
             <MenuItem Header="_File">
-                <MenuItem Header="_New Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
-                <MenuItem Header="_Open Workspace..." Click="OpenFileButton_Clicked" />
-                <MenuItem Header="_Save Workspace" Click="SaveFileButton_Clicked" />
-                <MenuItem Header="Save Workspace _As..." Click="SaveFileAsButton_Clicked" />
+                <MenuItem Header="_New Workspace" InputGesture="Ctrl+N" Command="{Binding NavigateToWorkspaceCommand}"
+                          HotKey="Ctrl+N" />
+                <MenuItem Header="_Open Workspace" InputGesture="Ctrl+O" Click="OpenFileButton_Clicked" HotKey="Ctrl+O"/>
+                <MenuItem Header="_Save Workspace" InputGesture="Ctrl+S" Click="SaveFileButton_Clicked" HotKey="Ctrl+S" />
+                <MenuItem Header="Save Workspace _As" InputGesture="Ctrl+Shift+S" Click="SaveFileAsButton_Clicked"
+                          HotKey="Ctrl+Shift+S" />
+
                 <Separator />
                 <MenuItem Header="E_xit" Click="ExitButton_Clicked" />
             </MenuItem>
@@ -81,7 +84,10 @@
             </MenuItem>
 
             <MenuItem Header="_Tools">
-                <MenuItem Header="Send All Requests" Command="{Binding WorkspaceViewModel.ExecuteAllRequestsCommand}" />
+                <MenuItem Header="Send All Requests"
+                          Click="SendAllRequests_Clicked"
+                          InputGesture="F5"
+                          HotKey="F5" />
             </MenuItem>
 
             <MenuItem Header="_Workspace" Command="{Binding NavigateToWorkspaceCommand}" />
@@ -89,7 +95,7 @@
             <MenuItem Header="_Settings" Command="{Binding NavigateToSettingsCommand}" />
 
             <MenuItem Header="_Help">
-                <MenuItem Header="Documentation" />
+                <MenuItem Header="Documentation" InputGesture="F1" HotKey="F1" />
                 <MenuItem Header="Report a Bug" Click="ReportBugButton_Clicked" />
                 <MenuItem Header="About Seederly" />
             </MenuItem>
@@ -111,7 +117,7 @@
                           Background="{DynamicResource SeederlyPrimaryColor}"
                           ShowsPreview="True" />
 
-            <Border Grid.Row="2" 
+            <Border Grid.Row="2"
                     Padding="5"
                     Background="{DynamicResource SeederlyControlBackground}">
 
@@ -123,16 +129,16 @@
 
                     <!-- Top Bar -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
-                        <Button Content="{avalonia:MaterialIconTextExt Kind=Clear, Text=Clear Logs}" 
+                        <Button Content="{avalonia:MaterialIconTextExt Kind=Clear, Text=Clear Logs}"
                                 Background="Transparent"
-                                Command="{Binding ClearLogsCommand}" 
+                                Command="{Binding ClearLogsCommand}"
                                 Margin="0,0,10,0" />
-                        <Button Content="{avalonia:MaterialIconTextExt Kind=Download, Text=Export Logs}" 
+                        <Button Content="{avalonia:MaterialIconTextExt Kind=Download, Text=Export Logs}"
                                 Command="{Binding ExportLogsCommand}"
                                 Background="Transparent"
-                                Margin="0 0 10 0"/>
+                                Margin="0 0 10 0" />
 
-                        <TextBlock Text="Filter " FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="Filter " FontWeight="Bold" VerticalAlignment="Center" />
                         <ComboBox SelectedIndex="{Binding LoggerService.Filter}">
                             <ComboBoxItem Content="All" />
                             <ComboBoxItem Content="Info" />
