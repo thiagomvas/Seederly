@@ -127,6 +127,10 @@
                                 Background="Transparent"
                                 Command="{Binding ClearLogsCommand}" 
                                 Margin="0,0,10,0" />
+                        <Button Content="{avalonia:MaterialIconTextExt Kind=Download, Text=Export Logs}" 
+                                Command="{Binding ExportLogsCommand}"
+                                Background="Transparent"
+                                Margin="0 0 10 0"/>
 
                         <TextBlock Text="Filter " FontWeight="Bold" VerticalAlignment="Center"/>
                         <ComboBox SelectedIndex="{Binding LoggerService.Filter}">

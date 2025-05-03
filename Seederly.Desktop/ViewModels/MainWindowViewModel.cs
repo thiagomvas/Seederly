@@ -1,4 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
@@ -65,4 +72,39 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ToggleLogs() => ShowLogs = !ShowLogs;
     [RelayCommand]
     private void ClearLogs() => LoggerService.LogEntries.Clear();
+
+    [RelayCommand]
+    private async Task ExportLogs()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Export Logs",
+            Filters = new List<FileDialogFilter>
+            {
+                new FileDialogFilter { Name = "Text Files", Extensions = { "txt" } },
+                new FileDialogFilter { Name = "All Files", Extensions = { "*" } }
+            },
+            DefaultExtension = "txt"
+        };
+
+        var window = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
+
+        if (window is null)
+            return;
+
+        var filePath = await dialog.ShowAsync(window);
+        if (string.IsNullOrWhiteSpace(filePath))
+            return;
+
+        var sb = new StringBuilder();
+        foreach (var entry in LoggerService.LogEntries)
+        {
+            sb.AppendLine($"[{entry.Level}] [{entry.Timestamp}] {entry.Message}");
+        }
+
+        await File.WriteAllTextAsync(filePath, sb.ToString());
+    }
+
 }
