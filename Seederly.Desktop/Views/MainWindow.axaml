@@ -143,24 +143,24 @@
                     </StackPanel>
 
                     <!-- Log List -->
-                    <ScrollViewer Grid.Row="1">
+                    <ScrollViewer Grid.Row="1" MaxHeight="400">
                         <ItemsControl ItemsSource="{Binding LoggerService.FilteredLogEntries}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <SelectableTextBlock Grid.Column="0" Foreground="{Binding Color}"
-                                                             Text="{Binding Level}" Margin="0,0,10,0" />
-                                        <SelectableTextBlock Grid.Column="1" Foreground="{Binding Color}"
-                                                             Text="{Binding Timestamp}" Margin="0,0,10,0" />
-                                        <SelectableTextBlock Grid.Column="2" Foreground="{Binding Color}"
-                                                             Text="{Binding Message}" />
-                                    </Grid>
+                                    <Border BorderThickness="0,0,0,1" BorderBrush="#30FFFFFF" Padding="4">
+                                        <Grid ColumnDefinitions="80,Auto,*" VerticalAlignment="Center">
+                                            <SelectableTextBlock Grid.Column="0"
+                                                                 Foreground="{Binding Color}"
+                                                                 Text="{Binding Level}"
+                                                                 FontWeight="Bold" />
+                                            <SelectableTextBlock Grid.Column="1"
+                                                                 Foreground="{Binding Color}"
+                                                                 Text="{Binding Timestamp}" Margin="10,0" />
+                                            <SelectableTextBlock Grid.Column="2"
+                                                                 Foreground="{Binding Color}"
+                                                                 Text="{Binding Message}" TextWrapping="Wrap" />
+                                        </Grid>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
