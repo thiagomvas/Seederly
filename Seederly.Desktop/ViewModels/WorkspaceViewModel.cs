@@ -9,16 +9,18 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
 using Seederly.Desktop.Models;
+using Seederly.Desktop.Services;
 
 namespace Seederly.Desktop.ViewModels;
 
 public partial class WorkspaceViewModel : ViewModelBase
 {
-    private readonly ApiRequestExecutor _apiClient = new(new HttpClient());
+    private readonly ApiRequestExecutor _apiClient = new(new HttpClient(), LoggerService.Instance);
     private readonly FakeRequestFactory _fakeRequestFactory = new();
     public ObservableCollection<Node<ApiEndpointModel>> Nodes { get; } = new();
 
@@ -166,6 +168,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         var request = SelectedNode.Value.ToApiRequest();
+        
+        LoggerService.Instance.Log(request);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < SelectedNode.Amount; i++)
@@ -186,9 +190,11 @@ public partial class WorkspaceViewModel : ViewModelBase
 
             if (MainWindowViewModel.Instance is not null)
             {
-                
-                MainWindowViewModel.Instance.Status = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
+                var status = $"{(int)result.StatusCode} - {result.StatusCode} ({stopwatch.ElapsedMilliseconds} ms) {(SelectedNode.Amount > 1 ? $"- {i+1}/{SelectedNode.Amount}" : "")}";
+                MainWindowViewModel.Instance.Status = status;
                 MainWindowViewModel.Instance.LastOperation = SelectedNode.Name;   
+                LoggerService.Instance.Log($"{SelectedNode.Name} - {status}");
+                LoggerService.Instance.Log(result);
             }
         }
         stopwatch.Stop();

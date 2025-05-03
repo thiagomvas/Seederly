@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
 using Seederly.Core.Automation;
 using Seederly.Desktop.Models;
+using Seederly.Desktop.Services;
 
 namespace Seederly.Desktop.ViewModels;
 
@@ -39,8 +40,8 @@ public partial class WorkflowViewModel : ViewModelBase
     public WorkflowViewModel(Workspace workspace)
     {
         _variableContext = new VariableContext();
-        _apiRequestExecutor = new ApiRequestExecutor(new HttpClient());
-        _executor = new WorkflowExecutor(_apiRequestExecutor, _variableContext, workspace);
+        _apiRequestExecutor = new ApiRequestExecutor(new HttpClient(), LoggerService.Instance);
+        _executor = new WorkflowExecutor(_apiRequestExecutor, _variableContext, workspace, LoggerService.Instance);
         _workspace = workspace;
 
         foreach (var workflow in workspace.Workflows)
@@ -358,11 +359,21 @@ public partial class WorkflowViewModel : ViewModelBase
         var result = await _executor.ExecuteAsync(workflow);
         
         SelectedWorkflow.LastStatus = result.IsSuccessful
-            ? "Success" : "{result.ErrorMessage}";
+            ? "Success" : result.ErrorMessage;
         
         if (MainWindowViewModel.Instance is not null)
         {
-            MainWindowViewModel.Instance.Status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
+            string status;
+            if (result.IsSuccessful)
+            {
+                status = $"Success ({result.TotalElapsedMilliseconds}ms)";
+            }
+            else
+            { 
+                status = $"Failed ({result.ErrorMessage})";
+            }
+            //var status = $"{(result.IsSuccessful ? "Success" : "Failed")}  ({result.TotalElapsedMilliseconds}ms)";
+            MainWindowViewModel.Instance.Status = status;
             MainWindowViewModel.Instance.LastOperation = $"Workflow: {workflow.Name}";
         }
     }

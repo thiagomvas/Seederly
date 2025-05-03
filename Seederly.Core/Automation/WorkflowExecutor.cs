@@ -13,13 +13,15 @@ public class WorkflowExecutor
     private readonly ApiRequestExecutor _apiRequestExecutor;
     private readonly VariableContext _variableContext;
     private readonly Workspace _workspace;
+    private readonly ILogger? _logger;
     private Dictionary<string, ApiRequest> _endpointMap = new(StringComparer.OrdinalIgnoreCase);
     
-    public WorkflowExecutor(ApiRequestExecutor apiRequestExecutor, VariableContext variableContext, Workspace workspace)
+    public WorkflowExecutor(ApiRequestExecutor apiRequestExecutor, VariableContext variableContext, Workspace workspace, ILogger? logger = null)
     {
         _apiRequestExecutor = apiRequestExecutor;
         _variableContext = variableContext;
         _workspace = workspace;
+        _logger = logger;
         
         foreach (var endpoint in workspace.Endpoints)
         {
@@ -41,6 +43,20 @@ public class WorkflowExecutor
             Steps = new List<WorkflowStepResult>()
         };
         
+        await ExecuteAsyncInternal(workflow, result);
+
+        if(!result.IsSuccessful)
+        {
+            result.ErrorMessage = result.Steps.Last()?.ErrorMessage ?? "N/A";
+            _logger?.LogError(result.ErrorMessage);
+        }
+        
+        return result;
+    }
+
+    private async Task ExecuteAsyncInternal(Workflow workflow, WorkflowResult result)
+    {
+        long prevTimestamp = 0;
         foreach (var step in workflow.Steps)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -54,7 +70,7 @@ public class WorkflowExecutor
                     ErrorMessage = $"Endpoint '{step.EndpointName}' not found."
                 };
                 result.Steps.Add(failedStep);
-                return result;
+                return;
             }
             
             // Clone the request to avoid modifying the original
@@ -73,7 +89,7 @@ public class WorkflowExecutor
                         ErrorMessage = $"Variable '{injection.Key}' not found."
                     };
                     result.Steps.Add(failedStep);
-                    return result;
+                    return;
                 }
                 switch (injection.Target)
                 {
@@ -81,7 +97,7 @@ public class WorkflowExecutor
                         clonedRequest.Headers[injection.Key] = variableValue;
                         break;
                     case InjectionVariableTarget.Body:
-                        if(!InjectIntoBody(clonedRequest, injection, variableValue, step, result)) return result;
+                        if(!InjectIntoBody(clonedRequest, injection, variableValue, step, result)) return;
                         break;
                     case InjectionVariableTarget.Query:
                         clonedRequest.QueryParameters[injection.Key] = variableValue;
@@ -95,22 +111,36 @@ public class WorkflowExecutor
             }
             
             var response = await _apiRequestExecutor.ExecuteAsync(clonedRequest);
+
             // Extract variables
             foreach (var extraction in step.Extract)
             {
+                bool extractionSuccess = true;
                 switch (extraction.Source)
                 {
                     case ExtractionVariableTarget.Response:
-                        if(!ExtractFromResponse(response, extraction, step, result)) return result;
+                        extractionSuccess = ExtractFromResponse(response, extraction, step, result);
                         break;
                     case ExtractionVariableTarget.Header:
-                        if (!ExtractFromHeader(response, extraction, step, result)) return result;
+                        extractionSuccess = ExtractFromHeader(response, extraction, step, result);
                         break;
                     default:
                         throw new NotSupportedException();
                 }
+                
+                if (!extractionSuccess)
+                {
+                    var failedStep = new WorkflowStepResult
+                    {
+                        Name = step.Name,
+                        Status = WorkflowStepStatus.ExtractionFailure,
+                        ErrorMessage = $"Failed to extract variable '{extraction.Source}' from response."
+                    };
+                    result.Steps.Add(failedStep);
+                    return;
+                }
             }
-            
+
             // Add step result
             var stepResult = new WorkflowStepResult
             {
@@ -123,20 +153,15 @@ public class WorkflowExecutor
             {
                 stepResult.ErrorMessage = $"API request failed with status code {response.StatusCode}.";
             }
-            else
-            {
-                stepResult.ElapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            }
+            stepResult.ElapsedMilliseconds = stopwatch.ElapsedMilliseconds - prevTimestamp;
             
             result.Steps.Add(stepResult);
+            _logger?.LogInformation($"Step '{step.Name}' executed in {stepResult.ElapsedMilliseconds} ms.");
+            prevTimestamp = stopwatch.ElapsedMilliseconds;
+            
+            if(stepResult.Status != WorkflowStepStatus.Success)
+                break;
         }
-
-        if(!result.IsSuccessful)
-        {
-            result.ErrorMessage = $"Workflow execution failed: '{result.Steps.Last().ErrorMessage}'.";
-        }
-        
-        return result;
     }
 
     private bool ExtractFromHeader(ApiResponse response, VariableExtractionRule extraction, WorkflowStep step,
@@ -205,6 +230,9 @@ public class WorkflowExecutor
         JsonObject? responseJson = null;
         if (response != null)
         {
+            if (response.Content.StartsWith("<"))
+                return false; // TODO: XML parsing since it is not supported
+                
             responseJson = JsonSerializer.Deserialize<JsonObject>(response.Content);
         }
         if (responseJson != null)
