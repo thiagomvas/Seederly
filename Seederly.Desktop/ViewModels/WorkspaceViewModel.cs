@@ -326,6 +326,8 @@ public partial class WorkspaceViewModel : ViewModelBase
         {
             doneCount++;
             var result = await task;
+            if (result is null)
+                continue;
 
             if (statusCodeCounts.ContainsKey(result.StatusCode))
                 statusCodeCounts[result.StatusCode]++;
@@ -399,10 +401,12 @@ public partial class WorkspaceViewModel : ViewModelBase
         Utils.SaveWorkspace(_workspace);
     }
 
-    private async Task<ApiResponse> ExecuteRequest(ApiRequest request)
+    private async Task<ApiResponse?> ExecuteRequest(ApiRequest request)
     {
         var result = await _apiClient.ExecuteAsync(request);
-        _lastStatus = $"{(int)result.StatusCode} - {result.StatusCode}";
+        
+        if(result != null)
+            LastStatus = $"{(int)result.StatusCode} - {result.StatusCode}";
 
         return result;
     }
