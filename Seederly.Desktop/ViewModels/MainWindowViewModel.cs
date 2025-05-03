@@ -71,7 +71,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand] 
     private void ToggleLogs() => ShowLogs = !ShowLogs;
     [RelayCommand]
-    private void ClearLogs() => LoggerService.LogEntries.Clear();
+    private void ClearLogs() => LoggerService.ClearLogs();
 
     [RelayCommand]
     private async Task ExportLogs()

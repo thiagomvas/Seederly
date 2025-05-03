@@ -153,6 +153,13 @@ public partial class LoggerService : ObservableObject, ILogger
         Log(message, LogLevel.Critical);
     }
     
+    public void ClearLogs()
+    {
+        LogEntries.Clear();
+        FilteredLogEntries.Clear();
+    }
+    
+    
     partial void OnFilterChanged(int value)
     {
         FilteredLogEntries.Clear();
