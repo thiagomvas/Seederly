@@ -18,8 +18,10 @@ public partial class LoggerService : ObservableObject, ILogger
     {
     }
     #endregion
-    
+
+    [ObservableProperty] private int _filter;
     public ObservableCollection<LogEntry> LogEntries { get; } = new();
+    public ObservableCollection<LogEntry> FilteredLogEntries { get; } = new();
     public void Log(string message, LogLevel level = LogLevel.Info)
     {
         var logEntry = new LogEntry
@@ -30,6 +32,11 @@ public partial class LoggerService : ObservableObject, ILogger
         };
         
         LogEntries.Add(logEntry);
+        
+        if ((int)level >= Filter)
+        {
+            FilteredLogEntries.Add(logEntry);
+        }
     }
     
     public void Log(ApiRequest request)
@@ -52,12 +59,18 @@ public partial class LoggerService : ObservableObject, ILogger
         }
 
         var message = string.Join(Environment.NewLine, lines);
-        LogEntries.Add(new LogEntry
+        var logEntry = new LogEntry
         {
             Message = message,
             Timestamp = DateTime.Now,
             Level = LogLevel.Debug
-        });
+        };
+        LogEntries.Add(logEntry);
+        
+        if ((int)logEntry.Level >= Filter)
+        {
+            FilteredLogEntries.Add(logEntry);
+        }
     }
 
 
@@ -79,12 +92,18 @@ public partial class LoggerService : ObservableObject, ILogger
         lines.Add(IndentJsonIfPossible(response.Content));
 
         var message = string.Join(Environment.NewLine, lines);
-        LogEntries.Add(new LogEntry
+        var logEntry = new LogEntry
         {
             Message = message,
             Timestamp = DateTime.Now,
             Level = LogLevel.Debug
-        });
+        };
+        LogEntries.Add(logEntry);
+        
+        if ((int)logEntry.Level >= Filter)
+        {
+            FilteredLogEntries.Add(logEntry);
+        }
     }
 
     
@@ -128,5 +147,17 @@ public partial class LoggerService : ObservableObject, ILogger
     public void LogCritical(string message)
     {
         Log(message, LogLevel.Critical);
+    }
+    
+    partial void OnFilterChanged(int value)
+    {
+        FilteredLogEntries.Clear();
+        foreach (var logEntry in LogEntries)
+        {
+            if ((int)logEntry.Level >= value)
+            {
+                FilteredLogEntries.Add(logEntry);
+            }
+        }
     }
 }
