@@ -186,6 +186,9 @@ public partial class WorkspaceViewModel : ViewModelBase
             var result = await _apiClient.ExecuteAsync(request);
 
 
+            if (result is null)
+                return;
+            
             SelectedNode.Value.LastResponse = ApiResponseModel.FromApiResponse(result);
 
             if (MainWindowViewModel.Instance is not null)

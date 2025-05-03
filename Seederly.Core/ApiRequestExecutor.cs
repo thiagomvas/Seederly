@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -22,8 +23,14 @@ public class ApiRequestExecutor
     /// </summary>
     /// <param name="request">The API request to execute.</param>
     /// <returns>A <see cref="ApiResponse"/> containing the returned data.</returns>
-    public async Task<ApiResponse> ExecuteAsync(ApiRequest request)
+    public async Task<ApiResponse?> ExecuteAsync(ApiRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Url))
+        {
+            _logger?.LogError("Request URL is null or empty.");
+            return null;
+        }
+            
         var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url);
 
         if (request.Body != null)

@@ -41,6 +41,10 @@ public partial class LoggerService : ObservableObject, ILogger
     
     public void Log(ApiRequest request)
     {
+        if(string.IsNullOrWhiteSpace(request.Url))
+        {
+            return;
+        }
         var lines = new List<string>
         {
             $"[Request] {request.Method} {request.BuildRoute()}",
