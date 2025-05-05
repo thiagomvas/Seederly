@@ -8,25 +8,25 @@ public class OpenApiOperation
     /// <summary>
     /// A brief summary of the operation.
     /// </summary>
-    public string Summary { get; set; }
+    public string Summary { get; set; } = string.Empty;
 
     /// <summary>
     /// A detailed description of the operation.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// A list of parameters for the operation.
     /// </summary>
-    public List<OpenApiParameter> Parameters { get; set; }
+    public List<OpenApiParameter> Parameters { get; set; } = new();
 
     /// <summary>
     /// The request body for the operation, if applicable.
     /// </summary>
-    public OpenApiRequestBody RequestBody { get; set; }
+    public OpenApiRequestBody? RequestBody { get; set; }
 
     /// <summary>
     /// The responses for the operation, mapped by HTTP status code.
     /// </summary>
-    public Dictionary<string, OpenApiResponse> Responses { get; set; }
+    public Dictionary<string, OpenApiResponse> Responses { get; set; } = new();
 }

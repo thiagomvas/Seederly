@@ -1,5 +1,6 @@
 using Seederly.Core.Automation;
 using Seederly.Core.Converters;
+using Seederly.Core.OpenApi;
 
 namespace Seederly.Core;
 
@@ -55,5 +56,33 @@ public class Workspace
                 new ExtractionVariableTargetEnumConverter()
             }
         }) ?? new Workspace("Default");
+    }
+
+    public static Workspace CreateFromOpenApiDocument(OpenApiDocument document)
+    {
+        var result = new Workspace(document.Info.Title);
+        
+        foreach (var path in document.Paths)
+        {
+            foreach (var operation in path.Value.Operations)
+            {
+                var name = !string.IsNullOrWhiteSpace(operation.Value.Summary)
+                    ? operation.Value.Summary
+                    : $"{operation.Key.ToString().ToUpperInvariant()} {path.Key}";
+                var apiEndpoint = new ApiEndpoint
+                {
+                    Name = name,
+                    Request = new ApiRequest()
+                    {
+                        Method = HttpMethod.Parse(operation.Key.ToString()),
+                        Url = path.Key,
+                    }
+                };
+                
+                result.Endpoints.Add(apiEndpoint);
+            }
+        }
+
+        return result;
     }
 }

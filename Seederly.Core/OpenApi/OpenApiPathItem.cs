@@ -8,5 +8,5 @@ public class OpenApiPathItem
     /// <summary>
     /// A dictionary of HTTP operations for the path (e.g., "get", "post", etc.).
     /// </summary>
-    public Dictionary<string, OpenApiOperation> Operations { get; set; }
+    public Dictionary<string, OpenApiOperation> Operations { get; set; } = new();
 }

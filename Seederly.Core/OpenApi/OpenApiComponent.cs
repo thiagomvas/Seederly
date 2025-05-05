@@ -8,5 +8,5 @@ public class OpenApiComponents
     /// <summary>
     /// A dictionary of reusable schema definitions by name.
     /// </summary>
-    public Dictionary<string, OpenApiSchema> Schemas { get; set; }
+    public Dictionary<string, OpenApiSchema> Schemas { get; set; } = new();
 }

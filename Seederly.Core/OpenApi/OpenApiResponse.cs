@@ -8,10 +8,10 @@ public class OpenApiResponse
     /// <summary>
     /// A description of the response.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// The content of the response, mapped by media type.
     /// </summary>
-    public Dictionary<string, OpenApiMediaType> Content { get; set; }
+    public Dictionary<string, OpenApiMediaType> Content { get; set; } = new();
 }
