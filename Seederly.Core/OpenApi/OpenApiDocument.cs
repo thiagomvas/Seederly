@@ -65,7 +65,7 @@ public class OpenApiDocument
         }
         if (jsonObject.TryGetProperty("components", out var componentsElement))
         {
-            //document.Components = JsonSerializer.Deserialize<OpenApiComponents>(componentsElement.GetRawText(), options);
+            document.Components = JsonSerializer.Deserialize<OpenApiComponents>(componentsElement.GetRawText(), options);
         }
 
         if (jsonObject.TryGetProperty("servers", out var serversElement))

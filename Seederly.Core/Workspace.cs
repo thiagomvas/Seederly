@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Seederly.Core.Automation;
 using Seederly.Core.Converters;
 using Seederly.Core.OpenApi;
@@ -61,6 +62,11 @@ public class Workspace
     public static Workspace CreateFromOpenApiDocument(OpenApiDocument document)
     {
         var result = new Workspace(document.Info.Title);
+        var jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
         
         foreach (var path in document.Paths)
         {
@@ -68,14 +74,19 @@ public class Workspace
             {
                 var name = !string.IsNullOrWhiteSpace(operation.Value.Summary)
                     ? operation.Value.Summary
-                    : $"{operation.Key.ToString().ToUpperInvariant()} {path.Key}";
+                    : $"{operation.Key.ToUpperInvariant()} {path.Key}";
+
+                var schemaName = operation.Value.RequestBody?.Content.FirstOrDefault().Value.Schema?.Ref.Split('/').Last();
+                var schema = document.Components?.Schemas.FirstOrDefault(x => x.Key == schemaName).Value;
+                
                 var apiEndpoint = new ApiEndpoint
                 {
                     Name = name,
                     Request = new ApiRequest()
                     {
-                        Method = HttpMethod.Parse(operation.Key.ToString()),
-                        Url = path.Key,
+                        Method = HttpMethod.Parse(operation.Key),
+                        Url = System.IO.Path.Combine(document.Servers.FirstOrDefault()?.Url ?? "{baseUrl}", path.Key),
+                        Body = schema?.GenerateJsonBody(),
                     }
                 };
                 

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Seederly.Core.OpenApi;
 
 /// <summary>
@@ -33,11 +35,44 @@ public class OpenApiSchema
     /// <summary>
     /// A reference to another schema definition using $ref.
     /// </summary>
+    [JsonPropertyName("$ref")]
     public string Ref { get; set; } = string.Empty;
 
     /// <summary>
     /// A description of the schema.
     /// </summary>
     public string Description { get; set; } = string.Empty;
+
+    private static object GenerateExample(OpenApiSchema schema)
+    {
+        if (!string.IsNullOrEmpty(schema.Ref))
+        {
+            // You'd typically resolve $ref here using a schema registry or dictionary
+            return new {}; // Placeholder
+        }
+
+        return schema.Type switch
+        {
+            "string" => "string",
+            "number" => 0.0,
+            "integer" => 0,
+            "boolean" => false,
+            "array" => new[] { GenerateExample(schema.Items ?? new OpenApiSchema { Type = "string" }) },
+            "object" => schema.Properties.ToDictionary(
+                prop => prop.Key,
+                prop => GenerateExample(prop.Value)),
+            _ => null
+        };
+    }
+
+    public string GenerateJsonBody()
+    {
+        var example = GenerateExample(this);
+        return System.Text.Json.JsonSerializer.Serialize(example, new System.Text.Json.JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+        });
+    }
 
 }
