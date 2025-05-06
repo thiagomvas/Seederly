@@ -75,4 +75,51 @@ public class OpenApiDocument
 
         return document;
     }
+    
+    public static async Task<OpenApiDocument> FromReferenceFileAsync(string filePath)
+    {
+        var document = new OpenApiDocument();
+        await using var stream = File.OpenRead(filePath);
+        using var jsonDoc = await JsonDocument.ParseAsync(stream);
+        var root = jsonDoc.RootElement;
+        
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        if (root.TryGetProperty("info", out var infoElement))
+        {
+            document.Info = JsonSerializer.Deserialize<OpenApiInfo>(infoElement.GetRawText(), options);
+        }
+
+        if (root.TryGetProperty("paths", out var pathsElement))
+        {
+            document.Paths = new Dictionary<string, OpenApiPathItem>();
+
+            foreach (var endpoint in pathsElement.EnumerateObject())
+            {
+                var path = new OpenApiPathItem();
+                foreach (var operation in endpoint.Value.EnumerateObject())
+                {
+                    var operationName = operation.Name.ToLowerInvariant();
+                    var operationValue = JsonSerializer.Deserialize<OpenApiOperation>(operation.Value.GetRawText(), options);
+                    path.Operations.Add(operationName, operationValue);
+                }
+                document.Paths.Add(endpoint.Name, path);
+            }
+            
+        }
+        if (root.TryGetProperty("components", out var componentsElement))
+        {
+            document.Components = JsonSerializer.Deserialize<OpenApiComponents>(componentsElement.GetRawText(), options);
+        }
+
+        if (root.TryGetProperty("servers", out var serversElement))
+        {
+            document.Servers = JsonSerializer.Deserialize<List<OpenApiServer>>(serversElement.GetRawText(), options);
+        }
+
+        return document;
+    }
 }

@@ -11,7 +11,9 @@ namespace Seederly.Core;
 public class FakeRequestFactory
 {
     private readonly Faker _faker = new();
-    public readonly Dictionary<string, Func<string>> Generators;
+    public readonly Dictionary<string, Func<object>> Generators;
+    
+    public static FakeRequestFactory Instance { get; } = new();
 
     public FakeRequestFactory()
     {
@@ -38,20 +40,20 @@ public class FakeRequestFactory
             ["address.state"] = () => _faker.Address.State(),
             ["address.zipCode"] = () => _faker.Address.ZipCode(),
             ["address.country"] = () => _faker.Address.Country(),
-            ["address.latitude"] = () => _faker.Address.Latitude().ToString(),
-            ["address.longitude"] = () => _faker.Address.Longitude().ToString(),
+            ["address.latitude"] = () => _faker.Address.Latitude(),
+            ["address.longitude"] = () => _faker.Address.Longitude(),
 
             // Commerce
             ["commerce.productName"] = () => _faker.Commerce.ProductName(),
-            ["commerce.price"] = () => _faker.Commerce.Price().ToString(),
+            ["commerce.price"] = () => _faker.Commerce.Price(),
             ["commerce.department"] = () => _faker.Commerce.Department(),
             ["commerce.ean13"] = () => _faker.Commerce.Ean13(),
 
             // Random
             ["random.uuid"] = () => Guid.NewGuid().ToString(),
-            ["random.number"] = () => _faker.Random.Number().ToString(),
+            ["random.number"] = () => _faker.Random.Number(0, 100),
             ["random.word"] = () => _faker.Random.Word(),
-            ["random.bool"] = () => _faker.Random.Bool().ToString(),
+            ["random.bool"] = () => _faker.Random.Bool(),
             ["random.alphaNumeric"] = () => _faker.Random.AlphaNumeric(10),
             ["random.hex"] = () => _faker.Random.Hexadecimal(),
 
@@ -187,13 +189,13 @@ public class FakeRequestFactory
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         foreach (var (key, value) in flatMap)
         {
-            jsonObject[key] = GenerateValue(value);
+            jsonObject[key] = JsonSerializer.SerializeToNode(GenerateValue(value));
         }
 
         return jsonObject;
     }
 
-    private string GenerateValue(string generatorKey)
+    private object GenerateValue(string generatorKey)
     {
         if (Generators.TryGetValue(generatorKey, out var generator))
         {
