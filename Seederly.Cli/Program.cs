@@ -18,7 +18,7 @@ app.AddCommand("schemas", () =>
 {
     Console.WriteLine("Available schemas:");
     var fac = new FakeRequestFactory();
-    Utils.Write(fac.Generators);
+    //Utils.Write(fac.Generators);
 });
 
 await app.RunAsync();

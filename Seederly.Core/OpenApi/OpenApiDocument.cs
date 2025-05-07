@@ -40,6 +40,8 @@ public class OpenApiDocument
         {
             PropertyNameCaseInsensitive = true
         };
+        var validHttpMethods = new[] { "get", "post", "put", "delete", "patch", "head", "options", "trace" };
+
 
         if (jsonObject.TryGetProperty("info", out var infoElement))
         {
@@ -53,12 +55,15 @@ public class OpenApiDocument
             foreach (var endpoint in pathsElement.EnumerateObject())
             {
                 var path = new OpenApiPathItem();
-                foreach (var operation in endpoint.Value.EnumerateObject())
+
+                foreach (var operation in endpoint.Value.EnumerateObject()
+                             .Where(p => p.Value.ValueKind == JsonValueKind.Object && validHttpMethods.Contains(p.Name.ToLowerInvariant())))
                 {
                     var operationName = operation.Name.ToLowerInvariant();
                     var operationValue = JsonSerializer.Deserialize<OpenApiOperation>(operation.Value.GetRawText(), options);
                     path.Operations.Add(operationName, operationValue);
                 }
+
                 document.Paths.Add(endpoint.Name, path);
             }
             

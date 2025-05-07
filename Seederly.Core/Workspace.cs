@@ -113,7 +113,6 @@ public class Workspace
                 var propertyName = property.Key;
                 var propertySchema = property.Value;
                 
-                string seederlyGenKey = string.Empty;
 
                 if (propertySchema.Type == "object")
                 {
@@ -125,7 +124,7 @@ public class Workspace
                 }
                 else
                 {
-                        result.Add(propertyName, GetSchemaKey(FakeRequestFactory.Instance, propertyName, propertySchema.Type));
+                    result.Add(propertyName, GetSchemaKey(FakeRequestFactory.Instance, propertyName, propertySchema));
                 }
             }
         }
@@ -133,7 +132,7 @@ public class Workspace
         return result;
     }
 
-    private static string GetSchemaKey(FakeRequestFactory factory, string name, string type)
+    private static string GetSchemaKey(FakeRequestFactory factory, string name, OpenApiSchema schema)
     {
         var key = factory.Generators.Keys
             .FirstOrDefault(k => k.Split('.').Last().Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -141,7 +140,18 @@ public class Workspace
         if (!string.IsNullOrWhiteSpace(key))
             return key;
 
-        return type switch 
+        switch (schema.Format)
+        {
+            case "email":
+                return "internet.email";
+            case "uuid":
+                return "random.uuid";
+            case "date-time":
+            case "date":
+                return "date.past";
+        }
+
+        return schema.Type switch 
         {
             "string" => "lorem.sentence",
             "integer" => "random.number",
