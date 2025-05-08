@@ -134,12 +134,6 @@ public class Workspace
 
     private static string GetSchemaKey(FakeRequestFactory factory, string name, OpenApiSchema schema)
     {
-        var key = factory.Generators.Keys
-            .FirstOrDefault(k => k.Split('.').Last().Equals(name, StringComparison.OrdinalIgnoreCase));
-
-        if (!string.IsNullOrWhiteSpace(key))
-            return key;
-
         switch (schema.Format)
         {
             case "email":
@@ -150,16 +144,28 @@ public class Workspace
             case "date":
                 return "date.past";
         }
+        
+        var key = factory.Generators.Keys
+            .FirstOrDefault(k => k.Split('.').Last().Equals(name, StringComparison.OrdinalIgnoreCase));
 
-        return schema.Type switch 
+        if (!string.IsNullOrWhiteSpace(key))
+            return key;
+
+        switch (schema.Type)
         {
-            "string" => "lorem.sentence",
-            "integer" => "random.number",
-            "number" => "random.number",
-            "boolean" => "random.bool",
-            _ => "lorem.sentence"
-        };
+            case "integer":
+            case "number":
+                return "random.number";
+            case "boolean":
+                return "random.bool";
+        }
+        
+        // Try to get a gen key that contains the entire name
+        key = factory.Generators.Keys
+            .FirstOrDefault(k => k.Contains(name, StringComparison.OrdinalIgnoreCase));
+        if (!string.IsNullOrWhiteSpace(key))
+            return key;
+
+        return "lorem.sentence";
     }
-
-
 }
