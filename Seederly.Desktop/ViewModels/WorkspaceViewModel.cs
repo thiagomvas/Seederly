@@ -27,7 +27,9 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     public ObservableCollection<string> AvailableDataTypes { get; } = new();
 
-    [ObservableProperty] private Node<ApiEndpointModel>? _selectedNode;
+    [NotifyPropertyChangedFor(nameof(HasContent))]
+    [ObservableProperty] 
+    private Node<ApiEndpointModel>? _selectedNode;
     [ObservableProperty] private string? _workspacePath;
     [ObservableProperty] private string _lastStatus;
 
