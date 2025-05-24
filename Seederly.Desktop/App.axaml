@@ -118,10 +118,10 @@
             <Setter Property="Foreground" Value="{DynamicResource SeederlyBackground}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="Button.seederly-danger:PointerOver">
+        <Style Selector="Button.seederly-danger:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlyDangerHover}" />
         </Style>
-        <Style Selector="Button.seederly-danger:Pressed">
+        <Style Selector="Button.seederly-danger:pressed /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlyDangerPressed}" />
         </Style>
 
