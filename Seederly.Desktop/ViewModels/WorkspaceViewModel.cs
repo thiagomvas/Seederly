@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -26,7 +27,9 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     public ObservableCollection<string> AvailableDataTypes { get; } = new();
 
-    [ObservableProperty] private Node<ApiEndpointModel>? _selectedNode;
+    [NotifyPropertyChangedFor(nameof(HasContent))]
+    [ObservableProperty] 
+    private Node<ApiEndpointModel>? _selectedNode;
     [ObservableProperty] private string? _workspacePath;
     [ObservableProperty] private string _lastStatus;
 
@@ -48,13 +51,6 @@ public partial class WorkspaceViewModel : ViewModelBase
         SelectedNode = Nodes.FirstOrDefault();
         
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
-
-        foreach (var node in Nodes)
-        {
-            node.PropertyChanged += OnAnyPropertyChanged;
-            if (node.Value is not null)
-                node.Value.PropertyChanged += OnAnyPropertyChanged;
-        }
 
         Nodes.CollectionChanged += OnCollectionChanged;
     }
@@ -266,7 +262,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         WorkspacePath = workspace.Path;
         Nodes.Clear();
 
-        foreach (var endpoint in workspace.Endpoints)
+        foreach (var endpoint in workspace.Endpoints.ToImmutableList())
         {
             Nodes.Add(ConvertEndpointToNode(endpoint));
         }

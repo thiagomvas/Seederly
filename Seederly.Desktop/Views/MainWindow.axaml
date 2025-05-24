@@ -71,11 +71,15 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_New Workspace" InputGesture="Ctrl+N" Command="{Binding NavigateToWorkspaceCommand}"
                           HotKey="Ctrl+N" />
-                <MenuItem Header="_Open Workspace" InputGesture="Ctrl+O" Click="OpenFileButton_Clicked" HotKey="Ctrl+O"/>
+                <MenuItem Header="_Open Workspace" InputGesture="Ctrl+O" Click="OpenFileButton_Clicked" HotKey="Ctrl+O" />
                 <MenuItem Header="_Save Workspace" InputGesture="Ctrl+S" Click="SaveFileButton_Clicked" HotKey="Ctrl+S" />
                 <MenuItem Header="Save Workspace _As" InputGesture="Ctrl+Shift+S" Click="SaveFileAsButton_Clicked"
                           HotKey="Ctrl+Shift+S" />
 
+                <Separator />
+                <MenuItem Header="_Import">
+                    <MenuItem Header="OpenApi Reference" Click="ImportFromOpenApiButton_Clicked"/>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="E_xit" Click="ExitButton_Clicked" />
             </MenuItem>

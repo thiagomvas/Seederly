@@ -43,12 +43,16 @@ public partial class ApiEndpointModel : ObservableObject
     
     public static int FromMethod(HttpMethod method)
     {
-        return method.Method switch
+        return method.Method.ToUpperInvariant() switch
         {
             "GET" => 0,
             "POST" => 1,
             "PUT" => 2,
             "DELETE" => 3,
+            "PATCH" => 4,
+            "HEAD" => 5,
+            "OPTIONS" => 6,
+            "TRACE" => 7,
             _ => throw new ArgumentOutOfRangeException(nameof(method), "Invalid HTTP method")
         };
     }
@@ -61,6 +65,10 @@ public partial class ApiEndpointModel : ObservableObject
             1 => HttpMethod.Post,   
             2 => HttpMethod.Put,
             3 => HttpMethod.Delete,
+            4 => HttpMethod.Patch,
+            5 => HttpMethod.Head,
+            6 => HttpMethod.Options,
+            7 => HttpMethod.Trace,
             _ => throw new ArgumentOutOfRangeException(nameof(method), "Invalid HTTP method")
         };
     }

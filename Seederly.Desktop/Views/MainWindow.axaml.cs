@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Seederly.Core;
 using Seederly.Core.Automation;
+using Seederly.Core.OpenApi;
 using Seederly.Desktop.ViewModels;
 
 namespace Seederly.Desktop.Views;
@@ -102,4 +103,28 @@ public partial class MainWindow : Window
 
     private async void SendAllRequests_Clicked(object? sender, RoutedEventArgs e) =>
         await _viewModel?.WorkspaceViewModel?.ExecuteAllRequests();
+
+    private async void ImportFromOpenApiButton_Clicked(object? sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null)
+            _viewModel = (MainWindowViewModel)DataContext!;
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        // Start async operation to open the dialog.
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Text File",
+            AllowMultiple = false
+        });
+
+        if (files.Count >= 1)
+        {
+            var json = File.ReadAllText(files[0].Path.LocalPath);
+            var document = OpenApiDocument.FromReferenceJson(json);
+            var workspace = Workspace.CreateFromOpenApiDocument(document);
+            _viewModel.LoadedWorkspace = workspace;
+            _viewModel.NavigateToWorkspace();
+        }
+    }
 }
