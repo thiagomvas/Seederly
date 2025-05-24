@@ -21,6 +21,7 @@ public partial class ApiEndpointModel : ObservableObject
     private string? _body = string.Empty;
 
     public ObservableCollection<HeaderEntry> Headers { get; set; } = new();
+    public ObservableCollection<HeaderEntry> QueryParams { get; set; } = new();
     public ObservableCollection<HeaderEntry> Schema { get; set; } = new();
     
     [ObservableProperty]
@@ -86,6 +87,11 @@ public partial class ApiEndpointModel : ObservableObject
         foreach (var header in Headers)
         {
             request.Headers.Add(header.Key, header.Value);
+        }
+        
+        foreach (var queryParam in QueryParams)
+        {
+            request.QueryParameters[queryParam.Key] = queryParam.Value;
         }
         
         return request;

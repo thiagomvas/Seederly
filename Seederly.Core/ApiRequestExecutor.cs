@@ -32,6 +32,12 @@ public class ApiRequestExecutor
             _logger?.LogError("Request URL is null or empty.");
             return null;
         }
+        
+        if (request.QueryParameters.Count > 0)
+        {
+            var queryString = string.Join("&", request.QueryParameters.Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
+            request.Url = $"{request.Url}?{queryString}";
+        }
             
         var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url);
         
@@ -56,6 +62,8 @@ public class ApiRequestExecutor
                 httpRequestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
         }
+
+        //
 
 
         var response = await _httpClient.SendAsync(httpRequestMessage);

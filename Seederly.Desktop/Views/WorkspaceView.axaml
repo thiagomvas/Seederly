@@ -120,6 +120,30 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             <Button Content="Add Header" Command="{Binding AddHeaderCommand}" />
+                            
+                            <TextBlock Classes="h1" Text="Query Parameters"/>
+                            <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                                      GridLinesVisibility="All"
+                                      IsReadOnly="False"
+                                      ItemsSource="{Binding SelectedNode.Value.QueryParams}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                                    <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Remove"
+                                                        Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveQueryParamCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button Content="Add Parameter" Command="{Binding AddQueryParamCommand}" />
+                            
                             <TextBlock Classes="h1" Text="Body" Margin="0,10,0,0"/>
                             <TextBox AcceptsReturn="True" 
                                      TextWrapping="Wrap" 

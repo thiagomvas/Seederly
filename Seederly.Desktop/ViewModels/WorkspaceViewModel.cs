@@ -410,4 +410,23 @@ public partial class WorkspaceViewModel : ViewModelBase
 
         return result;
     }
+
+    [RelayCommand]
+    private void AddQueryParam()
+    {
+        if (SelectedNode == null || !SelectedNode.IsLeaf)
+            return;
+
+        var newHeader = new ApiEndpointModel.HeaderEntry(string.Empty, string.Empty);
+        SelectedNode.Value.QueryParams.Add(newHeader);
+    }
+    
+    [RelayCommand]
+    private void RemoveQueryParam(ApiEndpointModel.HeaderEntry header)
+    {
+        if (SelectedNode == null || !SelectedNode.IsLeaf)
+            return;
+
+        SelectedNode.Value.QueryParams.Remove(header);
+    }
 }
