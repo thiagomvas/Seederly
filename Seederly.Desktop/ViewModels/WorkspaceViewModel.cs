@@ -21,8 +21,8 @@ namespace Seederly.Desktop.ViewModels;
 
 public partial class WorkspaceViewModel : ViewModelBase
 {
-    private readonly ApiRequestExecutor _apiClient = new(new HttpClient(), LoggerService.Instance);
-    private readonly FakeRequestFactory _fakeRequestFactory = new();
+    private readonly FakeRequestFactory _fakeRequestFactory;
+    private readonly ApiRequestExecutor _apiClient;
     public ObservableCollection<Node<ApiEndpointModel>> Nodes { get; } = new();
 
     public ObservableCollection<string> AvailableDataTypes { get; } = new();
@@ -39,6 +39,8 @@ public partial class WorkspaceViewModel : ViewModelBase
 
     public WorkspaceViewModel(Workspace workspace)
     {
+        _fakeRequestFactory = FakeRequestFactory.Instance;
+        _apiClient = new ApiRequestExecutor(new HttpClient(), LoggerService.Instance, _fakeRequestFactory);
         _workspacePath = workspace.Path;
         _workspace = workspace;
 
@@ -56,6 +58,8 @@ public partial class WorkspaceViewModel : ViewModelBase
     }
     public WorkspaceViewModel()
     {
+        _fakeRequestFactory = FakeRequestFactory.Instance;
+        _apiClient = new ApiRequestExecutor(new HttpClient(), LoggerService.Instance, _fakeRequestFactory);
         AvailableDataTypes = new(_fakeRequestFactory.Generators.Select(x => x.Key).OrderBy(x => x));
 
         foreach (var node in Nodes)

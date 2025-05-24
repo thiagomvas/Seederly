@@ -115,6 +115,22 @@ public class FakeRequestFactory
 
         return request;
     }
+
+    public void GenerateBody(ApiRequest request)
+    {
+        var regex = new Regex(@"\{\{(.+?)\}\}");
+        var matches = regex.Matches(request.Body);
+        
+        foreach (Match match in matches)
+        {
+            var key = match.Groups[1].Value;
+            if (Generators.TryGetValue(key, out var generator))
+            {
+                var generatedValue = generator();
+                request.Body = request.Body.Replace(match.Value, generatedValue.ToString());
+            }
+        }
+    }
     
     /// <summary>
     /// Generates a JSON object based on the provided mapping.

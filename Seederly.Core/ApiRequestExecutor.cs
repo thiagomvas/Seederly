@@ -11,9 +11,11 @@ public class ApiRequestExecutor
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger? _logger;
+    private readonly FakeRequestFactory _fakeRequestFactory;
 
-    public ApiRequestExecutor(HttpClient httpClient, ILogger? logger = null)
+    public ApiRequestExecutor(HttpClient httpClient, ILogger? logger = null, FakeRequestFactory? fakeRequestFactory = null)
     {
+        _fakeRequestFactory = fakeRequestFactory ?? FakeRequestFactory.Instance;
         _logger = logger;
         _httpClient = httpClient;
     }
@@ -32,6 +34,8 @@ public class ApiRequestExecutor
         }
             
         var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url);
+        
+        _fakeRequestFactory.GenerateBody(request);
 
         if (request.Body != null)
         {

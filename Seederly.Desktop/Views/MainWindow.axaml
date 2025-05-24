@@ -105,7 +105,7 @@
             </MenuItem>
         </Menu>
 
-        <ContentControl IsVisible="{Binding !ShowLogs}" Content="{Binding CurrentPage}" />
+        <TransitioningContentControl IsVisible="{Binding !ShowLogs}" Content="{Binding CurrentPage}" />
         <Grid IsVisible="{Binding ShowLogs}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

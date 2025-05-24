@@ -40,7 +40,7 @@ public partial class WorkflowViewModel : ViewModelBase
     public WorkflowViewModel(Workspace workspace)
     {
         _variableContext = new VariableContext();
-        _apiRequestExecutor = new ApiRequestExecutor(new HttpClient(), LoggerService.Instance);
+        _apiRequestExecutor = new ApiRequestExecutor(new HttpClient(), LoggerService.Instance, FakeRequestFactory.Instance);
         _executor = new WorkflowExecutor(_apiRequestExecutor, _variableContext, workspace, LoggerService.Instance);
         _workspace = workspace;
 
