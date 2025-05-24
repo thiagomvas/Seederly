@@ -127,4 +127,7 @@ public partial class MainWindow : Window
             _viewModel.NavigateToWorkspace();
         }
     }
+
+    private async void DocumentationButton_Clicked(object? sender, RoutedEventArgs e)=> await TopLevel.GetTopLevel(this).Launcher
+        .LaunchUriAsync(new Uri("https://github.com/thiagomvas/Seederly/wiki"));
 }

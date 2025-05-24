@@ -33,11 +33,11 @@ public class ApiRequestExecutor
             return null;
         }
         
-        if (request.QueryParameters.Count > 0)
+        var queryParameters = request.QueryParameters
+            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value) && !string.IsNullOrWhiteSpace(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        if (queryParameters.Count > 0)
         {
-            var queryParameters = request.QueryParameters
-                .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value) && !string.IsNullOrWhiteSpace(kvp.Key))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             var queryString = string.Join("&", queryParameters.Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
             request.Url = $"{request.Url}?{queryString}";
         }
