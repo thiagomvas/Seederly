@@ -35,7 +35,10 @@ public class ApiRequestExecutor
         
         if (request.QueryParameters.Count > 0)
         {
-            var queryString = string.Join("&", request.QueryParameters.Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
+            var queryParameters = request.QueryParameters
+                .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value) && !string.IsNullOrWhiteSpace(kvp.Key))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var queryString = string.Join("&", queryParameters.Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
             request.Url = $"{request.Url}?{queryString}";
         }
             
@@ -48,7 +51,7 @@ public class ApiRequestExecutor
             httpRequestMessage.Content = new StringContent(request.Body, Encoding.UTF8, request.ContentType);
         }
 
-        foreach (var header in request.Headers)
+        foreach (var header in request.Headers.Where(h => !string.IsNullOrWhiteSpace(h.Value) && !string.IsNullOrWhiteSpace(h.Key)))
         {
             if (header.Key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
             {
