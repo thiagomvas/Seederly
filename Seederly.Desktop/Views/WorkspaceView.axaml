@@ -91,7 +91,7 @@
                     <TextBox Width="60" Margin="10,0" Text="{Binding SelectedNode.Amount}" />
                     <CheckBox Content="Generate Every Request" IsChecked="{Binding SelectedNode.GenerateEveryRequest}"
                               Margin="10,0" />
-                    <Button Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
+                    <Button Classes="seederly-primary"  Content="Send" Width="80" Command="{Binding ExecuteRequestCommand}" />
                 </StackPanel>
 
                 <TabControl Grid.Row="1">
@@ -119,7 +119,7 @@
 
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <Button Content="Add Header" Command="{Binding AddHeaderCommand}" />
+                            <Button Classes="seederly-primary" Content="Add Header" Command="{Binding AddHeaderCommand}" />
                             
                             <TextBlock Classes="h1" Text="Query Parameters"/>
                             <DataGrid Margin="0,10" AutoGenerateColumns="False"
@@ -142,7 +142,7 @@
 
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <Button Content="Add Parameter" Command="{Binding AddQueryParamCommand}" />
+                            <Button Classes="seederly-primary"  Content="Add Parameter" Command="{Binding AddQueryParamCommand}" />
                             
                             <TextBlock Classes="h1" Text="Body" Margin="0,10,0,0"/>
                             <TextBox AcceptsReturn="True" 

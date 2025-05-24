@@ -83,18 +83,19 @@
             <Setter Property="Padding" Value="8,4" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontFamily" Value="Inter" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
         </Style>
 
         <!-- Primary Button -->
         <Style Selector="Button.seederly-primary">
             <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryColor}" />
-            <Setter Property="Foreground" Value="{DynamicResource SeederlyBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="Button.seederly-primary:PointerOver">
+        <Style Selector="Button.seederly-primary:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryHover}" />
         </Style>
-        <Style Selector="Button.seederly-primary:Pressed">
+        <Style Selector="Button.seederly-primary:pressed /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryPressed}" />
         </Style>
 
@@ -104,10 +105,10 @@
             <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="Button.seederly-secondary:PointerOver">
+        <Style Selector="Button.seederly-secondary:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlySecondaryHover}" />
         </Style>
-        <Style Selector="Button.seederly-secondary:Pressed">
+        <Style Selector="Button.seederly-secondary:pressed /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource SeederlySecondaryPressed}" />
         </Style>
 
