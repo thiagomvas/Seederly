@@ -67,6 +67,8 @@ public class Workspace
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
+        
+        var baseUrl = new Uri(document.Servers.FirstOrDefault()?.Url ?? "{baseUrl}");
 
         foreach (var path in document.Paths)
         {
@@ -79,14 +81,13 @@ public class Workspace
                 var schemaName = operation.Value.RequestBody?.Content.FirstOrDefault().Value.Schema?.Ref.Split('/')
                     .Last();
                 var schema = document.Components?.Schemas.FirstOrDefault(x => x.Key == schemaName).Value;
-
                 var apiEndpoint = new ApiEndpoint
                 {
                     Name = name,
                     Request = new ApiRequest()
                     {
                         Method = HttpMethod.Parse(operation.Key),
-                        Url = System.IO.Path.Combine(document.Servers.FirstOrDefault()?.Url ?? "{baseUrl}", path.Key),
+                        Url = new Uri(baseUrl, path.Key).ToString(),
                         Body = schema?.GenerateJsonBody(),
                     }
                 };
