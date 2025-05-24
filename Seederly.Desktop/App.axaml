@@ -44,6 +44,31 @@
         </Style>
 
         <!-- TextBox -->
+        
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="32" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+        </Style>
+
+        <Style Selector="TextBlock.h2">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+        </Style>
+
+        <Style Selector="TextBlock.h3">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+        </Style>
+
+        <Style Selector="TextBlock.h4">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+        </Style>
+
         <Style Selector="TextBox">
             <Setter Property="Background" Value="{DynamicResource SeederlyControlBackground}" />
             <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
