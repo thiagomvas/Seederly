@@ -73,7 +73,7 @@
                                             <TextBlock Text="Name" VerticalAlignment="Center" Margin="0,0,5,0" />
                                             <TextBox Grid.Column="1" Text="{Binding Name}" Watermark="Name" VerticalAlignment="Center" />
 
-                                            <Button Grid.Column="2" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" VerticalAlignment="Center" />
+                                            <Button Classes="seederly-primary" Grid.Column="2" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" VerticalAlignment="Center" />
 
                                             <TextBlock Grid.Row="1" Text="Endpoint Name" VerticalAlignment="Center" Margin="0,0,5,0" />
                                             <AutoCompleteBox Grid.Column="1" Grid.Row="1" Text="{Binding EndpointName}"
@@ -105,7 +105,7 @@
                                                 <DataGridTemplateColumn>
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <Button Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                            <Button Classes="seederly-danger" Content="{avalonia:MaterialIconExt Kind=Delete}"
                                                                     Command="{Binding Parent.RemoveExtractRuleCommand}"
                                                                     CommandParameter="{Binding}" />
                                                         </DataTemplate>
@@ -113,7 +113,7 @@
                                                 </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Extraction Rule}" Command="{Binding AddExtractRuleCommand}" />
+                                        <Button Classes="seederly-primary" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Extraction Rule}" Command="{Binding AddExtractRuleCommand}" />
                                         <Separator Margin="0 10"/>
                                         <TextBlock Text="Injections" FontSize="18" FontWeight="Bold" />
                                         <DataGrid ItemsSource="{Binding Inject}"
@@ -141,7 +141,7 @@
                                                 <DataGridTemplateColumn>
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <Button Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                            <Button Classes="seederly-danger" Content="{avalonia:MaterialIconExt Kind=Delete}"
                                                                     Command="{Binding Parent.RemoveInjectRuleCommand}"
                                                                     CommandParameter="{Binding}" />
                                                         </DataTemplate>
@@ -149,15 +149,15 @@
                                                 </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Injection Rule}" Command="{Binding AddInjectRuleCommand}" />
+                                        <Button Classes="seederly-primary" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Injection Rule}" Command="{Binding AddInjectRuleCommand}" />
                                         <Separator Margin="0 10"/>
-                                        <Button Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Remove Step}" Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+                                        <Button Classes="seederly-danger" Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Remove Step}" Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                                                 CommandParameter="{Binding}"/>
                                     </StackPanel>
                                     <StackPanel IsVisible="{Binding !IsEditing}">
                                         <Grid ColumnDefinitions="*, Auto">
                                             <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
-                                            <Button Grid.Column="1" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" />
+                                            <Button Classes="seederly-primary" Grid.Column="1" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" />
                                         </Grid>
                                         <TextBlock Text="{Binding FormattedUrl}" />
                                         <ItemsControl ItemsSource="{Binding Extract}">
@@ -190,7 +190,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Button Command="{Binding AddNewStepCommand}" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Step}" />
+                <Button Classes="seederly-primary" Command="{Binding AddNewStepCommand}" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Step}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

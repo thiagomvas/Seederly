@@ -115,7 +115,7 @@
         <!-- Danger Button -->
         <Style Selector="Button.seederly-danger">
             <Setter Property="Background" Value="{DynamicResource SeederlyDangerColor}" />
-            <Setter Property="Foreground" Value="{DynamicResource SeederlyBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="Button.seederly-danger:pointerover /template/ ContentPresenter">
@@ -125,6 +125,39 @@
             <Setter Property="Background" Value="{DynamicResource SeederlyDangerPressed}" />
         </Style>
 
+        <Style Selector="DataGrid">
+            <Setter Property="Background" Value="{DynamicResource SeederlyControlBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SeederlyBorder}" />
+            <Setter Property="GridLinesVisibility" Value="All"/>
+        </Style>
+
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="{DynamicResource SeederlySecondaryColor}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SeederlyBorder}" />
+        </Style>
+
+        <Style Selector="DataGridRow">
+            <Setter Property="Background" Value="{DynamicResource SeederlyControlBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource SeederlyForeground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SeederlyBorder}" />
+        </Style>
+
+        <Style Selector="DataGridRow:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryHover}" />
+        </Style>
+
+        <Style Selector="DataGridRow:selected">
+            <Setter Property="Background" Value="{DynamicResource SeederlyPrimaryColor}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="DataGridCell">
+            <Setter Property="BorderBrush" Value="{DynamicResource SeederlyBorder}" />
+        </Style>
+        
+        
         <!-- Window -->
         <Style Selector="Window">
             <Setter Property="Background" Value="{DynamicResource SeederlyBackground}" />
