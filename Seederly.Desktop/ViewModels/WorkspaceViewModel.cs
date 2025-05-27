@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Logging;
@@ -214,7 +215,12 @@ public partial class WorkspaceViewModel : ViewModelBase
             .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
-        var body = _fakeRequestFactory.Generate(map).ToJsonString(new() { WriteIndented = true });
+        var body = _fakeRequestFactory.Generate(map).ToJsonString(new()
+        {
+            
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            WriteIndented = true
+        });
 
         SelectedNode.Value.Body = body;
     }
