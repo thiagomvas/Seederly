@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Cli", "Seederly.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Desktop", "Seederly.Desktop\Seederly.Desktop.csproj", "{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seederly.Tests", "Seederly.Tests\Seederly.Tests.csproj", "{32D121B0-80EB-448A-87A6-9F72FB34ECDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB92B08E-04F8-49B9-8C95-2408A7E45B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32D121B0-80EB-448A-87A6-9F72FB34ECDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32D121B0-80EB-448A-87A6-9F72FB34ECDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32D121B0-80EB-448A-87A6-9F72FB34ECDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32D121B0-80EB-448A-87A6-9F72FB34ECDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
