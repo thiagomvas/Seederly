@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Seederly.Core;
 
 namespace Seederly.Desktop.Services;
 
@@ -33,6 +34,17 @@ public class SessionService
         {
             Data = new SessionData();
         }
+    }
+    
+    public Workspace GetLastOpenedWorkspace()
+    {
+        if (string.IsNullOrWhiteSpace(Data.LastWorkspacePath) || !File.Exists(Data.LastWorkspacePath))
+        {
+            return new Workspace("New Workspace");
+        }
+
+        var json = File.ReadAllText(Data.LastWorkspacePath);
+        return Workspace.DeserializeFromJson(json);
     }
 
     public void SaveData()

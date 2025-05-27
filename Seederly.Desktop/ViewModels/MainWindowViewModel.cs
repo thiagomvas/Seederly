@@ -38,7 +38,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        WorkspaceViewModel = new();
+        LoadedWorkspace = SessionService.Instance.GetLastOpenedWorkspace();
         NavigateToWorkspace();
         Instance = this;
     }

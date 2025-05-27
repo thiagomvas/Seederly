@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using Seederly.Core;
 using Seederly.Core.Automation;
 using Seederly.Core.OpenApi;
+using Seederly.Desktop.Services;
 using Seederly.Desktop.ViewModels;
 
 namespace Seederly.Desktop.Views;
@@ -41,6 +42,8 @@ public partial class MainWindow : Window
         {
             _viewModel.LoadedWorkspace = Workspace.DeserializeFromJson(File.ReadAllText(files[0].Path.LocalPath));
             _viewModel.NavigateToWorkspace();
+            SessionService.Instance.Data.LastWorkspacePath = files[0].Path.LocalPath;
+            SessionService.Instance.SaveData();
         }
     }
     
