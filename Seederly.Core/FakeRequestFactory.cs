@@ -8,7 +8,7 @@ namespace Seederly.Core;
 /// <summary>
 /// A factory class for generating fake API requests.
 /// </summary>
-public class FakeRequestFactory
+public partial class FakeRequestFactory
 {
     private readonly Faker _faker = new();
     public readonly Dictionary<string, Func<object>> Generators;
@@ -145,6 +145,11 @@ public class FakeRequestFactory
     public JsonObject Generate(Dictionary<string, string> map)
     {
         var jsonObject = new JsonObject();
+        
+        // Order ranges so that declarations are processed first
+        map = map.OrderBy(kvp => GetArrayDepthScore(kvp.Key))
+            .ToDictionary();
+        
 
         GenerateRanges(map, jsonObject);
 
@@ -183,7 +188,7 @@ public class FakeRequestFactory
             .Where(kvp => kvp.Key.Contains('['))
             .Select(kvp =>
             {
-                var match = Regex.Match(kvp.Key, @"(.+)\[(\d*)\](.*)");
+                var match = RangeRegex().Match(kvp.Key);
                 var key = match.Groups[1].Value;
                 if(!int.TryParse(match.Groups[2].Value, out var count))
                     return null;
@@ -257,4 +262,25 @@ public class FakeRequestFactory
         Dictionary<string, string>? Map = null,
         string? Generator = null,
         bool IsObject = false);
+
+    [GeneratedRegex(@"(.+)\[(\d*)\](.*)")]
+    private static partial Regex RangeRegex();
+    
+    
+    private int GetArrayDepthScore(string key)
+    {
+        var parts = key.Split('.');
+        int score = 0;
+        foreach (var part in parts)
+        {
+            if (Regex.IsMatch(part, @"\[\d+\]")) // array with size
+                return score; // lower score = shallower
+            else if (part.Contains("[]"))
+                score += 1000; // penalize non-declaration arrays
+            else
+                score += 1; // normal property
+        }
+        return int.MaxValue; // no declaration at all
+    }
+
 }
