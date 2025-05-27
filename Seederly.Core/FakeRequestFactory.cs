@@ -12,7 +12,7 @@ public class FakeRequestFactory
 {
     private readonly Faker _faker = new();
     public readonly Dictionary<string, Func<object>> Generators;
-    
+
     public static FakeRequestFactory Instance { get; } = new();
 
     public FakeRequestFactory()
@@ -90,6 +90,9 @@ public class FakeRequestFactory
             ["lorem.words"] = () => string.Join(" ", _faker.Lorem.Words(3)),
             ["lorem.sentence"] = () => _faker.Lorem.Sentence(),
             ["lorem.paragraph"] = () => _faker.Lorem.Paragraph(),
+
+            // Object
+            ["object"] = () => new object(),
         };
     }
 
@@ -120,7 +123,7 @@ public class FakeRequestFactory
     {
         var regex = new Regex(@"\{\{(.+?)\}\}");
         var matches = regex.Matches(request.Body);
-        
+
         foreach (Match match in matches)
         {
             var key = match.Groups[1].Value;
@@ -131,7 +134,7 @@ public class FakeRequestFactory
             }
         }
     }
-    
+
     /// <summary>
     /// Generates a JSON object based on the provided mapping.
     /// </summary>
@@ -143,61 +146,9 @@ public class FakeRequestFactory
     {
         var jsonObject = new JsonObject();
 
-        // Separate nested objects into their own mappings
-        var nestedObjects = map
-            .Where(kvp => kvp.Key.Contains('.'))
-            .GroupBy(kvp => kvp.Key.Split('.')[0])
-            .ToDictionary(g => g.Key,
-                g => g.ToDictionary(kvp => string.Join('.', kvp.Key.Split('.').Skip(1)), kvp => kvp.Value));
-        // Add nested objects to the main JSON object
-        foreach (var (key, value) in nestedObjects)
-        {
-            jsonObject[key] = Generate(value);
-        }
+        GenerateRanges(map, jsonObject);
 
-        var rangeMaps = map
-            .Where(kvp => !kvp.Key.Contains('.') && kvp.Key.Contains('['))
-            .Select(kvp =>
-            {
-                var match = Regex.Match(kvp.Key, @"(.+)\[(\d+)\]");
-                var key = match.Groups[1].Value;
-                var count = int.Parse(match.Groups[2].Value);
-
-                try
-                {
-                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(kvp.Value);
-                    return new Range(key, count, Map: dict);
-                }
-                catch
-                {
-                    return new Range(key, count, Generator: kvp.Value);
-                }
-            })
-            .ToList();
-
-
-        // Add and generate range objects
-        foreach (var range in rangeMaps)
-        {
-            var array = new JsonArray();
-            for (var i = 0; i < range.Count; i++)
-            {
-                if (range.Map is not null)
-                {
-                    var item = Generate(range.Map);
-                    array.Add(item);
-                }
-                else if (range.Generator is not null)
-                {
-                    var value = GenerateValue(range.Generator);
-                    array.Add(value);
-                }
-            }
-
-            jsonObject[range.Key] = array;
-        }
-
-
+        GenerateNestedObjects(map, jsonObject);
 
 
         var flatMap = map
@@ -211,6 +162,85 @@ public class FakeRequestFactory
         return jsonObject;
     }
 
+    private void GenerateNestedObjects(Dictionary<string, string> map, JsonObject jsonObject)
+    {
+        // Separate nested objects into their own mappings
+        var nestedObjects = map
+            .Where(kvp => kvp.Key.Contains('.') && !kvp.Key.Contains('['))
+            .GroupBy(kvp => kvp.Key.Split('.')[0])
+            .ToDictionary(g => g.Key,
+                g => g.ToDictionary(kvp => string.Join('.', kvp.Key.Split('.').Skip(1)), kvp => kvp.Value));
+        // Add nested objects to the main JSON object
+        foreach (var (key, value) in nestedObjects)
+        {
+            jsonObject[key] = Generate(value);
+        }
+    }
+
+    private void GenerateRanges(Dictionary<string, string> map, JsonObject jsonObject)
+    {
+        var rangeMaps = map
+            .Where(kvp => kvp.Key.Contains('['))
+            .Select(kvp =>
+            {
+                var match = Regex.Match(kvp.Key, @"(.+)\[(\d*)\](.*)");
+                var key = match.Groups[1].Value;
+                if(!int.TryParse(match.Groups[2].Value, out var count))
+                    return null;
+
+                // Find maps where the object starts with key
+                var arrayObjectMaps = map.Where(k => k.Key.Contains(key + "[") && k.Key != kvp.Key)
+                    .ToDictionary(k => k.Key, k => k.Value);
+
+                if (arrayObjectMaps.Any())
+                {
+                    // Remove the keys
+                    foreach (var k in arrayObjectMaps.Keys.Where(k => k.StartsWith(key + "[")))
+                    {
+                        map.Remove(k);
+                    }
+
+                    var trimmedMaps =
+                        arrayObjectMaps.ToDictionary(ikvp => ikvp.Key.Remove(0, ikvp.Key.IndexOf('.') + 1), ikvp => ikvp.Value);
+
+                    return new Range(key, count, trimmedMaps);
+                }
+
+                try
+                {
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(kvp.Value);
+                    return new Range(key, count, Map: dict);
+                }
+                catch
+                {
+                    return new Range(key, count, Generator: kvp.Value);
+                }
+            })
+            .Where(r => r is not null)
+            .ToList();
+
+        // Add and generate range objects
+        foreach (var range in rangeMaps)
+        {
+            var array = new JsonArray();
+            for (var i = 0; i < range.Count; i++)
+            {
+                if (range.Map is not null)
+                {
+                    var item = Generate(range.Map.ToDictionary());
+                    array.Add(item);
+                }
+                else if (range.Generator is not null)
+                {
+                    var value = GenerateValue(range.Generator);
+                    array.Add(value);
+                }
+            }
+
+            jsonObject[range.Key] = array;
+        }
+    }
+
     private object GenerateValue(string generatorKey)
     {
         if (Generators.TryGetValue(generatorKey, out var generator))
@@ -221,6 +251,10 @@ public class FakeRequestFactory
         return string.Empty;
     }
 
-    private record Range(string Key, int Count, Dictionary<string, string>? Map = null, string? Generator = null);
-
+    private record Range(
+        string Key,
+        int Count,
+        Dictionary<string, string>? Map = null,
+        string? Generator = null,
+        bool IsObject = false);
 }
