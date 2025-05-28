@@ -65,4 +65,28 @@ public class RequestFlowTests
         Assert.That(responseObject?["name"]?.GetValue<string>(), Is.Not.Null);
         Assert.That(responseObject?["name"]?.GetValue<string>(), Is.Not.Empty);
     }
+
+    [Test]
+    public void Execute_WhenEmptyUrl_ShouldLogErrorAndReturnNull()
+    {
+        // Arrange
+        var request = new ApiRequest
+        {
+            Url = string.Empty,
+            Method = HttpMethod.Get
+        };
+        var handler = new MockHttpMessageHandler();
+        var logger = new MockLogger();
+        var executor = _mockHttpClientFactory.CreateExecutor(handler, logger);
+        
+        // Act
+        var response = executor.ExecuteAsync(request).GetAwaiter().GetResult();
+        Assert.Multiple(() =>
+        {
+            // Assert
+            Assert.That(response, Is.Null);
+            Assert.That(logger.LoggedError, Is.True);
+        });
+
+    }
 }
