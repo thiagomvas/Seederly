@@ -6,6 +6,16 @@ namespace Seederly.Tests;
 public class FakeRequestFactoryTests
 {
     [Test]
+    public void Generate_ShouldGenerate_Something()
+    {
+        var data = FakeRequestFactory.Instance.Generate(new() {{"name", "name.fullName"}});
+
+        Assert.That(data, Is.Not.Null);
+        Assert.That(data["name"]?.GetValue<string>(), Is.Not.Null);
+        Assert.That(data["name"]?.GetValue<string>(), Is.Not.Empty);
+    }
+    
+    [Test]
     public void CreateFakeRequest_ShouldReturnValidRequest()
     {
         var request = FakeRequestFactory.Instance.GenerateRequest("https://example.com/api/test", HttpMethod.Get, new() {{"Foo", "name.fullName"}});
@@ -76,5 +86,23 @@ public class FakeRequestFactoryTests
         Assert.That(data["objArr"]?.AsArray(), Has.Count.EqualTo(2));
         Assert.That(data["objArr"]?.AsArray()[0]?.AsObject()?["name"], Is.Not.Null);
         Assert.That(data["objArr"]?.AsArray()[1]?.AsObject()?["name"], Is.Not.Null);
+    }
+
+    [Test]
+    public void GenerateBody_ShouldGenerateFromBody()
+    {
+        var request = new ApiRequest()
+        {
+            Body =
+                @"
+{
+    name: {{name.fullName}},
+"
+        };
+        FakeRequestFactory.Instance.GenerateBody(request);
+        
+        Assert.That(request.Body, Is.Not.Null);
+        Assert.That(request.Body, Is.Not.Empty);
+        Assert.That(request.Body, Does.Contain("name: "));
     }
 }
