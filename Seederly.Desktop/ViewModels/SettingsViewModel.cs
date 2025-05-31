@@ -69,8 +69,20 @@ public partial class SettingsViewModel : ViewModelBase
             // Select the first environment in the list
             SelectedEnvironmentPair = StagingEnvironments.FirstOrDefault();
         }
+    }
+    
+    [RelayCommand]
+    private void ActivateEnvironment()
+    {
+        if (SelectedEnvironment is null) return;
         
+        // Set the active environment in the session
+        SessionService.Instance.LoadedWorkspace.SelectedEnvironment = SelectedEnvironment.Name;
+        if (MainWindowViewModel.Instance is not null)
+            MainWindowViewModel.Instance.EnvironmentName = SelectedEnvironment.Name;
         
+        // Save the session
+        SessionService.Instance.SaveWorkspace();
     }
 
     [RelayCommand]

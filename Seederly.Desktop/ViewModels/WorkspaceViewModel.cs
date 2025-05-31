@@ -52,6 +52,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (MainWindowViewModel.Instance is not null)
         {
             MainWindowViewModel.Instance.WorkspaceName = workspace.Name;
+            MainWindowViewModel.Instance.EnvironmentName = workspace.SelectedEnvironment;
         }
 
         FromWorkspace(workspace);

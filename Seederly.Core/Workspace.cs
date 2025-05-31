@@ -38,6 +38,8 @@ public class Workspace
     {
         { "Production", new StagingEnvironment() },
     };
+    
+    public string SelectedEnvironment { get; set; } = "Production";
 
     public Workspace()
     {
