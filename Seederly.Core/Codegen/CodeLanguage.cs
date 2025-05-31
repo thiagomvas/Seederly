@@ -4,5 +4,6 @@ public enum CodeLanguage
 {
     Curl,
     Httpie,
-    JSFetch
+    JSFetch,
+    CSharpHttpClient,
 }

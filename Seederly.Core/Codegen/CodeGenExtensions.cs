@@ -9,6 +9,7 @@ public static class CodeGenExtensions
             CodeLanguage.Curl => "cURL",
             CodeLanguage.Httpie => "HTTPie",
             CodeLanguage.JSFetch => "JS - fetch",
+            CodeLanguage.CSharpHttpClient => "C# - HttpClient",
             _ => throw new NotSupportedException($"Code generation for {language} is not supported.")
         };
     }
@@ -20,6 +21,7 @@ public static class CodeGenExtensions
             "curl" => CodeLanguage.Curl,
             "httpie" => CodeLanguage.Httpie,
             "js - fetch" => CodeLanguage.JSFetch,
+            "c# - httpclient" => CodeLanguage.CSharpHttpClient,
             _ => throw new NotSupportedException($"Code generation for {language} is not supported.")
         };
     }

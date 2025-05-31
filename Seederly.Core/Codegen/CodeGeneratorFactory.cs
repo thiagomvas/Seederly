@@ -9,6 +9,7 @@ public static class CodeGeneratorFactory
             CodeLanguage.Curl => new CurlCodeGenerator(),
             CodeLanguage.Httpie => new HttpieCodeGenerator(),
             CodeLanguage.JSFetch => new JsFetchCodeGen(),
+            CodeLanguage.CSharpHttpClient => new CSharpHttpClientCodeGenerator(),
             _ => throw new NotSupportedException($"Code generation for {language} is not supported.")
         };
     }
