@@ -12,6 +12,7 @@ public partial class SettingsViewModel : ViewModelBase
 {
     public ObservableCollection<KeyValuePair<string, StagingEnvironmentModel>> StagingEnvironments { get; set; }
 
+    [NotifyPropertyChangedFor(nameof(SelectedEnvironment))]
     [ObservableProperty] private KeyValuePair<string, StagingEnvironmentModel>? _selectedEnvironmentPair;
 
     public StagingEnvironmentModel? SelectedEnvironment => SelectedEnvironmentPair?.Value;
@@ -27,6 +28,49 @@ public partial class SettingsViewModel : ViewModelBase
         
         // Select the first one by default
         SelectedEnvironmentPair = StagingEnvironments.FirstOrDefault();
+    }
+    
+    [RelayCommand]
+    private void AddEnvironment()
+    {
+        // Create a new environment model
+        var newEnvironment = new StagingEnvironmentModel
+        {
+            Name = "New Environment",
+        };
+        
+        // Add it to the collection
+        StagingEnvironments.Add(new KeyValuePair<string, StagingEnvironmentModel>(newEnvironment.Name, newEnvironment));
+        
+        // Select the newly added environment
+        SelectedEnvironmentPair = StagingEnvironments.Last();
+    }
+    
+    [RelayCommand]
+    private void RemoveEnvironment()
+    {
+        if (SelectedEnvironmentPair is null) return;
+        
+        // Remove the environment from the session
+        var key = SelectedEnvironment.Name;
+        SessionService.Instance.LoadedWorkspace.StagingEnvironments.Remove(key);
+        
+        // Remove the selected environment from the collection
+        StagingEnvironments.Remove(SelectedEnvironmentPair.Value);
+        
+        
+        // Clear the selection if the collection is empty
+        if (StagingEnvironments.Count == 0)
+        {
+            SelectedEnvironmentPair = null;
+        }
+        else
+        {
+            // Select the first environment in the list
+            SelectedEnvironmentPair = StagingEnvironments.FirstOrDefault();
+        }
+        
+        
     }
 
     [RelayCommand]

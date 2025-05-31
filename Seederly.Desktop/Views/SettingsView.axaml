@@ -13,13 +13,15 @@
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Left" Width="200" Spacing="8">
             <TextBlock Text="Staging Environments" FontWeight="Bold"/>
-            <ListBox ItemsSource="{Binding StagingEnvironments}" SelectedItem="{Binding SelectedEnvironmentPair}">
+            <ListBox ItemsSource="{Binding StagingEnvironments}" 
+                     SelectedItem="{Binding SelectedEnvironmentPair}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Value.Name}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Button Content="Add Environment" Command="{Binding AddEnvironmentCommand}" Margin="0,10,0,0"/>
         </StackPanel>
 
         <ScrollViewer Margin="16,0,0,0">
@@ -81,9 +83,11 @@
 
                 <Button Content="Add Variable" Command="{Binding AddVariableCommand}" Margin="0,10,0,0"/>
                 
-                <Button Content="{avalonia:MaterialIconTextExt Kind=ContentSave, Text=Export Logs }" 
+                <Button Content="{avalonia:MaterialIconTextExt Kind=ContentSave, Text=Save Changes }" 
                         Command="{Binding ((vm:SettingsViewModel)DataContext).SaveChangesCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         Margin="0,10,0,0"/>
+                <Button Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Delete Environment}" Classes="seederly-danger"
+                        Command="{Binding ((vm:SettingsViewModel)DataContext).RemoveEnvironmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
             </StackPanel>
         </ScrollViewer>
     </DockPanel>
