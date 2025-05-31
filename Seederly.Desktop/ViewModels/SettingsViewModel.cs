@@ -91,13 +91,13 @@ public partial class SettingsViewModel : ViewModelBase
         if (SelectedEnvironment is null) return;
         
         // Parse the environments
-        var updatedEnvironment = SelectedEnvironment.ToEnvironment();
+        var envs = StagingEnvironments.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.ToEnvironment()
+        );
         
-        // Update the environment in the session
-        var key = SelectedEnvironmentPair?.Value.Name ?? string.Empty;
-        SessionService.Instance.LoadedWorkspace.StagingEnvironments[key] = updatedEnvironment;
+        SessionService.Instance.LoadedWorkspace.StagingEnvironments = envs;
+        SessionService.Instance.SaveWorkspace();
         
-        // Save the session
-        SessionService.Instance.SaveWorkspace(); 
     }
 }
