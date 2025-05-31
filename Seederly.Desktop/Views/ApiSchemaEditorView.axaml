@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:Seederly.Desktop.ViewModels"
+             x:Class="Seederly.Desktop.Views.ApiSchemaEditorView"
+             x:DataType="vm:WorkspaceViewModel">
+    <ScrollViewer>
+        <StackPanel>
+            <DataGrid AutoGenerateColumns="False"
+                      IsReadOnly="False"
+                      ItemsSource="{Binding SelectedNode.Value.Schema}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Column Name" Binding="{Binding Key}" Width="*" />
+                    <DataGridTemplateColumn Header="Data Type" Width="*">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox HorizontalAlignment="Stretch"
+                                          ItemsSource="{Binding ((vm:WorkspaceViewModel)DataContext).AvailableDataTypes, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                          SelectedItem="{Binding Value, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Value}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="auto">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Classes="seederly-danger"
+                                        Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                        Padding="4"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveSchemaRowCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button Classes="seederly-secondary" 
+                    Background="Transparent"
+                    Content="{avalonia:MaterialIconExt Kind=Add}" 
+                    HorizontalAlignment="Stretch"
+                    Margin="0,0,0,10" 
+                    Command="{Binding AddSchemaColumnCommand}"/>
+            <Button Classes="seederly-primary" Content="Generate Body" Command="{Binding GenerateBodyCommand}"
+                    Margin="0,0,0,10" />
+            <TextBlock FontSize="24" Text="Body" />
+            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Margin="0" Height="500"
+                     VerticalAlignment="Top"
+                     IsReadOnly="False"
+                     Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
