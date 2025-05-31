@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     private MainWindowViewModel? _viewModel;
     public MainWindow()
     {
+        SessionService.Instance.LoadedWorkspace = SessionService.Instance.GetLastOpenedWorkspace();
         InitializeComponent();
         if (_viewModel is null)
             _viewModel = (MainWindowViewModel)DataContext!;
