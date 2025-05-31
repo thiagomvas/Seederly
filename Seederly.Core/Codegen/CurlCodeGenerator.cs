@@ -7,15 +7,9 @@ public class CurlCodeGenerator : ICodeGen
         var curlCommand = $"curl -X {request.Method} '{request.BuildRoute()}'";
 
         // Add headers
-        foreach (var header in request.Headers)
+        foreach (var header in request.GetHeaders())
         {
             curlCommand += $"\\\n -H '{header.Key}: {header.Value}'";
-        }
-        
-        // Add Content-Type header if specified
-        if (!string.IsNullOrEmpty(request.ContentType))
-        {
-            curlCommand += $"\\\n -H 'Content-Type: {request.ContentType}'";
         }
 
         // Add body if present

@@ -64,6 +64,19 @@ public class ApiRequest
         };
     }
     
+    public Dictionary<string, string> GetHeaders()
+    {
+        var headers = new Dictionary<string, string>(Headers, StringComparer.OrdinalIgnoreCase);
+        
+        // Ensure Content-Type is set if not already present
+        if (!headers.ContainsKey("Content-Type") && !string.IsNullOrEmpty(ContentType))
+        {
+            headers["Content-Type"] = ContentType;
+        }
+        
+        return headers;
+    }
+    
     public string BuildRoute()
     {
         var uriBuilder = new UriBuilder(Url);
