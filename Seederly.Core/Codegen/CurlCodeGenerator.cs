@@ -9,13 +9,19 @@ public class CurlCodeGenerator : ICodeGen
         // Add headers
         foreach (var header in request.Headers)
         {
-            curlCommand += $" -H '{header.Key}: {header.Value}'";
+            curlCommand += $"\\\n -H '{header.Key}: {header.Value}'";
+        }
+        
+        // Add Content-Type header if specified
+        if (!string.IsNullOrEmpty(request.ContentType))
+        {
+            curlCommand += $"\\\n -H 'Content-Type: {request.ContentType}'";
         }
 
         // Add body if present
         if (!string.IsNullOrEmpty(request.Body))
         {
-            curlCommand += $" -d '{request.Body}'";
+            curlCommand += $"\\\n -d '{request.Body}'";
         }
 
         return curlCommand;
