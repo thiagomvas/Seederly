@@ -446,7 +446,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (SelectedNode == null || !SelectedNode.IsLeaf || string.IsNullOrWhiteSpace(SelectedLanguage))
             return;
         
-        CodeLanguage lang = Enum.Parse<CodeLanguage>(SelectedLanguage, true);
+        CodeLanguage lang = SelectedLanguage.ToCodeLanguage();
         
         var request = SelectedNode.Value.ToApiRequest();
         

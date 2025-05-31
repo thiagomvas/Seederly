@@ -13,7 +13,7 @@ public partial class ApiCodeGenerationView : UserControl
     {
         InitializeComponent();
 
-        LanguageComboBox.ItemsSource = Enum.GetValues<CodeLanguage>().Select(e => e.ToString());
+        LanguageComboBox.ItemsSource = Enum.GetValues<CodeLanguage>().Select(e => e.ToFormattedString());
         LanguageComboBox.SelectedIndex = 0;
     }
     
