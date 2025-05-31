@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Seederly.Core.Automation;
+using Seederly.Core.Configuration;
 using Seederly.Core.Converters;
 using Seederly.Core.OpenApi;
 
@@ -25,8 +26,23 @@ public class Workspace
     /// </summary>
     public List<ApiEndpoint> Endpoints { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the workflows in the workspace.
+    /// </summary>
     public List<Workflow> Workflows { get; set; } = new();
+    
+    /// <summary>
+    /// Gets or sets the staging environments for the workspace.
+    /// </summary>
+    public Dictionary<string, StagingEnvironment> StagingEnvironments { get; set; } = new()
+    {
+        { "Production", new StagingEnvironment() },
+    };
 
+    public Workspace()
+    {
+        
+    }
     public Workspace(string name)
     {
         Name = name;
