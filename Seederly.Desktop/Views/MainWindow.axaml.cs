@@ -40,7 +40,7 @@ public partial class MainWindow : Window
 
         if (files.Count >= 1)
         {
-            _viewModel.LoadedWorkspace = Workspace.DeserializeFromJson(File.ReadAllText(files[0].Path.LocalPath));
+            SessionService.Instance.LoadedWorkspace = Workspace.DeserializeFromJson(File.ReadAllText(files[0].Path.LocalPath));
             _viewModel.NavigateToWorkspace();
             SessionService.Instance.Data.LastWorkspacePath = files[0].Path.LocalPath;
             SessionService.Instance.SaveData();
@@ -67,13 +67,13 @@ public partial class MainWindow : Window
             {
                 // Open writing stream from the file.
                 _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-                _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
-                Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
+                SessionService.Instance.LoadedWorkspace.Path = file.Path.LocalPath;
+                Utils.SaveWorkspace(SessionService.Instance.LoadedWorkspace);
             }
         }
         else
         {
-            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
+            Utils.SaveWorkspace(SessionService.Instance.LoadedWorkspace);
         }
     }
 
@@ -94,8 +94,8 @@ public partial class MainWindow : Window
         if (file is not null)
         {
             _viewModel.WorkspaceViewModel.WorkspacePath = file.Path.LocalPath;
-            _viewModel.LoadedWorkspace.Path = file.Path.LocalPath;
-            Utils.SaveWorkspace(_viewModel.LoadedWorkspace);
+            SessionService.Instance.LoadedWorkspace.Path = file.Path.LocalPath;
+            Utils.SaveWorkspace(SessionService.Instance.LoadedWorkspace);
         }
     }
 
@@ -126,7 +126,7 @@ public partial class MainWindow : Window
             var json = File.ReadAllText(files[0].Path.LocalPath);
             var document = OpenApiDocument.FromReferenceJson(json);
             var workspace = Workspace.CreateFromOpenApiDocument(document);
-            _viewModel.LoadedWorkspace = workspace;
+            SessionService.Instance.LoadedWorkspace = workspace;
             _viewModel.NavigateToWorkspace();
         }
     }

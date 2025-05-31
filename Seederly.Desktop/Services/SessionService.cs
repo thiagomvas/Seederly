@@ -11,6 +11,7 @@ public class SessionService
     private static SessionService _instance;
     public static SessionService Instance => _instance ??= new SessionService();
     public SessionData Data { get; }
+    public Workspace LoadedWorkspace { get; set; } = new Workspace("New Workspace");
 
     private readonly string _appDataPath;
 

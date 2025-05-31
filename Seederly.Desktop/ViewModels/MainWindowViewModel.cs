@@ -34,11 +34,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private WorkflowViewModel _workflowViewModel;
 
-    public Workspace? LoadedWorkspace { get; set; } = new Workspace("New Workspace");
-
     public MainWindowViewModel()
     {
-        LoadedWorkspace = SessionService.Instance.GetLastOpenedWorkspace();
         NavigateToWorkspace();
         Instance = this;
     }
@@ -60,10 +57,10 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel(LoadedWorkspace));
+    public void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel(SessionService.Instance.LoadedWorkspace));
     
     [RelayCommand]
-    public void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(LoadedWorkspace));
+    public void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(SessionService.Instance.LoadedWorkspace));
 
     [RelayCommand]
     public void NavigateToSettings() => CurrentPage = new SettingsViewModel();
