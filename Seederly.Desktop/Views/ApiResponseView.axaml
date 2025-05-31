@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Seederly.Desktop.ViewModels"
+             x:Class="Seederly.Desktop.Views.ApiResponseView"
+             x:DataType="vm:WorkspaceViewModel">
+    <StackPanel>
+        <TextBlock Text="{Binding LastStatus}" />
+        <DataGrid Margin="0,10"
+                  AutoGenerateColumns="False"
+                  GridLinesVisibility="All"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding SelectedNode.Value.LastResponse.Headers}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 Margin="0"
+                 VerticalAlignment="Top"
+                 IsReadOnly="True"
+                 Text="{Binding SelectedNode.Value.LastResponse.Content, FallbackValue=''}" />
+    </StackPanel>
+</UserControl>

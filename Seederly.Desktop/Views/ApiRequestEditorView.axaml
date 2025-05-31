@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:Seederly.Desktop.ViewModels"
+             x:Class="Seederly.Desktop.Views.ApiRequestEditorView"
+             x:DataType="vm:WorkspaceViewModel">
+    <StackPanel>
+        <TextBlock Classes="h1" Text="Headers"/>
+        <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                  GridLinesVisibility="All"
+                  IsReadOnly="False"
+                  ItemsSource="{Binding SelectedNode.Value.Headers}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Classes="seederly-danger" 
+                                    Padding="4"
+                                    HorizontalAlignment="Center"
+                                    Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                    Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Classes="seederly-secondary" 
+                Background="Transparent"
+                Content="{avalonia:MaterialIconExt Kind=Add}" 
+                HorizontalAlignment="Stretch"
+                Margin="0,0,0,10" 
+                Command="{Binding AddHeaderCommand}" />
+
+        <TextBlock Classes="h1" Text="Query Parameters"/>
+        <DataGrid Margin="0,10" AutoGenerateColumns="False"
+                  GridLinesVisibility="All"
+                  IsReadOnly="False"
+                  ItemsSource="{Binding SelectedNode.Value.QueryParams}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Classes="seederly-danger" 
+                                    Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                    Padding="4"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding ((vm:WorkspaceViewModel)DataContext).RemoveQueryParamCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Classes="seederly-secondary" 
+                Background="Transparent"
+                Content="{avalonia:MaterialIconExt Kind=Add}" 
+                HorizontalAlignment="Stretch"
+                Margin="0,0,0,10" 
+                Command="{Binding AddQueryParamCommand}" />
+
+        <TextBlock Classes="h1" Text="Body" Margin="0,10,0,0"/>
+        <TextBox AcceptsReturn="True" 
+                 TextWrapping="Wrap" 
+                 Margin="0"
+                 AcceptsTab="True"
+                 VerticalAlignment="Top"
+                 Text="{Binding SelectedNode.Value.Body, FallbackValue=''}" />
+    </StackPanel>
+</UserControl>

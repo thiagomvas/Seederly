@@ -15,6 +15,7 @@ using Avalonia.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Seederly.Core;
+using Seederly.Core.Codegen;
 using Seederly.Desktop.Models;
 using Seederly.Desktop.Services;
 
@@ -33,6 +34,9 @@ public partial class WorkspaceViewModel : ViewModelBase
     private Node<ApiEndpointModel>? _selectedNode;
     [ObservableProperty] private string? _workspacePath;
     [ObservableProperty] private string _lastStatus;
+    [ObservableProperty] private string _selectedLanguage = nameof(CodeLanguage.Curl);
+    [ObservableProperty] private string _generatedCode;
+    [ObservableProperty] private bool _generateBodyOnCodeGen = true;
 
     private readonly Workspace _workspace;
 
@@ -434,5 +438,40 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         SelectedNode.Value.QueryParams.Remove(header);
+    }
+
+    [RelayCommand]
+    private void GenerateCode()
+    {
+        if (SelectedNode == null || !SelectedNode.IsLeaf || string.IsNullOrWhiteSpace(SelectedLanguage))
+            return;
+        
+        CodeLanguage lang = SelectedLanguage.ToCodeLanguage();
+        
+        var request = SelectedNode.Value.ToApiRequest();
+        
+        if (GenerateBodyOnCodeGen)
+        {
+            Dictionary<string, string> schema = SelectedNode.Value.Schema
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value))
+                .ToDictionary(x => x.Key, x => x.Value);
+            var body = _fakeRequestFactory.Generate(schema).ToJsonString(new() { WriteIndented = true });
+            request.Body = body;
+        }
+        
+        if (request is null)
+        {
+            GeneratedCode = "Invalid request";
+            return;
+        }
+
+        var code = CodeGeneratorFactory.Create(lang).GenerateCode(request);
+        if (code is null)
+        {
+            GeneratedCode = "Failed to generate code";
+            return;
+        }
+        
+        GeneratedCode = code;
     }
 }

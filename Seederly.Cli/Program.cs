@@ -2,23 +2,21 @@
 using Seederly.Cli;
 using Seederly.Core;
 using Seederly.Core.Automation;
+using Seederly.Core.Codegen;
 using Seederly.Core.OpenApi;
 
-var httpClient = new HttpClient();
-var json = await httpClient.GetStringAsync(@"https://raw.githubusercontent.com/stoplightio/Public-APIs/refs/heads/master/reference/pdfgenerator/pdfgeneratorapi.json");
-
-var openApiDocument = OpenApiDocument.FromReferenceJson(json);
-Console.WriteLine($"Title: {openApiDocument.Info.Title}");
-
-return;
-var app = CoconaLiteApp.Create();
-
-app.AddCommands<RequestCommands>();
-app.AddCommand("schemas", () =>
+var request = new ApiRequest
 {
-    Console.WriteLine("Available schemas:");
-    var fac = new FakeRequestFactory();
-    //Utils.Write(fac.Generators);
-});
+    Method = HttpMethod.Post,
+    Url = "https://httpbin.org/post",
+    QueryParameters =
+    {
+        { "param1", "value1" },
+        { "param2", "value2" }
+    },
+    Body = "{ \"key\": \"value\" }",
+}.WithJwt("token");
 
-await app.RunAsync();
+var codeGen = CodeGeneratorFactory.Create(CodeLanguage.Httpie).GenerateCode(request);
+Console.WriteLine(codeGen);
+    
