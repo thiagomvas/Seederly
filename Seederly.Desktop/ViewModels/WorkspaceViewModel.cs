@@ -36,6 +36,7 @@ public partial class WorkspaceViewModel : ViewModelBase
     [ObservableProperty] private string _lastStatus;
     [ObservableProperty] private string _selectedLanguage = nameof(CodeLanguage.Curl);
     [ObservableProperty] private string _generatedCode;
+    [ObservableProperty] private bool _generateBodyOnCodeGen = true;
 
     private readonly Workspace _workspace;
 
@@ -448,6 +449,16 @@ public partial class WorkspaceViewModel : ViewModelBase
         CodeLanguage lang = Enum.Parse<CodeLanguage>(SelectedLanguage, true);
         
         var request = SelectedNode.Value.ToApiRequest();
+        
+        if (GenerateBodyOnCodeGen)
+        {
+            Dictionary<string, string> schema = SelectedNode.Value.Schema
+                .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value))
+                .ToDictionary(x => x.Key, x => x.Value);
+            var body = _fakeRequestFactory.Generate(schema).ToJsonString(new() { WriteIndented = true });
+            request.Body = body;
+        }
+        
         if (request is null)
         {
             GeneratedCode = "Invalid request";

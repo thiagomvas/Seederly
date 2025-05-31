@@ -16,4 +16,16 @@ public partial class ApiCodeGenerationView : UserControl
         LanguageComboBox.ItemsSource = Enum.GetValues<CodeLanguage>().Select(e => e.ToString());
         LanguageComboBox.SelectedIndex = 0;
     }
+    
+    private async void CopyButton_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var clipboard = TopLevel.GetTopLevel(this).Clipboard;
+        if (clipboard == null) return;
+        
+        var code = GeneratedCodeTextBox.Text;
+        if (!string.IsNullOrEmpty(code))
+        {
+            await clipboard.SetTextAsync(code);
+        }
+    }
 }
