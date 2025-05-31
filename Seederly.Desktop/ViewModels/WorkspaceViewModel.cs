@@ -129,7 +129,7 @@ public partial class WorkspaceViewModel : ViewModelBase
     private bool CanRemoveSelectedNode() => SelectedNode != null;
 
     [RelayCommand]
-    private void RemoveSchemaRow(ApiEndpointModel.HeaderEntry schema)
+    private void RemoveSchemaRow(HeaderEntry schema)
     {
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;
@@ -143,12 +143,12 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;
 
-        var newHeader = new ApiEndpointModel.HeaderEntry(string.Empty, string.Empty);
+        var newHeader = new HeaderEntry(string.Empty, string.Empty);
         SelectedNode.Value.Headers.Add(newHeader);
     }
 
     [RelayCommand]
-    private void RemoveHeader(ApiEndpointModel.HeaderEntry header)
+    private void RemoveHeader(HeaderEntry header)
     {
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;
@@ -162,7 +162,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;
 
-        var newSchema = new ApiEndpointModel.HeaderEntry(string.Empty, string.Empty);
+        var newSchema = new HeaderEntry(string.Empty, string.Empty);
         SelectedNode.Value.Schema.Add(newSchema);
     }
 
@@ -249,8 +249,8 @@ public partial class WorkspaceViewModel : ViewModelBase
         Node<ApiEndpointModel> ConvertEndpointToNode(ApiEndpoint endpoint)
         {
             var model = ApiEndpointModel.FromApiRequest(endpoint.Request);
-            model.Schema = new ObservableCollection<ApiEndpointModel.HeaderEntry>(
-                endpoint.Schema.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)));
+            model.Schema = new ObservableCollection<HeaderEntry>(
+                endpoint.Schema.Select(kvp => new HeaderEntry(kvp.Key, kvp.Value)));
             var node = new Node<ApiEndpointModel>(endpoint.Name, model);
             node.SubNodes.CollectionChanged += OnCollectionChanged;
             node.PropertyChanged += OnAnyPropertyChanged;
@@ -427,12 +427,12 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;
 
-        var newHeader = new ApiEndpointModel.HeaderEntry(string.Empty, string.Empty);
+        var newHeader = new HeaderEntry(string.Empty, string.Empty);
         SelectedNode.Value.QueryParams.Add(newHeader);
     }
     
     [RelayCommand]
-    private void RemoveQueryParam(ApiEndpointModel.HeaderEntry header)
+    private void RemoveQueryParam(HeaderEntry header)
     {
         if (SelectedNode == null || !SelectedNode.IsLeaf)
             return;

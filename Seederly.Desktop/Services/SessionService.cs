@@ -55,4 +55,20 @@ public class SessionService
         
         File.WriteAllText(path, json);
     }
+
+    public void SaveWorkspace()
+    {
+        if (LoadedWorkspace == null)
+        {
+            throw new InvalidOperationException("No workspace loaded to save.");
+        }
+
+        var json = LoadedWorkspace.SerializeToJson();
+        
+        File.WriteAllText(LoadedWorkspace.Path, json);
+        
+        // Update the last workspace path
+        Data.LastWorkspacePath = LoadedWorkspace.Path;
+        SaveData();
+    }
 }

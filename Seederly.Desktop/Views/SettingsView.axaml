@@ -5,6 +5,86 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Seederly.Desktop.Views.SettingsView"
              x:DataType="vm:SettingsViewModel"
-             xmlns:vm="using:Seederly.Desktop.ViewModels">
-    <TextBlock Text="{Binding Message}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+             xmlns:vm="using:Seederly.Desktop.ViewModels"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:models="clr-namespace:Seederly.Core.Configuration;assembly=Seederly.Core"
+             xmlns:models1="clr-namespace:Seederly.Desktop.Models">
+
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Left" Width="200" Spacing="8">
+            <TextBlock Text="Staging Environments" FontWeight="Bold"/>
+            <ListBox ItemsSource="{Binding StagingEnvironments}" SelectedItem="{Binding SelectedEnvironmentPair}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Value.Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <ScrollViewer Margin="16,0,0,0">
+            <StackPanel Spacing="10" DataContext="{Binding SelectedEnvironment}">
+                
+                <TextBlock Text="Environment Name" FontWeight="Bold"/>
+                <TextBox Text="{Binding Name}" Width="300"/>
+
+                <TextBlock Text="Base URL" FontWeight="Bold"/>
+                <TextBox Text="{Binding BaseUrl}" Width="300"/>
+
+                <TextBlock Text="Documentation URL" FontWeight="Bold"/>
+                <TextBox Text="{Binding DocumentationUrl}" Width="300"/>
+
+                <TextBlock Text="Variables" FontWeight="Bold" Margin="0,10,0,0"/>
+                <TextBlock Text="Variables" FontWeight="Bold" Margin="0,10,0,0"/>
+                <DataGrid ItemsSource="{Binding Variables}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="All"
+                          Margin="0,0,0,10"
+                          RowHeight="32"
+                          Width="500"
+                >
+                    <DataGrid.Columns>
+                        <!-- Key Column -->
+                        <DataGridTextColumn Header="Key"
+                                            Binding="{Binding Key, Mode=TwoWay}"
+                                            Width="2*" />
+
+                        <!-- Value Column -->
+                        <DataGridTextColumn Header="Value"
+                                            Binding="{Binding Value, Mode=TwoWay}"
+                                            Width="3*" />
+
+                        <!-- Delete Button -->
+                        <DataGridTemplateColumn Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Classes="seederly-danger"
+                                            Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                            Padding="4"
+                                            Command="{Binding ((models1:StagingEnvironmentModel)DataContext).RemoveVariableCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Add Button -->
+                <Button Classes="seederly-secondary"
+                        Background="Transparent"
+                        Content="{avalonia:MaterialIconExt Kind=Add}"
+                        HorizontalAlignment="Left"
+                        Width="100"
+                        Command="{Binding AddVariableCommand}" />
+
+                <Button Content="Add Variable" Command="{Binding AddVariableCommand}" Margin="0,10,0,0"/>
+                
+                <Button Content="{avalonia:MaterialIconTextExt Kind=ContentSave, Text=Export Logs }" 
+                        Command="{Binding ((vm:SettingsViewModel)DataContext).SaveChangesCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        Margin="0,10,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>
