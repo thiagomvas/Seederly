@@ -109,10 +109,14 @@
                     <TabItem Header="Schema">
                         <views:ApiSchemaEditorView DataContext="{Binding }" />
                     </TabItem>
-
                     <!-- Response Tab -->
                     <TabItem Header="Response">
                         <views:ApiResponseView DataContext="{Binding }" />
+                    </TabItem>
+                    
+                    <!-- Code Generation Tab -->
+                    <TabItem Header="Code Generation">
+                        <views:ApiCodeGenerationView DataContext="{Binding }" />
                     </TabItem>
                 </TabControl>
             </Grid>
