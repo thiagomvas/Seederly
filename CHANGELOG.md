@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.0.0-alpha.1"></a>
+## [1.0.0-alpha.1](https://www.github.com/thiagomvas/Seederly/releases/tag/v1.0.0-alpha.1) (2025-06-01)
+
+### Features
+
+* Add a new function to get all headers including content type ([d83f1b2](https://www.github.com/thiagomvas/Seederly/commit/d83f1b2c7b395a1e2dbb4469aae44e1cd5278f1f))
+* Add basic endpoint schema auto generations from body schema ([53bbfff](https://www.github.com/thiagomvas/Seederly/commit/53bbfffde63218b77265e9b1fee49da92200fad1))
+* Add body and headers titles in request tab ([7f34c30](https://www.github.com/thiagomvas/Seederly/commit/7f34c3013c1ea17f451f65e939ea9e737967a99f))
+* Add body generation from open api schema ([6ff3cfd](https://www.github.com/thiagomvas/Seederly/commit/6ff3cfda12367ea4ebd1604a6057ba599d63e0cc))
+* Add buttons to add and remove environments ([010229d](https://www.github.com/thiagomvas/Seederly/commit/010229d8b9fb51c072c37811c8f58744cfc8dfe7))
+* Add C# HttpClient code generation ([4f2c9e9](https://www.github.com/thiagomvas/Seederly/commit/4f2c9e97bbe83a8f3184afc281e2e82c2f5bbc43))
+* Add code gen factory and abstraction ([e935622](https://www.github.com/thiagomvas/Seederly/commit/e935622f720bca408aff7958a7f4ff304f2b699c))
+* Add code generation tab ([1411079](https://www.github.com/thiagomvas/Seederly/commit/14110796b1e30f5cca149f8858c1e2414d900287))
+* Add Curl code generation ([d930298](https://www.github.com/thiagomvas/Seederly/commit/d9302987d8512283694a5ca4f03bc62f9c10fb22))
+* Add documentation menu redirect ([e8ddf7b](https://www.github.com/thiagomvas/Seederly/commit/e8ddf7bd5aac8bfeda2609250b30e0f506b88f2b))
+* Add environment selection ([ea12746](https://www.github.com/thiagomvas/Seederly/commit/ea1274674a970c5bb2d06dab38a98d14bd6c7086))
+* Add Httpie code generation ([786ccb3](https://www.github.com/thiagomvas/Seederly/commit/786ccb3f16ccbb0103da81ef9f87963f5b126db1))
+* Add JS Fetch code generator ([c595703](https://www.github.com/thiagomvas/Seederly/commit/c5957033698b2a64900a875c443183a976c0b635))
+* Add missing http request types ([8a8933a](https://www.github.com/thiagomvas/Seederly/commit/8a8933a0df67e9091904fd339db04e154b1f9ece))
+* Add new syntax for generating object arrays (closes [#19](https://www.github.com/thiagomvas/Seederly/issues/19)) ([1a9688d](https://www.github.com/thiagomvas/Seederly/commit/1a9688d5f85f190d821eeb51f67b5f1a017eed56))
+* Add Open Api Json Reference classes ([2bf999c](https://www.github.com/thiagomvas/Seederly/commit/2bf999c7b99f4890aa09f9c1bb1e39212c43d079))
+* Add query parameters support ([a1423cc](https://www.github.com/thiagomvas/Seederly/commit/a1423cca7796e78df521e50449162852f5f3223d))
+* Add session service for storing and saving temporary session data ([05c30b4](https://www.github.com/thiagomvas/Seederly/commit/05c30b42ca423b045b013d4194184147ab115209))
+* Add Staging Environments to workspace ([6c10ee7](https://www.github.com/thiagomvas/Seederly/commit/6c10ee7ae86cd13b4fc0b09880725bcc3fb935da))
+* Add support for basic open api formats ([51813c9](https://www.github.com/thiagomvas/Seederly/commit/51813c9d4ca20a580960882ea0b0528bd46d6791))
+* Add support for generating variables inside the body itself ([f3a994b](https://www.github.com/thiagomvas/Seederly/commit/f3a994bf90b88ca2c3c1c060e67432f3badd3cd3))
+* Add support to parse open api document to workspace ([a139e4a](https://www.github.com/thiagomvas/Seederly/commit/a139e4ae91d61bca610e90364616d3c604b9cff3))
+* Add toggle for generating body on code generation and improve UI/UX ([c60ae1a](https://www.github.com/thiagomvas/Seederly/commit/c60ae1aed7533c8d774b4bb43009c2cca1a35248))
+* Add variable replacing ([0910e79](https://www.github.com/thiagomvas/Seederly/commit/0910e79766096717c8af94498cc87b0688ff8b20))
+* Add View for editting staging environments ([1a2fc26](https://www.github.com/thiagomvas/Seederly/commit/1a2fc260c86c982c21527d4144df0cc083ed6150))
+* Improve code gen language formatting ([7440454](https://www.github.com/thiagomvas/Seederly/commit/7440454846fb5e28b04676fcf4400d46b7cdba81))
+* Improve datagrid styling, improve clarity and styling for buttons ([3a2f08f](https://www.github.com/thiagomvas/Seederly/commit/3a2f08f42b99788b5008abe4c7b30965228f17d7))
+* Improve settings view layout and UI ([b3f470d](https://www.github.com/thiagomvas/Seederly/commit/b3f470d7b264c19ba2daa2497793fd751f59f70d))
+* Improve workflow sidebar header ([c57ebd6](https://www.github.com/thiagomvas/Seederly/commit/c57ebd6cabda0b87ad519df393598912d147eb84))
+* Last opened workspace is opened by default ([d0c5985](https://www.github.com/thiagomvas/Seederly/commit/d0c598520a99713c5af24242b8c7d585a92a381a))
+* Update schema key fetching from open api to prioritize the format and improve generator key searching ([5663eab](https://www.github.com/thiagomvas/Seederly/commit/5663eab62c72e177421c6d610b7b0e4e5a041a65))
+
+### Bug Fixes
+
+* App no longer randomly crashes when loading a workspace from OpenApi document ([ee9e0e5](https://www.github.com/thiagomvas/Seederly/commit/ee9e0e57e6e739beb852f43eef748aa2223671d5))
+* Array object generation no longer relies on "array declaration" order ([8638786](https://www.github.com/thiagomvas/Seederly/commit/8638786ff1cc7e1e1b87103756a2f5158d352ff4))
+* Code generation now generates the url without default HTTP and HTTPS ports ([890d189](https://www.github.com/thiagomvas/Seederly/commit/890d18968499d4341a952f6123b7437c0c03f8d9))
+* Creating a node from an empty template now properly opens content ([fd5e038](https://www.github.com/thiagomvas/Seederly/commit/fd5e0382ea49422ab7873952f057913c03bd6576))
+* Display the active environment on the bottom bar ([91689c2](https://www.github.com/thiagomvas/Seederly/commit/91689c2618653f649c84e618530ab8e755a49c07))
+* Fix primary and secondary button pointerover and pressed style setters ([c78429b](https://www.github.com/thiagomvas/Seederly/commit/c78429bcb2bed3cb8c3a9a9912d021a499e409cb))
+* Ignore empty query params and headers when executing a request ([2effd47](https://www.github.com/thiagomvas/Seederly/commit/2effd4778abe4fc7b8f0929500f4b00dafd7e289))
+* Importing from OpenApi now includes the url ([5db765a](https://www.github.com/thiagomvas/Seederly/commit/5db765a43428c0f399513368aa80e8c9aa35490e))
+* Include Content-Type header ([50a91b3](https://www.github.com/thiagomvas/Seederly/commit/50a91b396c5ed2345c4799df3abaa8626353d381))
+* Last opened workspace is now correctly loaded into session service ([6fae965](https://www.github.com/thiagomvas/Seederly/commit/6fae965176eaef68cb87223ad07440200ae7f100))
+* Program no longer crashes when generating arrays (closes [#18](https://www.github.com/thiagomvas/Seederly/issues/18)) ([22202c1](https://www.github.com/thiagomvas/Seederly/commit/22202c13e58f4aed2231a8539fe6036c31ec8a21))
+* Program no longer crashes when it tries connecting to a non existing url ([69a80f8](https://www.github.com/thiagomvas/Seederly/commit/69a80f8c74ef7e80024b89164bab8eaf6fa9a46d))
+* Saving now saves any settings changes ([328aac5](https://www.github.com/thiagomvas/Seederly/commit/328aac5bd7d471398b500a6e4fdb04e5dbffc6ab))
+* Swap to another environment when deleting an active one ([19e4e5f](https://www.github.com/thiagomvas/Seederly/commit/19e4e5fd7f6418bf1c28d9ee0e946908ef6dab33))
+
 <a name="1.0.0-alpha.0"></a>
 ## [1.0.0-alpha.0](https://www.github.com/thiagomvas/Seederly/releases/tag/v1.0.0-alpha.0) (2025-05-03)
 
