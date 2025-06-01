@@ -39,6 +39,8 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         NavigateToWorkspace();
         Instance = this;
+        WorkspaceName = SessionService.Instance.LoadedWorkspace?.Name ?? "New Workspace";
+        EnvironmentName = SessionService.Instance.LoadedWorkspace?.EnvironmentList[SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex].Name ?? "Production";
     }
 
     [RelayCommand]

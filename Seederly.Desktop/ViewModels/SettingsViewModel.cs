@@ -10,24 +10,23 @@ namespace Seederly.Desktop.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-    public ObservableCollection<KeyValuePair<string, StagingEnvironmentModel>> StagingEnvironments { get; set; }
+    public ObservableCollection<StagingEnvironmentModel> Environments { get; set; }
 
-    [NotifyPropertyChangedFor(nameof(SelectedEnvironment))]
-    [ObservableProperty] private KeyValuePair<string, StagingEnvironmentModel>? _selectedEnvironmentPair;
+    [ObservableProperty] private StagingEnvironmentModel _selectedEnv;
 
-    public StagingEnvironmentModel? SelectedEnvironment => SelectedEnvironmentPair?.Value;
 
     public SettingsViewModel()
     {
-        StagingEnvironments = new ObservableCollection<KeyValuePair<string, StagingEnvironmentModel>>(
-            SessionService.Instance.LoadedWorkspace.StagingEnvironments
-                .Select(se => new KeyValuePair<string, StagingEnvironmentModel>(
-                    se.Key,
-                    StagingEnvironmentModel.FromEnvironment(se.Value)
-                )));
-        
+        Environments = new ObservableCollection<StagingEnvironmentModel>(
+            SessionService.Instance.LoadedWorkspace.EnvironmentList
+                .Select(se => StagingEnvironmentModel.FromEnvironment(se))
+        );
+        SelectedEnv = Environments.FirstOrDefault() ?? new StagingEnvironmentModel
+        {
+            Name = "Production",
+        };
+
         // Select the first one by default
-        SelectedEnvironmentPair = StagingEnvironments.FirstOrDefault();
     }
     
     [RelayCommand]
@@ -40,46 +39,55 @@ public partial class SettingsViewModel : ViewModelBase
         };
         
         // Add it to the collection
-        StagingEnvironments.Add(new KeyValuePair<string, StagingEnvironmentModel>(newEnvironment.Name, newEnvironment));
+        Environments.Add(newEnvironment);
         
         // Select the newly added environment
-        SelectedEnvironmentPair = StagingEnvironments.Last();
+        SelectedEnv = newEnvironment;
     }
     
     [RelayCommand]
     private void RemoveEnvironment()
     {
-        if (SelectedEnvironmentPair is null) return;
+        if (SelectedEnv is null) return;
         
         // Remove the environment from the session
-        var key = SelectedEnvironment.Name;
-        SessionService.Instance.LoadedWorkspace.StagingEnvironments.Remove(key);
+        var env = SessionService.Instance.LoadedWorkspace.EnvironmentList
+            .FirstOrDefault(e => e.Name == SelectedEnv.Name);
+        
+        if (env is not null)
+        {
+            SessionService.Instance.LoadedWorkspace.EnvironmentList.Remove(env);
+        }
         
         // Remove the selected environment from the collection
-        StagingEnvironments.Remove(SelectedEnvironmentPair.Value);
+        Environments.Remove(SelectedEnv);
         
         
         // Clear the selection if the collection is empty
-        if (StagingEnvironments.Count == 0)
+        if (Environments.Count == 0)
         {
-            SelectedEnvironmentPair = null;
+            SelectedEnv = new StagingEnvironmentModel
+            {
+                Name = "Production",
+            };
+            
+            Environments.Add(SelectedEnv);
         }
         else
         {
-            // Select the first environment in the list
-            SelectedEnvironmentPair = StagingEnvironments.FirstOrDefault();
+            SelectedEnv = Environments.First();
         }
     }
     
     [RelayCommand]
     private void ActivateEnvironment()
     {
-        if (SelectedEnvironment is null) return;
+        if (SelectedEnv is null) return;
         
         // Set the active environment in the session
-        SessionService.Instance.LoadedWorkspace.SelectedEnvironment = SelectedEnvironment.Name;
+        SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex = Environments.IndexOf(SelectedEnv);
         if (MainWindowViewModel.Instance is not null)
-            MainWindowViewModel.Instance.EnvironmentName = SelectedEnvironment.Name;
+            MainWindowViewModel.Instance.EnvironmentName = SelectedEnv.Name;
         
         // Save the session
         SessionService.Instance.SaveWorkspace();
@@ -88,15 +96,10 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     private void SaveChanges()
     {
-        if (SelectedEnvironment is null) return;
-        
         // Parse the environments
-        var envs = StagingEnvironments.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ToEnvironment()
-        );
+        var envs = Environments.Select(e => e.ToEnvironment()).ToList();
         
-        SessionService.Instance.LoadedWorkspace.StagingEnvironments = envs;
+        SessionService.Instance.LoadedWorkspace.EnvironmentList = envs;
         SessionService.Instance.SaveWorkspace();
         
     }

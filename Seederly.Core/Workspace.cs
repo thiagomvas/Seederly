@@ -30,16 +30,11 @@ public class Workspace
     /// Gets or sets the workflows in the workspace.
     /// </summary>
     public List<Workflow> Workflows { get; set; } = new();
-    
-    /// <summary>
-    /// Gets or sets the staging environments for the workspace.
-    /// </summary>
-    public Dictionary<string, StagingEnvironment> StagingEnvironments { get; set; } = new()
+    public List<StagingEnvironment> EnvironmentList { get; set; } = new()
     {
-        { "Production", new StagingEnvironment() },
+        new StagingEnvironment()
     };
-    
-    public string SelectedEnvironment { get; set; } = "Production";
+    public int ActiveEnvironmentIndex { get; set; } = 0;
 
     public Workspace()
     {

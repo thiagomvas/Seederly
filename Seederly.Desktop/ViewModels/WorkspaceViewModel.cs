@@ -52,7 +52,7 @@ public partial class WorkspaceViewModel : ViewModelBase
         if (MainWindowViewModel.Instance is not null)
         {
             MainWindowViewModel.Instance.WorkspaceName = workspace.Name;
-            MainWindowViewModel.Instance.EnvironmentName = workspace.SelectedEnvironment;
+            MainWindowViewModel.Instance.EnvironmentName = workspace.EnvironmentList[workspace.ActiveEnvironmentIndex].Name;
         }
 
         FromWorkspace(workspace);
@@ -73,6 +73,13 @@ public partial class WorkspaceViewModel : ViewModelBase
             node.PropertyChanged += OnAnyPropertyChanged;
             if (node.Value is not null)
                 node.Value.PropertyChanged += OnAnyPropertyChanged;
+        }
+        
+        
+        if (MainWindowViewModel.Instance is not null)
+        {
+            MainWindowViewModel.Instance.WorkspaceName = SessionService.Instance.LoadedWorkspace.Name;
+            MainWindowViewModel.Instance.EnvironmentName = SessionService.Instance.LoadedWorkspace.EnvironmentList[SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex].Name;
         }
 
         Nodes.CollectionChanged += OnCollectionChanged;
