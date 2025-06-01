@@ -11,7 +11,7 @@
                   IsReadOnly="True"
                   ItemsSource="{Binding SelectedNode.Value.LastResponse.Headers}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding Key}" />
+                <DataGridTextColumn Header="Key" Width="*" Binding="{Binding  Key}" />
                 <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value}" />
             </DataGrid.Columns>
         </DataGrid>

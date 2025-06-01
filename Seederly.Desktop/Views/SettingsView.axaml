@@ -2,9 +2,127 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Seederly.Desktop.ViewModels"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:models="clr-namespace:Seederly.Core.Configuration;assembly=Seederly.Core"
+             xmlns:models1="clr-namespace:Seederly.Desktop.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Seederly.Desktop.Views.SettingsView"
-             x:DataType="vm:SettingsViewModel"
-             xmlns:vm="using:Seederly.Desktop.ViewModels">
-    <TextBlock Text="{Binding Message}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+             x:DataType="vm:SettingsViewModel">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" MinWidth="100" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <StackPanel Grid.Column="0" Background="{DynamicResource SeederlyControlBackground}">
+            <Grid Margin="8" ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="Environments"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0" />
+                <Separator Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Margin="0,8,0,8" />
+            </Grid>
+
+            <ScrollViewer>
+                <StackPanel Spacing="8" Margin="8">
+                    <ListBox ItemsSource="{Binding Environments}" SelectedItem="{Binding SelectedEnv}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Content="Add Environment" Command="{Binding AddEnvironmentCommand}" />
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+
+        <!-- Splitter -->
+        <GridSplitter Grid.Column="1"
+                      Width="5"
+                      Background="{DynamicResource SeederlyControlBackground}"
+                      ShowsPreview="True"
+                      HorizontalAlignment="Stretch" />
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Column="2" Margin="16,0,0,0">
+            <StackPanel Spacing="10" DataContext="{Binding SelectedEnv}">
+
+                <!-- Input Fields -->
+                <StackPanel Width="300" Spacing="4">
+                    <TextBlock Text="Environment Name" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Name}" />
+
+                    <TextBlock Text="Base URL" FontWeight="Bold"/>
+                    <TextBox Text="{Binding BaseUrl}" />
+
+                    <TextBlock Text="Documentation URL" FontWeight="Bold"/>
+                    <TextBox Text="{Binding DocumentationUrl}" />
+                </StackPanel>
+
+                <!-- Variables -->
+                <TextBlock Text="Variables" FontWeight="Bold" Margin="0,10,0,0"/>
+                <DataGrid ItemsSource="{Binding Variables}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="All"
+                          Margin="0,0,0,10"
+                          RowHeight="32"
+                          Width="500">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Key"
+                                            Binding="{Binding Key, Mode=TwoWay}"
+                                            Width="2*" />
+                        <DataGridTextColumn Header="Value"
+                                            Binding="{Binding Value, Mode=TwoWay}"
+                                            Width="3*" />
+                        <DataGridTemplateColumn Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Classes="seederly-danger"
+                                            Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                            Padding="4"
+                                            Command="{Binding ((models1:StagingEnvironmentModel)DataContext).RemoveVariableCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Add Variable Buttons -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Classes="seederly-secondary"
+                            Background="Transparent"
+                            Content="{avalonia:MaterialIconExt Kind=Add}"
+                            Width="36"
+                            Command="{Binding AddVariableCommand}" />
+                </StackPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,20,0,0">
+                    <Button Content="{avalonia:MaterialIconTextExt Kind=ContentSave, Text=Save Changes}" 
+                            Command="{Binding ((vm:SettingsViewModel)DataContext).SaveChangesCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+
+                    <Button Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Delete Environment}" 
+                            Classes="seederly-danger"
+                            Command="{Binding ((vm:SettingsViewModel)DataContext).RemoveEnvironmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+
+                    <Button Content="{avalonia:MaterialIconTextExt Kind=RocketLaunch, Text=Activate}" 
+                            Classes="seederly-primary"
+                            Command="{Binding ((vm:SettingsViewModel)DataContext).ActivateEnvironmentCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

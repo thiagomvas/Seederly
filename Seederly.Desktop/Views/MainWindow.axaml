@@ -40,14 +40,12 @@
                            VerticalAlignment="Center" />
                 <TextBlock Text="|"
                            VerticalAlignment="Center" />
-                <TextBlock Padding="5 0"
-                           VerticalAlignment="Center">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="Workspace: {0}">
-                            <Binding Path="WorkspaceName" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
+                <TextBlock Text="{Binding WorkspaceName}"
+                           Padding="5 0"
+                           VerticalAlignment="Center" />
+                <TextBlock Text="{Binding EnvironmentName}"
+                           Padding="5 0"
+                           VerticalAlignment="Center" />
             </StackPanel>
             <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal"
                         Spacing="2">

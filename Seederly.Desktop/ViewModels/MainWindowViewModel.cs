@@ -21,6 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public LoggerService LoggerService { get; } = LoggerService.Instance;
     
     [ObservableProperty] private string _workspaceName = "New Workspace";
+    [ObservableProperty] private string _environmentName = "Production";
     [ObservableProperty] private string _lastOperation = "No operations performed yet.";
     [ObservableProperty] private string _status = "Ready";
     [ObservableProperty] private bool _showLogs = false;
@@ -34,13 +35,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private WorkflowViewModel _workflowViewModel;
 
-    public Workspace? LoadedWorkspace { get; set; } = new Workspace("New Workspace");
-
     public MainWindowViewModel()
     {
-        LoadedWorkspace = SessionService.Instance.GetLastOpenedWorkspace();
         NavigateToWorkspace();
         Instance = this;
+        WorkspaceName = SessionService.Instance.LoadedWorkspace?.Name ?? "New Workspace";
+        EnvironmentName = SessionService.Instance.LoadedWorkspace?.EnvironmentList[SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex].Name ?? "Production";
     }
 
     [RelayCommand]
@@ -60,10 +60,10 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel(LoadedWorkspace));
+    public void NavigateToWorkspace() => SetViewModel(new WorkspaceViewModel(SessionService.Instance.LoadedWorkspace));
     
     [RelayCommand]
-    public void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(LoadedWorkspace));
+    public void NavigateToWorkflow() => SetViewModel(new WorkflowViewModel(SessionService.Instance.LoadedWorkspace));
 
     [RelayCommand]
     public void NavigateToSettings() => CurrentPage = new SettingsViewModel();

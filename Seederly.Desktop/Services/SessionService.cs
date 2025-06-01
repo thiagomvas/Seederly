@@ -11,6 +11,7 @@ public class SessionService
     private static SessionService _instance;
     public static SessionService Instance => _instance ??= new SessionService();
     public SessionData Data { get; }
+    public Workspace LoadedWorkspace { get; set; } = new Workspace("New Workspace");
 
     private readonly string _appDataPath;
 
@@ -53,5 +54,21 @@ public class SessionService
         var path = Path.Combine(_appDataPath, "session.json");
         
         File.WriteAllText(path, json);
+    }
+
+    public void SaveWorkspace()
+    {
+        if (LoadedWorkspace == null)
+        {
+            throw new InvalidOperationException("No workspace loaded to save.");
+        }
+
+        var json = LoadedWorkspace.SerializeToJson();
+        
+        File.WriteAllText(LoadedWorkspace.Path, json);
+        
+        // Update the last workspace path
+        Data.LastWorkspacePath = LoadedWorkspace.Path;
+        SaveData();
     }
 }

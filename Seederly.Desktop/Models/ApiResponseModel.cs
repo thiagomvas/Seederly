@@ -13,7 +13,7 @@ public partial class ApiResponseModel : ViewModelBase
     [ObservableProperty]
     private string _content = string.Empty;
     
-    public ObservableCollection<ApiEndpointModel.HeaderEntry> Headers { get; set; } = new();
+    public ObservableCollection<HeaderEntry> Headers { get; set; } = new();
     
     public static ApiResponseModel FromApiResponse(ApiResponse response)
     {
@@ -21,7 +21,7 @@ public partial class ApiResponseModel : ViewModelBase
         {
             StatusCode = response.StatusCode.ToString(),
             Content = response.Content,
-            Headers = new ObservableCollection<ApiEndpointModel.HeaderEntry>(response.Headers.Select(kvp => new ApiEndpointModel.HeaderEntry(kvp.Key, kvp.Value)))
+            Headers = new ObservableCollection<HeaderEntry>(response.Headers.Select(kvp => new HeaderEntry(kvp.Key, kvp.Value)))
         };
     }
     

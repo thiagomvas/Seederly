@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using Seederly.Core.Configuration;
 
 namespace Seederly.Core;
 
@@ -25,24 +26,17 @@ public class ApiRequestExecutor
     /// </summary>
     /// <param name="request">The API request to execute.</param>
     /// <returns>A <see cref="ApiResponse"/> containing the returned data.</returns>
-    public async Task<ApiResponse?> ExecuteAsync(ApiRequest request)
+    public async Task<ApiResponse?> ExecuteAsync(ApiRequest request, StagingEnvironment? environment = null)
     {
         if (string.IsNullOrWhiteSpace(request.Url))
         {
             _logger?.LogError("Request URL is null or empty.");
             return null;
         }
-        
-        var queryParameters = request.QueryParameters
-            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value) && !string.IsNullOrWhiteSpace(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        if (queryParameters.Count > 0)
-        {
-            var queryString = string.Join("&", queryParameters.Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
-            request.Url = $"{request.Url}?{queryString}";
-        }
+
+        var url = environment?.BuildRoute(request) ?? request.BuildRoute();
             
-        var httpRequestMessage = new HttpRequestMessage(request.Method, request.Url);
+        var httpRequestMessage = new HttpRequestMessage(request.Method, url);
         
         _fakeRequestFactory.GenerateBody(request);
 
