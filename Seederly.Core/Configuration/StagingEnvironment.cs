@@ -5,36 +5,58 @@ public class StagingEnvironment
     public string Name { get; set; } = "Staging";
     public string BaseUrl { get; set; } = "https://staging.api.seederly.com";
     public string DocumentationUrl { get; set; } = "https://staging.api.seederly.com";
-    
+
     public Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
     public string BuildRoute(ApiRequest request)
     {
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
         if (string.IsNullOrWhiteSpace(request.Url))
-            throw new ArgumentException("Request URL cannot be null or empty.", nameof(request));
+            throw new ArgumentException("Request URL cannot be null or empty.", nameof(request.Url));
+        if (string.IsNullOrWhiteSpace(BaseUrl))
+            throw new InvalidOperationException("BaseUrl cannot be null or empty.");
 
-        var url = request.Url.TrimEnd('/');
+        var trimmedUrl = request.Url.Trim();
+        var baseUrlTrimmed = BaseUrl.Trim().TrimEnd('/');
 
-        url = url.Replace("{{BaseUrl}}", BaseUrl.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
-        
-        // Replace {{Variable}} placeholders
-        foreach (var variable in Variables)
+        trimmedUrl = trimmedUrl.Replace("{{BaseUrl}}", baseUrlTrimmed, StringComparison.OrdinalIgnoreCase);
+
+        if (Variables != null)
         {
-            url = url.Replace($"{{{{{variable.Key}}}}}", variable.Value, StringComparison.OrdinalIgnoreCase);
+            foreach (var variable in Variables)
+            {
+                var placeholder = $"{{{{{variable.Key}}}}}";
+                trimmedUrl = trimmedUrl.Replace(placeholder, variable.Value ?? string.Empty,
+                    StringComparison.OrdinalIgnoreCase);
+            }
         }
 
-        // Add query parameters if any
-        if (request.QueryParameters?.Count > 0)
-        {
-            var queryString = string.Join("&",
-                request.QueryParameters.Select(kvp =>
-                    $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
+        var combinedBase = new Uri(baseUrlTrimmed.EndsWith("/") ? baseUrlTrimmed : baseUrlTrimmed + "/");
+        var relativeUri = trimmedUrl.StartsWith("/") ? trimmedUrl.Substring(1) : trimmedUrl;
+        var fullUri = new Uri(combinedBase, relativeUri);
 
-            url += url.Contains("?") ? "&" : "?";
-            url += queryString;
+        var builder = new UriBuilder(fullUri);
+
+        if (request.QueryParameters != null && request.QueryParameters.Count > 0)
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(builder.Query ?? "");
+            foreach (var kvp in request.QueryParameters)
+            {
+                if (!string.IsNullOrEmpty(kvp.Key))
+                    query[kvp.Key] = kvp.Value;
+            }
+
+            builder.Query = query.ToString() ?? string.Empty;
         }
 
-        return new Uri(new Uri(BaseUrl), url).ToString();
+        // Remove default ports if any
+        if ((builder.Scheme == "https" && builder.Port == 443) ||
+            (builder.Scheme == "http" && builder.Port == 80))
+        {
+            builder.Port = -1;
+        }
+
+        return builder.Uri.ToString();
     }
-
 }

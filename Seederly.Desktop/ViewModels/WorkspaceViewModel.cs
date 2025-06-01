@@ -481,6 +481,8 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
         }
 
+        request.Url = SessionService.Instance.LoadedWorkspace.ActiveEnvironment.BuildRoute(request);
+
         var code = CodeGeneratorFactory.Create(lang).GenerateCode(request);
         if (code is null)
         {

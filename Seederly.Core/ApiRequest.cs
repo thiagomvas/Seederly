@@ -79,9 +79,36 @@ public class ApiRequest
     
     public string BuildRoute()
     {
-        var uriBuilder = new UriBuilder(Url);
-        var query = string.Join("&", QueryParameters.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-        uriBuilder.Query = query;
-        return uriBuilder.ToString();
+        if (string.IsNullOrWhiteSpace(Url))
+            throw new InvalidOperationException("Url cannot be null or empty.");
+
+        var uriBuilder = new UriBuilder(Url.Trim());
+
+        if (QueryParameters != null && QueryParameters.Count > 0)
+        {
+            var existingQuery = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query ?? "");
+
+            foreach (var kvp in QueryParameters)
+            {
+                if (!string.IsNullOrEmpty(kvp.Key))
+                    existingQuery[kvp.Key] = kvp.Value ?? string.Empty;
+            }
+
+            uriBuilder.Query = existingQuery.ToString() ?? string.Empty;
+        }
+        else
+        {
+            uriBuilder.Query = string.Empty;
+        }
+
+        // Remove default ports if any
+        if ((uriBuilder.Scheme == "https" && uriBuilder.Port == 443) ||
+            (uriBuilder.Scheme == "http" && uriBuilder.Port == 80))
+        {
+            uriBuilder.Port = -1;
+        }
+
+        return uriBuilder.Uri.ToString();
     }
+
 }
