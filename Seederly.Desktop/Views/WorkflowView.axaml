@@ -8,54 +8,70 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Seederly.Desktop.Views.WorkflowView"
              x:DataType="vm:WorkflowViewModel">
-    <Grid>
+    <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" MinWidth="100" /> <!-- Sidebar -->
             <ColumnDefinition Width="5" />                   <!-- Splitter -->
             <ColumnDefinition Width="*" />                   <!-- Main content -->
         </Grid.ColumnDefinitions>
-        <StackPanel Background="{DynamicResource SeederlyControlBackground}">
-            <TextBlock Text="Workflows" FontSize="18" />
-            <ListBox ItemsSource="{Binding Workflows}" SelectedItem="{Binding SelectedWorkflow}">
-                <ListBox.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Delete"
-                                  Command="{Binding RemoveWorkflowCommand}"
-                                  CommandParameter="{Binding SelectedWorkflow} " />
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
+        <StackPanel Grid.Column="0" Background="{DynamicResource SeederlyControlBackground}">
+            <Grid Margin="8" ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="Workflows"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0" />
+                <Separator Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Margin="0,8,0,8" />
+            </Grid>
 
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Name}"
-                                       IsVisible="{Binding !IsEditing}"
-                                       Grid.Column="0"
-                                       DoubleTapped="NameTextBlock_OnDoubleTapped"
-                                       VerticalAlignment="Center" />
-                            <TextBox Text="{Binding Name}"
-                                     IsVisible="{Binding IsEditing}"
-                                     Grid.Column="0"
-                                     LostFocus="NameTextBox_LostFocus"
-                                     VerticalAlignment="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Button Content="Add Workflow" Command="{Binding AddWorkflowCommand}" />
+            <ScrollViewer>
+                <StackPanel Margin="8" Spacing="8">
+                    <ListBox ItemsSource="{Binding Workflows}" SelectedItem="{Binding SelectedWorkflow}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Delete"
+                                          Command="{Binding RemoveWorkflowCommand}"
+                                          CommandParameter="{Binding SelectedWorkflow}" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Name}"
+                                               IsVisible="{Binding !IsEditing}"
+                                               Grid.Column="0"
+                                               DoubleTapped="NameTextBlock_OnDoubleTapped"
+                                               VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding Name}"
+                                             IsVisible="{Binding IsEditing}"
+                                             Grid.Column="0"
+                                             LostFocus="NameTextBox_LostFocus"
+                                             VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Content="Add Workflow" Command="{Binding AddWorkflowCommand}" />
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
 
-        <GridSplitter Grid.Column="1" 
-                      Width="5" 
-                      Background="{DynamicResource SeederlyControlBackground}" 
-                      ShowsPreview="True" 
+        <!-- Splitter -->
+        <GridSplitter Grid.Column="1"
+                      Width="5"
+                      Background="{DynamicResource SeederlyControlBackground}"
+                      ShowsPreview="True"
                       HorizontalAlignment="Stretch" />
 
-        <ScrollViewer Grid.Column="2" Padding="10">
+        <ScrollViewer Grid.Column="2" Padding="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel Spacing="10" IsVisible="{Binding SelectedAny}">
                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <Button Content="{avalonia:MaterialIconTextExt Kind=Play, Text=Execute}" Command="{Binding ExecuteWorkflowCommand}" Padding="10,5"/>
-                    <TextBlock Text="{Binding SelectedWorkflow.LastStatus}" 
+                    <Button Content="{avalonia:MaterialIconTextExt Kind=Play, Text=Execute}"
+                            Command="{Binding ExecuteWorkflowCommand}" Padding="10,5" />
+                    <TextBlock Text="{Binding SelectedWorkflow.LastStatus}"
                                VerticalAlignment="Center"
                                FontWeight="Bold"
                                Foreground="Gray" />
@@ -63,7 +79,7 @@
                 <ItemsControl ItemsSource="{Binding SelectedWorkflow.Steps}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="{DynamicResource SeederlyControlBackground}" 
+                            <Border Background="{DynamicResource SeederlyControlBackground}"
                                     Padding="10"
                                     CornerRadius="8"
                                     Margin="10 0 10 10">
@@ -71,11 +87,15 @@
                                     <StackPanel IsVisible="{Binding IsEditing}">
                                         <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, Auto">
                                             <TextBlock Text="Name" VerticalAlignment="Center" Margin="0,0,5,0" />
-                                            <TextBox Grid.Column="1" Text="{Binding Name}" Watermark="Name" VerticalAlignment="Center" />
+                                            <TextBox Grid.Column="1" Text="{Binding Name}" Watermark="Name"
+                                                     VerticalAlignment="Center" />
 
-                                            <Button Classes="seederly-primary" Grid.Column="2" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" VerticalAlignment="Center" />
+                                            <Button Classes="seederly-primary" Grid.Column="2"
+                                                    Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}"
+                                                    Command="{Binding ToggleEditCommand}" VerticalAlignment="Center" />
 
-                                            <TextBlock Grid.Row="1" Text="Endpoint Name" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                            <TextBlock Grid.Row="1" Text="Endpoint Name" VerticalAlignment="Center"
+                                                       Margin="0,0,5,0" />
                                             <AutoCompleteBox Grid.Column="1" Grid.Row="1" Text="{Binding EndpointName}"
                                                              ItemsSource="{Binding ((vm:WorkflowViewModel)DataContext).AvailableEndpointNames, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                              Watermark="Endpoint Name" VerticalAlignment="Center" />
@@ -105,7 +125,8 @@
                                                 <DataGridTemplateColumn>
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <Button Classes="seederly-danger" Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                            <Button Classes="seederly-danger"
+                                                                    Content="{avalonia:MaterialIconExt Kind=Delete}"
                                                                     Command="{Binding Parent.RemoveExtractRuleCommand}"
                                                                     CommandParameter="{Binding}" />
                                                         </DataTemplate>
@@ -113,8 +134,10 @@
                                                 </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Button Classes="seederly-primary" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Extraction Rule}" Command="{Binding AddExtractRuleCommand}" />
-                                        <Separator Margin="0 10"/>
+                                        <Button Classes="seederly-primary"
+                                                Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Extraction Rule}"
+                                                Command="{Binding AddExtractRuleCommand}" />
+                                        <Separator Margin="0 10" />
                                         <TextBlock Text="Injections" FontSize="18" FontWeight="Bold" />
                                         <DataGrid ItemsSource="{Binding Inject}"
                                                   AutoGenerateColumns="False"
@@ -141,7 +164,8 @@
                                                 <DataGridTemplateColumn>
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <Button Classes="seederly-danger" Content="{avalonia:MaterialIconExt Kind=Delete}"
+                                                            <Button Classes="seederly-danger"
+                                                                    Content="{avalonia:MaterialIconExt Kind=Delete}"
                                                                     Command="{Binding Parent.RemoveInjectRuleCommand}"
                                                                     CommandParameter="{Binding}" />
                                                         </DataTemplate>
@@ -149,22 +173,28 @@
                                                 </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
-                                        <Button Classes="seederly-primary" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Injection Rule}" Command="{Binding AddInjectRuleCommand}" />
-                                        <Separator Margin="0 10"/>
-                                        <Button Classes="seederly-danger" Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Remove Step}" Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                                                CommandParameter="{Binding}"/>
+                                        <Button Classes="seederly-primary"
+                                                Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Injection Rule}"
+                                                Command="{Binding AddInjectRuleCommand}" />
+                                        <Separator Margin="0 10" />
+                                        <Button Classes="seederly-danger"
+                                                Content="{avalonia:MaterialIconTextExt Kind=Delete, Text=Remove Step}"
+                                                Command="{Binding ((vm:WorkflowViewModel)DataContext).RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                CommandParameter="{Binding}" />
                                     </StackPanel>
                                     <StackPanel IsVisible="{Binding !IsEditing}">
                                         <Grid ColumnDefinitions="*, Auto">
                                             <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" />
-                                            <Button Classes="seederly-primary" Grid.Column="1" Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}" Command="{Binding ToggleEditCommand}" />
+                                            <Button Classes="seederly-primary" Grid.Column="1"
+                                                    Content="{avalonia:MaterialIconTextExt Kind=PencilOutline, Text=Edit}"
+                                                    Command="{Binding ToggleEditCommand}" />
                                         </Grid>
                                         <TextBlock Text="{Binding FormattedUrl}" />
                                         <ItemsControl ItemsSource="{Binding Extract}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock>
-                                                        <Run Text="Extract: "/>
+                                                        <Run Text="Extract: " />
                                                         <Run Text="{Binding JsonPath}" />
                                                         <Run Text=" → " />
                                                         <Run Text="{Binding VariableName}" />
@@ -176,7 +206,7 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock>
-                                                        <Run Text="Inject: "/>
+                                                        <Run Text="Inject: " />
                                                         <Run Text="{Binding Key}" />
                                                         <Run Text=" → " />
                                                         <Run Text="{Binding Path}" />
@@ -190,7 +220,8 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Button Classes="seederly-primary" Command="{Binding AddNewStepCommand}" Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Step}" />
+                <Button Classes="seederly-primary" Command="{Binding AddNewStepCommand}"
+                        Content="{avalonia:MaterialIconTextExt Kind=Plus, Text=Add Step}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
