@@ -35,6 +35,8 @@ public class Workspace
         new StagingEnvironment()
     };
     public int ActiveEnvironmentIndex { get; set; } = 0;
+    
+    public StagingEnvironment ActiveEnvironment => EnvironmentList[ActiveEnvironmentIndex];
 
     public Workspace()
     {

@@ -181,8 +181,6 @@ public partial class WorkspaceViewModel : ViewModelBase
             return;
 
         var request = SelectedNode.Value.ToApiRequest();
-        
-        LoggerService.Instance.Log(request);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < SelectedNode.Amount; i++)
@@ -196,7 +194,7 @@ public partial class WorkspaceViewModel : ViewModelBase
                 request.Body = body;
             }
             
-            var result = await _apiClient.ExecuteAsync(request);
+            var result = await _apiClient.ExecuteAsync(request, SessionService.Instance.LoadedWorkspace.ActiveEnvironment);
 
 
             if (result is null)
