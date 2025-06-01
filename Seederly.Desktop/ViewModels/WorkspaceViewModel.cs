@@ -193,8 +193,18 @@ public partial class WorkspaceViewModel : ViewModelBase
                 var body = _fakeRequestFactory.Generate(schema).ToJsonString(new() { WriteIndented = true });
                 request.Body = body;
             }
-            
-            var result = await _apiClient.ExecuteAsync(request, SessionService.Instance.LoadedWorkspace.ActiveEnvironment);
+
+            ApiResponse? result;
+            try
+            {
+                result =
+                    await _apiClient.ExecuteAsync(request, SessionService.Instance.LoadedWorkspace.ActiveEnvironment);
+            }
+            catch
+            {
+                LoggerService.Instance.LogError("Failed to execute request.");
+                result = null;
+            }
 
 
             if (result is null)
