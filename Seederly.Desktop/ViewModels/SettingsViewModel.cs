@@ -54,8 +54,16 @@ public partial class SettingsViewModel : ViewModelBase
         var env = SessionService.Instance.LoadedWorkspace.EnvironmentList
             .FirstOrDefault(e => e.Name == SelectedEnv.Name);
         
+        // Check if were removing the active environment
         if (env is not null)
         {
+            if(env == SessionService.Instance.LoadedWorkspace.ActiveEnvironment)
+            {
+                SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex--;
+                
+                if (SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex < 0)
+                    SessionService.Instance.LoadedWorkspace.ActiveEnvironmentIndex = 0;
+            }
             SessionService.Instance.LoadedWorkspace.EnvironmentList.Remove(env);
         }
         
@@ -77,6 +85,8 @@ public partial class SettingsViewModel : ViewModelBase
         {
             SelectedEnv = Environments.First();
         }
+        
+        SaveChanges();
     }
     
     [RelayCommand]
